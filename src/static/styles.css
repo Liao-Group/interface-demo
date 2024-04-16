@@ -1,0 +1,116 @@
+html {
+    font-family: "arial";
+}
+
+.nucleotide-view { grid-area: nv; }
+.nucleotide-sort { grid-area: ns; }
+.nucleotide-zoom { grid-area: nz; }
+.structure-view { grid-area: sv; }
+.feature-view-1 { grid-area: f1; }
+.feature-view-2 { grid-area: f2; }
+.feature-view-3 { grid-area: f3; }
+.feature-legend-container { grid-area: fl; }
+.psi-view { grid-area: pv; }
+
+.grid-container {
+    width: 1600px;
+    height: 900px;
+    display: grid;
+    grid-template-areas:
+        "pv pv f1 f1 f2 f2 f2 f2 f3 f3 f3 f3 f3 fl fl fl fl fl fl"
+        "pv pv f1 f1 f2 f2 f2 f2 f3 f3 f3 f3 f3 fl fl fl fl fl fl"
+        "pv pv f1 f1 f2 f2 f2 f2 f3 f3 f3 f3 f3 fl fl fl fl fl fl"
+        "nv nv nv nv nv nv nv nv nv nv nv nv nv nz nz nz ns ns ns" 
+        "nv nv nv nv nv nv nv nv nv nv nv nv nv nz nz nz ns ns ns" 
+        "nv nv nv nv nv nv nv nv nv nv nv nv nv nz nz nz ns ns ns" 
+        "nv nv nv nv nv nv nv nv nv nv nv nv nv nz nz nz ns ns ns" 
+        "nv nv nv nv nv nv nv nv nv nv nv nv nv nz nz nz ns ns ns" 
+    ;
+    gap: 8px;
+    background-color: white;
+    padding: 8px;
+   grid-auto-columns: minmax(0, 1fr);
+   grid-auto-rows: minmax(0, 1fr);
+}
+
+.grid-container > div {
+    background-color: whitesmoke;
+    text-align: center;
+    border-radius: 5px;
+    font-size: 12px;
+}
+
+form {
+    padding-top: 10px;
+    padding-bottom: 5px;
+    padding-left: 20px;
+}
+
+input {
+    font-size: 12px;
+}
+
+input[type=text] {
+	appearance: none;
+	border: none;
+	outline: none;
+	border-bottom: .2em solid #0e6f07;
+	background: rgba(#0e6f07, .2);
+	border-radius: .2em .2em 0 0;
+	padding: .4em;
+	color: #0e6f07;
+}
+
+input[type=submit] {
+	appearance: none;
+	border: .2em solid #0e6f07;
+	background: hsla(0, 0%, 100%, 0);
+	padding: .85em 1.5em;
+	color: #0e6f07;
+	border-radius: 0.85em;
+	transition: 1s;
+	&:hover, &:focus, &:active {
+		background: #0e6f07;
+		color: #fff;
+	}
+    margin-left: 1em;
+}
+.feature-legend-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  margin-right: 0;
+  padding-right: 0;
+}
+
+.feature-legend-title {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  text-align: center;
+  font-size: 18px;
+  font-weight:50;
+}
+
+.feature-legend-grids {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+}
+
+.svg-grid-inclusion,
+.svg-grid-skipping {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  text-align: center;
+  gap: 10px;
+}
+
+.feature-svg {
+  border: 1px solid black;
+  width: 100px;
+  height: 50px;
+  box-sizing: border-box;
+}
