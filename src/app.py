@@ -31,7 +31,7 @@ def homepage():
     #     exons=[exon], json_file="./data/deciphering_rna_splicing.json"
     # )
 
-    with open('data/exon_s1.json', 'r') as file:
+    with open('src/data/exon_s1.json', 'r') as file:
         # Read the contents of the file
         file = file.read()
 
