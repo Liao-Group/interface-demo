@@ -15,16 +15,20 @@
     <!-- Javascript code that use d3.js to draw figures -->
     <script type="text/javascript" src="static/main.js"></script>
     <!-- Input exon -->
-    <form method="post">
-      <input
-        type="text" name="exon" id="exon" size="80" 
-        placeholder="Enter a 70-nucleotide exon" 
-        required maxlength="70" pattern="([ATUGCatugc]){70}"
-        oninvalid="this.setCustomValidity('Please enter a 70-nucleotide exon')"
-        oninput="this.setCustomValidity('')""
-      >
-      <input type="submit" value="Submit"> 
+    <form id="exonForm" method="post">
+      <div class="select-wrapper">
+        <select name="option" id="option">
+          <option value="default">Default</option>
+          <option value="exon_s1">Exon S1</option>
+          <option value="exon_s2">Exon S2</option>
+          <!-- <option value="option3">Option 3</option> -->
+        </select>
+        <div class="arrow"></div>
+      </div>
+      <input type="submit" value="Submit">
     </form>
+
+
     <!-- Bento box layout -->
     <div class="grid-container">
       <div class="psi-view">
@@ -72,5 +76,20 @@
         <svg class="nucleotide-zoom" width="100%" height="100%"></svg>
       </div>
     </div>
+    <!-- <script>
+      var initData = JSON.parse('{{ data|safe }}');
+  </script>
+
+  <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          console.log(initData); // Check the data loaded correctly
+          // Your D3.js code to manipulate data goes here
+          sequence_length = initData.sequence.length;
+          nucleotide_view(initData.sequence, initData.structs, initData.nucleotide_activations);
+          PSIview(initData);
+          HierarchicalBarChart(initData, initData.feature_activations);
+          FeatureSelection();
+      });
+  </script> -->
   </body>
 </html>

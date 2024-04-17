@@ -39,42 +39,69 @@ html {
     border-radius: 5px;
     font-size: 12px;
 }
-
 form {
-    padding-top: 10px;
-    padding-bottom: 5px;
-    padding-left: 20px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 20px;
 }
 
-input {
-    font-size: 12px;
+.select-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 200px;
+  margin-right: 10px;
 }
 
-input[type=text] {
-	appearance: none;
-	border: none;
-	outline: none;
-	border-bottom: .2em solid #0e6f07;
-	background: rgba(#0e6f07, .2);
-	border-radius: .2em .2em 0 0;
-	padding: .4em;
-	color: #0e6f07;
+.select-wrapper select {
+  font-size: 14px;
+  appearance: none;
+  border: 1px solid #0e6f07;
+  border-radius: 4px;
+  padding: 10px;
+  color: #0e6f07;
+  background-color: #fff;
+  width: 100%;
+  cursor: pointer;
+}
+
+.select-wrapper select:focus {
+  outline: none;
+  box-shadow: 0 0 4px rgba(14, 111, 7, 0.4);
+}
+
+.select-wrapper .arrow {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #0e6f07;
+  pointer-events: none;
+}
+
+.select-wrapper select:focus + .arrow {
+  border-top-color: #0c5405;
 }
 
 input[type=submit] {
-	appearance: none;
-	border: .2em solid #0e6f07;
-	background: hsla(0, 0%, 100%, 0);
-	padding: .85em 1.5em;
-	color: #0e6f07;
-	border-radius: 0.85em;
-	transition: 1s;
-	&:hover, &:focus, &:active {
-		background: #0e6f07;
-		color: #fff;
-	}
-    margin-left: 1em;
+  appearance: none;
+  border: none;
+  background-color: #0e6f07;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
+
+input[type=submit]:hover {
+  background-color: #0c5405;
+}
+
 .feature-legend-container {
   display: flex;
   flex-direction: column;

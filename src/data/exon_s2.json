@@ -3,10 +3,10 @@
   "sequence": "CATCCAGGTTGAGUCCCGCUUACCAUUGCAUUUAAGAAAGCGGCCAUACGCCGCUAAGACCCUACUCUUCAGAAUACCAGCAGGTCTGAC",
   "structs": "......(((.((((...)))))))..............((((((.....)))))).............(((((...((....))))))).",
   "predicted_psi": 0.13,
-  "delta_force": -12,
+  "delta_force": -20,
   "incl_bias": 21.80809438066695,
   "skip_bias": 0,
-  "incl_strength": 72.11872517900679,
+  "incl_strength": 60,
   "skip_strength": 86.02241516113281,
   "feature_activations": {
     "name": "feature_activations",
@@ -16,7 +16,7 @@
         "children": [
           {
             "name": "incl_bias",
-            "strength": 21.80809438066695,
+            "strength": 1,
             "length": 0
           },
           {

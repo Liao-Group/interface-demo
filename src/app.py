@@ -20,25 +20,19 @@ class DataStore():
 
 data = DataStore()
 
-@app.route("/",methods=["GET","POST"])
+@app.route("/", methods=["GET", "POST"])
 def homepage():
-    # exon = request.form.get(
-    #     "exon", 
-    #     "GCGGCACCTACTACAATGTCCCCCGCTGCATACACTCGGAGCCAATAGGGCGCCTATAGAGTGTAGTCCT"
-    # )
-    # exon = exon.upper().replace("U", "T")
-    # json_data = get_deciphering_rna_splicing_data(
-    #     exons=[exon], json_file="./data/deciphering_rna_splicing.json"
-    # )
+    # Default data option or from POST request
+    option = request.form.get('option', 'default')
+    try:
+        with open(f'data/{option}.json', 'r') as file:
+            json_data = json.load(file)
+            data.data = json_data
+    except FileNotFoundError:
+        json_data = {"error": "Data file not found"}
 
-    with open('src/data/exon_s1.json', 'r') as file:
-        # Read the contents of the file
-        file = file.read()
-
-    # Parse the JSON data
-    json_data = json.loads(file)
-    data.data = json_data
     return render_template("./index.html")
+
 
 @app.route("/get-data",methods=["GET","POST"])
 def get_data():
