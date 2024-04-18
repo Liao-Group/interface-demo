@@ -232,11 +232,13 @@ const HierarchicalBarChart = (parent, data) => {
   const width = parseFloat(d3.select("svg.feature-view-1").style("width")) - margin.left - margin.right;
   const height = parseFloat(d3.select("svg.feature-view-1").style("height")) - margin.top - margin.bottom;
 
+  const legendInfo = [{title: "Skipping", color: skipping_color},{title: "Inclusion", color: inclusion_color}];
+
   const getFillColor = (node) => {
     if (typeof node === "number") {
-      return node === 1 ? "#f6c3c2" : "#c5d6fb";
+      return node === 1 ? skipping_color : "#c5d6fb";
     } else if (node) {
-      return node.data.name === "skip" ? "#f6c3c2" : "#c5d6fb";
+      return node.data.name === "skip" ? skipping_color : "#c5d6fb";
     } else {
       return "#c5d6fb"; // Default color if node is neither a number nor an object
     }
@@ -246,8 +248,6 @@ const HierarchicalBarChart = (parent, data) => {
     return node === 1 ? "#ff6666" : "#669aff";
   };
   const svgElement = d3.select("svg.feature-view-1");
-  // console.log(svgElement);
-  // svgElement.selectAll("*").remove(); // Clear SVG before redrawing
 
   const svg = svgElement
     .attr("width", width + margin.left + margin.right)
@@ -271,7 +271,7 @@ const HierarchicalBarChart = (parent, data) => {
   const yAxis = d3.axisLeft(yScale);
 
   svg.append("text")
-    .attr("x", width / 2)
+    .attr("x", (width / 2) - 10)
     .attr("y", - margin.top / 2)
     .attr("text-anchor", "middle")
     .style('font-size', '14px')
@@ -339,6 +339,41 @@ const HierarchicalBarChart = (parent, data) => {
         .duration(100)
         .attr("fill", getFillColor(d));
     });
+
+// Initialize legend
+var legendItemSize = 12;
+var legendSpacing = 4;
+var xOffset = width-50; // Adjust the x-offset to position the legend
+var yOffset = margin.top;
+
+var legend = svg
+  .selectAll('.legendItem')
+  .data(legendInfo)
+  .enter()
+  .append('g')
+  .attr('class', 'legendItem')
+  .attr('transform', (d, i) => {
+    var x = xOffset;
+    var y = yOffset + (legendItemSize + legendSpacing) * i;
+    return `translate(${x}, ${y})`;
+  });
+
+// Create legend color squares
+legend
+  .append('rect')
+  .attr('width', legendItemSize)
+  .attr('height', legendItemSize)
+  .style('fill', d => d.color);
+
+// Create legend labels
+legend
+  .append('text')
+  .attr('x', legendItemSize + 5)
+  .attr('y', legendItemSize / 2)
+  .attr('dy', '0.35em')
+  .text(d => d.title);
+
+
 };
 
 /**
@@ -356,7 +391,7 @@ const HierarchicalBarChart2 = (parent, data) => {
     if (data.name === 'incl') {
       return "#c5d6fb";
     } else {
-      return "#f6c3c2";
+      return skipping_color;
     }
   };
 
@@ -409,7 +444,7 @@ const HierarchicalBarChart2 = (parent, data) => {
     .attr("y", - margin.top / 2)
     .attr("text-anchor", "middle")
     .style('font-size', '14px')
-    .text("Strongest " + (data.name == "incl" ? "Inclusion" : "Skipping") + ' Features');
+    .text((data.name == "incl" ? "Inclusion" : "Skipping") + ' Features');
 
   svg.append("text")
     .attr("class", "x-axis-label")
@@ -463,14 +498,6 @@ const HierarchicalBarChart2 = (parent, data) => {
     .attr("stroke", "#000") // Set the color of the outline
     .attr("stroke-width", 1)
     .on("click", (event, d) => {
-      // console.log('bar2', topChildren[d].children);
-      // tooltip.text(topChildren[d].data.name)
-      // .style("opacity", 1)
-      // .attr("x", xScale(topChildren[d].data.name) + xScale.bandwidth() / 2)
-      // .attr("y", yScale(topChildren[d].data.value));
-      // d3.select(this).transition()
-      //   .duration(100)
-      //   .attr("fill", highlightColor);
       if (topChildren[d].children) {
         // console.log(topChildren[d].data.name)
         FeatureSelection(topChildren[d].data.name)
@@ -487,10 +514,10 @@ const HierarchicalBarChart2 = (parent, data) => {
         .duration(100)
         .attr("fill", highlightColor);
 
-      tooltip.text(topChildren[d].data.name)
-        .style("opacity", 1)
-        .attr("x", xScale(topChildren[d].data.name) + xScale.bandwidth() / 2)
-        .attr("y", yScale(topChildren[d].data.value));
+      // tooltip.text(topChildren[d].data.name)
+      //   .style("opacity", 1)
+      //   .attr("x", xScale(topChildren[d].data.name) + xScale.bandwidth() / 2)
+      //   .attr("y", yScale(topChildren[d].data.value));
     })
     .on("mouseout", function (event, d) {
       d3.select(this).transition()
@@ -523,7 +550,7 @@ const HierarchicalBarChart3 = (data, parentName) => {
     if (String(name).split("_")[0] === 'incl') {
       return "#c5d6fb";
     } else {
-      return "#f6c3c2";
+      return skipping_color;
     }
   };
 

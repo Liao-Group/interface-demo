@@ -24,7 +24,6 @@ data = DataStore()
 def homepage():
     # Default data option or from POST request
     option = request.form.get('option', 'teaser')
-    print(option)
     try:
         with open(f'src/data/{option}.json', 'r') as file:
             json_data = json.load(file)
