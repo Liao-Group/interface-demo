@@ -108,24 +108,24 @@ svgContainer2.each(function(d, i) {
  * PSI view function
  */
 const PSIview = (value) => {
-  const deltaForce = value.delta_force
-  const predictedPSI = value.predicted_psi
+  const deltaForce = value.delta_force;
+  const predictedPSI = value.predicted_psi;
 
   const svg = d3.select("svg.psi-view");
-  const width = parseFloat(d3.select("svg.psi-view").style("width"));
-  const height = parseFloat(d3.select("svg.psi-view").style("height"));;
+  const width = parseFloat(svg.style("width"));
+  const height = parseFloat(svg.style("height"));
   const margin = { top: 40, right: 60, bottom: 30, left: 50 };
   const chartWidth = width - margin.left - margin.right;
-  const chartHeight = height - margin.top - margin.bottom ;
+  const chartHeight = height - margin.top - margin.bottom;
 
-  const lowerBound = - (Math.abs(deltaForce) + 5)
-  const upperBound = Math.abs(deltaForce) + 5
+  const lowerBound = -(Math.abs(deltaForce) + 5);
+  const upperBound = Math.abs(deltaForce) + 5;
 
   const yScale = d3.scaleLinear().domain([lowerBound, upperBound]).range([chartHeight, 0]);
-  const yAxis = d3.axisLeft(yScale).ticks(5);
+  const yAxis = d3.axisLeft(yScale).ticks(4);
 
   const yScale2 = d3.scaleLinear().domain([0, 1]).range([chartHeight, 0]);
-  const yAxis2 = d3.axisRight(yScale2).ticks(4)
+  const yAxis2 = d3.axisRight(yScale2).ticks(4);
 
   svg.attr('width', width).attr('height', height);
 
@@ -139,21 +139,47 @@ const PSIview = (value) => {
     .style('font-size', '14px')
     .text('Difference-to-Prediction');
 
-  // Position yAxis2 on the right side of the chart
   chartGroup.append('g')
     .attr('transform', `translate(${chartWidth + 5}, 0)`)
     .call(yAxis2);
 
+  const tooltip1 = chartGroup.append('text')
+    .attr('x', chartWidth / 2)
+    .attr('y', height - margin.bottom - 20)
+    .attr('text-anchor', 'middle')
+    .attr('font-size', '12px')
+    .attr('font-weight', 'bold')
+    .attr('fill', 'black')
+    .style('opacity', 0)
+    .text('Δ Strength: ' + deltaForce.toFixed(2));;
 
-  // Add title for the right y-axis (PSI)
+    const tooltip2 = chartGroup.append('text')
+    .attr('x', chartWidth / 2)
+    .attr('y', height - margin.bottom - 20)
+    .attr('text-anchor', 'middle')
+    .attr('font-size', '12px')
+    .attr('font-weight', 'bold')
+    .attr('fill', 'black')
+    .style('opacity', 0)
+    .text('Predicted PSI: ' + predictedPSI.toFixed(2));
+    
   chartGroup.append('text')
-    .attr('transform', `translate(${chartWidth + 60}, ${chartHeight / 2}) rotate(-90) `)
+    .attr('transform', `translate(${chartWidth + 60}, ${chartHeight / 2}) rotate(-90)`)
     .attr("font-size", "12px")
     .attr('dy', '-1.25em')
     .style('text-anchor', 'middle')
-    .text('Predicted PSI');
-    
-  // Add title for the left y-axis (ΔStrength)
+    .text('Predicted PSI')
+    .on("mouseover", function (event, d) {
+      tooltip2.transition()
+          .duration(200)
+          .style("opacity", .9);
+    })
+    .on("mouseout", function (event, d) {
+      tooltip2.transition()
+          .duration(200)
+          .style("opacity", 0);
+    });
+
   chartGroup.append('text')
     .attr('transform', 'rotate(-90)')
     .attr('x', -chartHeight / 2)
@@ -161,9 +187,18 @@ const PSIview = (value) => {
     .attr("font-size", "12px")
     .attr('dy', '2.25em')
     .style('text-anchor', 'middle')
-    .text('Δ Strength (a.u)');
+    .text('Δ Strength (a.u)')
+    .on("mouseover", function (event, d) {
+      tooltip1.transition()
+          .duration(200)
+          .style("opacity", .9);
+    })
+    .on("mouseout", function (event, d) {
+      tooltip1.transition()
+          .duration(200)
+          .style("opacity", 0);
+    });;
 
-  // Add zero line
   chartGroup.append("line")
     .attr("x1", 0)
     .attr("x2", chartWidth + 5)
@@ -171,55 +206,32 @@ const PSIview = (value) => {
     .attr("y2", yScale(0))
     .attr("stroke", "black")
     .attr("stroke-width", 1);
-  
-  const barColor = predictedPSI < 0.5 ? "#f6c3c2" : "#c5d6fb";
-  const bar = chartGroup
-  .append('rect')
-  .attr('x', 8)
-  .attr('y', yScale(0))
-  .attr('width', chartWidth - 10)
-  .attr('height', 0)
-  .attr('fill', barColor)
-  .attr("stroke", "#000")
-  .attr("stroke-width", 1);
+
+  const barColor = deltaForce < 0 ? "#f6c3c2" : "#c5d6fb";
+  const barPosition = yScale(Math.max(0, deltaForce));
+  const barHeight = Math.abs(yScale(deltaForce) - yScale(0));
+
+  chartGroup.append('rect')
+    .attr('x', 8)
+    .attr('y', Math.min(yScale(0), barPosition))
+    .attr('width', chartWidth - 10)
+    .attr('height', barHeight)
+    .attr('fill', barColor)
+    .attr("stroke", "#000")
+    .attr("stroke-width", 1);
 
 
-  let barHeight 
-  if (deltaForce > 0){
-    barHeight = deltaForce *4.7
-    bar.transition()
-    .duration(1000)
-    .attr('y', yScale(Math.min(upperBound, deltaForce)))
-    .attr('height', barHeight);
-  }else{
-    barHeight = Math.abs(deltaForce) * 7;
-    bar.transition()
-    .duration(1000)
-    .attr('y', yScale(Math.max(0, deltaForce)))
-    .attr('height', barHeight);
-  }
 
-  const tooltip = chartGroup.append('text')
-    .attr('x', chartWidth / 2)
-    .attr('y', height - margin.bottom - 20)
-    .attr('text-anchor', 'middle')
-    .attr('font-size', '12px')
-    .attr('font-weight', 'bold')
-    .attr('fill', 'black')
-    .style('opacity', 1);
-
-  tooltip.append('tspan')
-      .attr('x', chartWidth / 2)
-      .attr('dy', '-0.5em')
-      .attr("font-size", "10px")
-      .text('Δ Strength: ' + deltaForce.toFixed(2));
-  tooltip.append('tspan')
-      .attr('x', chartWidth / 2)
-      .attr('dy', '1.2em')
-      .attr("font-size", "10px")
-      .text('Predicted PSI: ' + predictedPSI.toFixed(2));
-
-
+  // tooltip.append('tspan')
+  //     .attr('x', chartWidth / 2)
+  //     .attr('dy', '-0.5em')
+  //     .attr("font-size", "10px")
+  //     .text('Δ Strength: ' + deltaForce.toFixed(2));
+  // tooltip.append('tspan')
+  //     .attr('x', chartWidth / 2)
+  //     .attr('dy', '1.2em')
+  //     .attr("font-size", "10px")
+  //     .text('Predicted PSI: ' + predictedPSI.toFixed(2));
 };
 
 
@@ -320,6 +332,7 @@ const HierarchicalBarChart = (parent, data) => {
     .on("click", (event, d) => {
       // console.log(data.children[d])
       if (data.children[d].children) {
+        console.log(parent)
         HierarchicalBarChart2(parent, data.children[d])
         // setSelectedNode(d.data);
         const svgElement = d3.select("svg.feature-view-3");
@@ -690,7 +703,7 @@ const HierarchicalBarChart3 = (data, parentName) => {
  * @returns 
  */
 
-function nucleotide_view(sequence, structs, data) {
+function nucleotide_view(sequence, structs, data,classSelected = null) {
   svg = d3.select("svg.nucleotide-view")
   svg.selectAll("*").remove();
   d3.select("svg.nucleotide-sort").selectAll("*").remove();
