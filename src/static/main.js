@@ -11,6 +11,18 @@ const line_color = "#6b6b6b";
 const strength_difference_color = "#dad7cd";
 const nucleotide_color = "black";
 
+document.addEventListener("DOMContentLoaded", function() {
+  var selectedOption = localStorage.getItem("selectedOption");
+  if (selectedOption) {
+    document.getElementById("option").value = selectedOption;
+  }
+  
+  document.getElementById("exonForm").addEventListener("submit", function() {
+    var selectedValue = document.getElementById("option").value;
+    localStorage.setItem("selectedOption", selectedValue);
+  });
+});
+
 
 d3.json("./get-data", function (data) {
   sequence_length = data.sequence.length;
@@ -219,19 +231,6 @@ const PSIview = (value) => {
     .attr('fill', barColor)
     .attr("stroke", "#000")
     .attr("stroke-width", 1);
-
-
-
-  // tooltip.append('tspan')
-  //     .attr('x', chartWidth / 2)
-  //     .attr('dy', '-0.5em')
-  //     .attr("font-size", "10px")
-  //     .text('Δ Strength: ' + deltaForce.toFixed(2));
-  // tooltip.append('tspan')
-  //     .attr('x', chartWidth / 2)
-  //     .attr('dy', '1.2em')
-  //     .attr("font-size", "10px")
-  //     .text('Predicted PSI: ' + predictedPSI.toFixed(2));
 };
 
 
