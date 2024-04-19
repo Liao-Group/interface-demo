@@ -79,7 +79,6 @@ const FeatureSelection = (featureName = null) => {
     // Highlight the feature if it matches the featureName
     if (d.feature === featureName) {
       svg.style("border", "2px solid blue") // Adds a red border for highlight
-          // .style("box-shadow", "0 0 10px #ff0000"); // Optional: adds a glow effect
     } else {
       svg.style("border", "none")
           .style("box-shadow", "none");
@@ -119,9 +118,9 @@ svgContainer2.each(function(d, i) {
  * 
  * PSI view function
  */
-const PSIview = (value) => {
-  const deltaForce = value.delta_force;
-  const predictedPSI = value.predicted_psi;
+const PSIview = (data) => {
+  const deltaForce = data.delta_force;
+  const predictedPSI = data.predicted_psi;
 
   const svg = d3.select("svg.psi-view");
   const width = parseFloat(svg.style("width"));
@@ -209,7 +208,7 @@ const PSIview = (value) => {
       tooltip1.transition()
           .duration(200)
           .style("opacity", 0);
-    });;
+    });
 
   chartGroup.append("line")
     .attr("x1", 0)
@@ -230,7 +229,11 @@ const PSIview = (value) => {
     .attr('height', barHeight)
     .attr('fill', barColor)
     .attr("stroke", "#000")
-    .attr("stroke-width", 1);
+    .attr("stroke-width", 1)
+    .on("click",function(event,d){
+      nucleotide_view(data.sequence, data.structs, data.nucleotide_activations);
+
+    });
 };
 
 
@@ -331,13 +334,14 @@ const HierarchicalBarChart = (parent, data) => {
     .on("click", (event, d) => {
       // console.log(data.children[d])
       if (data.children[d].children) {
-        console.log(parent)
+        var className = data.children[d].name;
+        // console.log(data.children[d].name)
         HierarchicalBarChart2(parent, data.children[d])
         // setSelectedNode(d.data);
         const svgElement = d3.select("svg.feature-view-3");
         svgElement.selectAll("*").remove(); 
         FeatureSelection()
-        nucleotide_view(parent.sequence, parent.structs, parent.nucleotide_activations);
+        nucleotide_view(parent.sequence, parent.structs, parent.nucleotide_activations,className);
       }
     })
     
@@ -393,7 +397,6 @@ legend
  * HierarchicalBarChart2
  */
 const HierarchicalBarChart2 = (parent, data) => {
-  // console.log('Bar2')
   const margin = { top: 40, right: 20, bottom: 30, left: 40 };
   const width = parseFloat(d3.select("svg.feature-view-2").style("width")) - margin.left - margin.right;
   const height = parseFloat(d3.select("svg.feature-view-2").style("height")) - margin.top - margin.bottom;
@@ -525,11 +528,6 @@ const HierarchicalBarChart2 = (parent, data) => {
       d3.select(this).transition()
         .duration(100)
         .attr("fill", highlightColor);
-
-      // tooltip.text(topChildren[d].data.name)
-      //   .style("opacity", 1)
-      //   .attr("x", xScale(topChildren[d].data.name) + xScale.bandwidth() / 2)
-      //   .attr("y", yScale(topChildren[d].data.value));
     })
     .on("mouseout", function (event, d) {
       d3.select(this).transition()
@@ -807,7 +805,8 @@ function nucleotide_view(sequence, structs, data,classSelected = null) {
 
 
   // Nucleotide bars
-  svg_nucl.selectAll("nucleotide-incl-bar")
+  if (classSelected === "incl"){
+      svg_nucl.selectAll("nucleotide-incl-bar")
     .data(data.children[0].children)
     .enter()
     .append("rect")
@@ -826,7 +825,8 @@ function nucleotide_view(sequence, structs, data,classSelected = null) {
     .attr("height", function (d) { return (margin.top + (height - margin.top - margin.bottom) / 2 - margin.middle) - yIncl(recursive_total_strength(d)); })
     .delay(function (d, i) { return (i * 10) });
 
-  svg_nucl.selectAll("nucleotide-skip-bar")
+  }else if(classSelected === "skip"){
+      svg_nucl.selectAll("nucleotide-skip-bar")
     .data(data.children[1].children)
     .enter()
     .append("rect")
@@ -850,6 +850,55 @@ function nucleotide_view(sequence, structs, data,classSelected = null) {
     .attr("y", (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle))
     .attr("height", function (d) { return ySkip(recursive_total_strength(d)) - (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle); })
     .delay(function (d, i) { return (i * 10); });
+  }else{
+    svg_nucl.selectAll("nucleotide-incl-bar")
+    .data(data.children[0].children)
+    .enter()
+    .append("rect")
+    .datum(function (d) { return d; })
+    .attr("class", function (d) { return "obj incl pos_" + d.name.slice(4); })
+    .attr("x", function (d) { return x(parseInt(d.name.slice(4))); })
+    .attr("y", function (d) { return yIncl(0); })
+    .attr("width", x.bandwidth())
+    .attr("height", 0)
+    .attr("fill", inclusion_color)
+    .attr("stroke", line_color)
+    .lower()
+    .transition()
+    .duration(800)
+    .attr("y", function (d) { return yIncl(recursive_total_strength(d)); })
+    .attr("height", function (d) { return (margin.top + (height - margin.top - margin.bottom) / 2 - margin.middle) - yIncl(recursive_total_strength(d)); })
+    .delay(function (d, i) { return (i * 10) });
+
+    svg_nucl.selectAll("nucleotide-skip-bar")
+    .data(data.children[1].children)
+    .enter()
+    .append("rect")
+    .datum(function (d) { return d; })
+    .attr("class", function (d) { return "obj skip pos_" + d.name.slice(4); })
+    .attr("x", function (d) { return x(parseInt(d.name.slice(4))); })
+    .attr("y", (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle))
+    .attr("width", x.bandwidth())
+    .attr("height", 0)
+    .attr("fill", skipping_color)
+    .attr("stroke", line_color)
+    .lower()
+    .on("mouseover", function (d) {
+      d3.select(this).style("fill", skipping_highlight_color);
+    })
+    .on("mouseleave", function (d) {
+      d3.select(this).style("fill", skipping_color);
+    })
+    .transition()
+    .duration(800)
+    .attr("y", (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle))
+    .attr("height", function (d) { return ySkip(recursive_total_strength(d)) - (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle); })
+    .delay(function (d, i) { return (i * 10); });
+
+  }
+
+
+
 
   // Highlight on hover
   gxNu.selectAll(".tick")
