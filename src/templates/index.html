@@ -1,95 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>
-      Deciphering RNA Splicing Logic Visualizaiton
-    </title>
-    <!-- Import d3.js -->
-		<script type="text/javascript" src="https://d3js.org/d3.v4.js"></script>
-    <!-- CSS style -->
-    <link rel="stylesheet" href="static/styles.css"></link>
-  </head>
-  <body>
-    <!-- Javascript code that use d3.js to draw figures -->
-    <script type="text/javascript" src="static/main.js"></script>
-    <!-- Input exon -->
-    <form id="exonForm" method="post">
-      <div class="select-wrapper">
-        <select name="option" id="option">
-          <option value="teaser">Teaser</option>
-          <option value="exon_s1">Exon S1</option>
-          <option value="exon_s1_comp1">Exon S1 Comparison 1</option>
-          <option value="exon_s1_comp2">Exon S1 Comparison 2</option>
-          <option value="exon_s1_34c>a">Exon S1 Single Mutation</option>
-          <option value="S1_34C>A_46G>U">Exon S1 Double Mutation</option>
-          <!-- <option value="option3">Option 3</option> -->
-        </select>
-      </div>
-      <input type="submit" value="Submit">
-    </form>
-    <!-- Bento box layout -->
-    <div class="grid-container">
-      <div class="psi-view">
-        <svg class="psi-view" width="100%" height="100%"></svg>
-      </div>
-      <div class="feature-view-1">
-        <svg class="feature-view-1" width="100%" height="100%"></svg>
-      </div>
-      <div class="feature-view-2">
-        <svg class="feature-view-2" width="100%" height="100%"></svg>
-      </div>
-      <div class="feature-view-3">
-        <svg class="feature-view-3" width="100%" height="100%"></svg>
-      </div>
-      <div class="feature-legend-container">
-        <div class="feature-legend-title">Feature Legend</div>
-        <div class="feature-legend-grids">
-        <div class="svg-grid-inclusion">
-            <svg class="feature-svg" ></svg>
-            <svg class="feature-svg" ></svg>
-            <svg class="feature-svg" ></svg>
-            <svg class="feature-svg" ></svg>
-            <svg class="feature-svg" ></svg>
-            <svg class="feature-svg" ></svg>
-        </div>
-        <div class="svg-grid-skipping">
-          <svg class="feature-svg" ></svg>
-          <svg class="feature-svg" ></svg>
-          <svg class="feature-svg" ></svg>
-          <svg class="feature-svg" ></svg>
-          <svg class="feature-svg" ></svg>
-          <!-- <svg class="feature-svg" ></svg> -->
-        </div>
-      </div>
 
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    Deciphering RNA Splicing Logic Visualizaiton
+  </title>
+  <!-- Import d3.js -->
+  <script type="text/javascript" src="https://d3js.org/d3.v4.js"></script>
+  <!-- CSS style -->
+  <link rel="stylesheet" href="static/styles.css">
+  </link>
+</head>
 
-      </div>
-      <div class="nucleotide-view">
-        <svg class="nucleotide-view" width="100%" height="100%"></svg>
-      </div>
-      <div class="nucleotide-sort">
-        <svg class="nucleotide-sort" width="100%" height="100%"></svg>
-      </div>
-      <div class="nucleotide-zoom">
-        <svg class="nucleotide-zoom" width="100%" height="100%"></svg>
-      </div>
+<body>
+  <!-- Javascript code that use d3.js to draw figures -->
+  <script type="text/javascript" src="static/main.js"></script>
+  <!-- Input exon -->
+
+     <form id="exonForm" method="post">
+    <div class="select-wrapper">
+      <select name="option" id="option">
+        <option value="teaser">Teaser</option>
+        <option value="exon_s1">Exon S1</option>
+        <option value="exon_s1_comp1">Exon S1 Comparison 1</option>
+        <option value="exon_s1_comp2">Exon S1 Comparison 2</option>
+        <option value="exon_s1_34c>a">Exon S1 Single Mutation</option>
+        <option value="S1_34C>A_46G>U">Exon S1 Double Mutation</option>
+        <!-- <option value="option3">Option 3</option> -->
+      </select>
     </div>
-    <!-- <script>
-      var initData = JSON.parse('{{ data|safe }}');
-  </script>
+    <input type="submit" value="Submit">
+  </form>
 
-  <script>
-      document.addEventListener('DOMContentLoaded', function() {
-          console.log(initData); // Check the data loaded correctly
-          // Your D3.js code to manipulate data goes here
-          sequence_length = initData.sequence.length;
-          nucleotide_view(initData.sequence, initData.structs, initData.nucleotide_activations);
-          PSIview(initData);
-          HierarchicalBarChart(initData, initData.feature_activations);
-          FeatureSelection();
-      });
-  </script> -->
-  </body>
+ <button class="toggleButton" id="toggleButton">
+        <div class="toggleSwitchCircle" id="toggleSwitchCircle"></div>
+      </button>
+      <span class="toggleText" id="toggleText">Alt-Colors</span>
+  <!-- Bento box layout -->
+  <div class="grid-container">
+    <div class="psi-view">
+      <svg class="psi-view" width="100%" height="100%"></svg>
+    </div>
+    <div class="feature-view-1">
+      <svg class="feature-view-1" width="100%" height="100%"></svg>
+    </div>
+    <div class="feature-view-2">
+      <svg class="feature-view-2" width="100%" height="100%"></svg>
+    </div>
+    <div class="feature-view-3">
+      <svg class="feature-view-3" width="100%" height="100%"></svg>
+    </div>
+    <div class="feature-legend-container">
+      <div class="feature-legend-title">Feature Legend</div>
+      <div class="feature-legend-grids">
+        <div class="svg-grid-inclusion">
+          <svg class="feature-svg"></svg>
+          <svg class="feature-svg"></svg>
+          <svg class="feature-svg"></svg>
+          <svg class="feature-svg"></svg>
+          <svg class="feature-svg"></svg>
+          <svg class="feature-svg"></svg>
+        </div>
+
+        <div class="svg-grid-skipping">
+          <svg class="feature-svg"></svg>
+          <svg class="feature-svg"></svg>
+          <svg class="feature-svg"></svg>
+          <svg class="feature-svg"></svg>
+          <svg class="feature-svg"></svg>
+        </div>
+      </div>
+      
+      <div class="svg-grid-long-skipping">
+        <svg class="feature-long-svg"></svg>
+        <svg class="feature-long-svg"></svg>
+      </div>
+
+    </div>
+    <div class="nucleotide-view">
+      <svg class="nucleotide-view" width="100%" height="100%"></svg>
+    </div>
+    <div class="nucleotide-sort">
+      <svg class="nucleotide-sort" width="100%" height="100%"></svg>
+    </div>
+    <div class="nucleotide-zoom">
+      <svg class="nucleotide-zoom" width="100%" height="100%"></svg>
+    </div>
+  </div>
+</body>
+
 </html>

@@ -25,7 +25,7 @@ def homepage():
     # Default data option or from POST request
     option = request.form.get('option', 'teaser')
     try:
-        with open(f'src/data/{option}.json', 'r') as file:
+        with open(f'data/{option}.json', 'r') as file:
             json_data = json.load(file)
             data.data = json_data
     except FileNotFoundError:
