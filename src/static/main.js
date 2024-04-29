@@ -68,11 +68,22 @@ document.addEventListener('DOMContentLoaded', function () {
   // save toggle state and refresh
   localStorage.setItem('defaultSetting', defaultSetting);
   location.reload();
+  });
 });
-});
 
-
-
+// setting dropdown
+function toggleDropdown() {
+  
+  var dropdown = document.getElementById("myDropdown");
+  
+  if (dropdown.style.display === "block") {
+      dropdown.style.display = "none";
+  }
+  
+  else {
+      dropdown.style.display = "block";
+  }
+}
 
 
 
