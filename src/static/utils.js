@@ -34,7 +34,7 @@ function flatten_nested_json(data) {
 }
 
 
-function FeatureSelection(featureName = null) {
+function featureSelection(featureName = null) {
   // Function to update SVGs with new data and highlight the selected feature
   const updateSVGs = (containerSelector, svgSelector, imagesArray, colors) => {
     const svgContainer = d3.select(containerSelector).selectAll(svgSelector)
@@ -72,7 +72,7 @@ function FeatureSelection(featureName = null) {
         .on("click", (event, info) => {
           console.log("clicked",d.feature)
           svg.style("border", `3px solid ${colors[1]}`);
-          FeatureSelection(d.feature)
+          featureSelection(d.feature)
           if(Data){
             nucleotide_feature_view(Data, Data.feature_activations, d.feature);
           }

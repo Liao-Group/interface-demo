@@ -9,17 +9,17 @@
   </title>
   <!-- Import d3.js -->
   <script type="text/javascript" src="https://d3js.org/d3.v4.js"></script>
-  <!-- CSS style -->
-  <link rel="stylesheet" href="static/styles.css">
-  </link>
+  <!-- CSS style -->  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-  </link>
+
+  <link rel="stylesheet" href="static/styles.css">
 </head>
 
 <body>
   <!-- Javascript code that use d3.js to draw figures -->
+    <script src="static/events.js"></script>
+
   <script src="static/utils.js"></script>
-  <script src="static/events.js"></script>
   <script src="static/main.js"></script>
   <!-- Input exon -->
 
@@ -37,12 +37,22 @@
     </div>
     <input type="submit" value="Submit">
   </form>
+  <!--setting dropdown -->
+  <div class="dropdown">
+    <button class="dropbtn" onclick="toggleDropdown()"><i class="fa fa-cog"></i></button>
+    <div id="myDropdown" class="dropdown-content">
+        <!-- toggle button -->
+        <a href="#">Alt-Colors</a>
+        <button class="toggleButton" id="toggleButton">
+          <div class="toggleSwitchCircle" id="toggleSwitchCircle"></div>
+        </button>
+        <hr class="divider">
+        <a href="#">Instruction Mode</a>
+        <button class="toggleButton" id="toggleButton">
+          <div class="toggleSwitchCircle" id="toggleSwitchCircle"></div>
+    </div>
+</div>
 
- <!-- <button class="toggleButton" id="toggleButton">
-        <div class="toggleSwitchCircle" id="toggleSwitchCircle"></div>
-      </button>
-      <span class="toggleText" id="toggleText">Alt-Colors</span> -->
-  <!-- Bento box layout -->
   <div class="grid-container">
     <div class="psi-view">
       <svg class="psi-view" width="100%" height="100%"></svg>
@@ -93,22 +103,6 @@
       <svg class="nucleotide-zoom" width="100%" height="100%"></svg>
     </div>
   </div>
-
-  <!--setting dropdown -->
-  <div class="dropdown">
-    <button class="dropbtn" onclick="toggleDropdown()"><i class="fa fa-cog"></i></button>
-    <div id="myDropdown" class="dropdown-content">
-        <!-- toggle button -->
-        <a href="#">Alt-Colors</a>
-        <button class="toggleButton" id="toggleButton">
-          <div class="toggleSwitchCircle" id="toggleSwitchCircle"></div>
-        </button>
-        <hr class="divider">
-        <a href="#">Instruction Mode</a>
-        <button class="toggleButton" id="toggleButton">
-          <div class="toggleSwitchCircle" id="toggleSwitchCircle"></div>
-    </div>
-</div>
 
 </body>
 
