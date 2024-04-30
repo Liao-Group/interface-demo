@@ -1,7 +1,7 @@
-// Color palette
-
 // background colors
+// maybe add this color value consts to another color.js separate file.
 const background_color = "whitesmoke"; // "#e4e4e4";
+const darkBackground = "#999999"
 const background_model_color = "#e4f2e3"
 const line_color = "#6b6b6b";
 const strength_difference_color = "#dad7cd";
@@ -23,208 +23,31 @@ const ltr_skipping_color = "#F16A92";
 const ltr_inclusion_highlight_color = "#B2DAEF";
 const ltr_skipping_highlight_color = "#F9C4D2";
 
-// toggle button
-let defaultSetting = "off";
-
-// toggle outline
-
-
-// check for toggle state before refreshing
-document.addEventListener('DOMContentLoaded', function () {
-  const toggleButton = document.getElementById('toggleButton');
-
-  // toggle circle
-  const toggleSwitchCircle = document.getElementById('toggleSwitchCircle');
-  defaultSetting = localStorage.getItem('defaultSetting') || "off";
-  if (defaultSetting === "on") {
-    toggleSwitchCircle.style.transform = 'translateX(20px)';
-    toggleButton.style.backgroundColor = '#0e6f07';
-    // Change to ltr colors
-    inclusion_color = ltr_inclusion_color;
-    inclusion_highlight_color = ltr_inclusion_highlight_color;
-    skipping_color = ltr_skipping_color;
-    skipping_highlight_color = ltr_skipping_highlight_color;
-  }
-  else {
-    toggleSwitchCircle.style.transform = 'translateX(0)';
-    toggleButton.style.backgroundColor = 'white';
-    // Change to org colors
-    inclusion_color = org_inclusion_color;
-    inclusion_highlight_color = org_inclusion_highlight_color;
-    skipping_color = org_skipping_color;
-    skipping_highlight_color = org_skipping_highlight_color;
-  }
-  toggleButton.addEventListener('click', function () {
-  if (defaultSetting === "off") {
-    defaultSetting = "on";
-    toggleSwitchCircle.style.transform = 'translateX(20px)';
-    toggleButton.style.backgroundColor = '#0e6f07';
-  }
-  else {
-    defaultSetting = "off";
-    toggleSwitchCircle.style.transform = 'translateX(0)';
-    toggleButton.style.backgroundColor = 'white';
-  }
-  // save toggle state and refresh
-  localStorage.setItem('defaultSetting', defaultSetting);
-  location.reload();
-});
-});
-
-
-
-
-
-
-
-
-
-document.addEventListener("DOMContentLoaded", function () {
-  var selectedOption = localStorage.getItem("selectedOption");
-  if (selectedOption) {
-    document.getElementById("option").value = selectedOption;
-  }
-
-  document.getElementById("exonForm").addEventListener("submit", function () {
-    var selectedValue = document.getElementById("option").value;
-    localStorage.setItem("selectedOption", selectedValue);
-  });
-});
-
+// featureSelected variable 
+var featureSelected = ""
+/* 
+This variable represents the data coming formt he json file.
+ I made it a mutable global variable so i can set it to data on d3.json()
+ and then use it again in the feature selection function without having to pass 
+ other values as we call that function. 
+*/
+var Data = []
 
 d3.json("./get-data", function (data) {
-  sequence_length = data.sequence.length;
-  // console.log(data.structs);
+  // setting the value for this Data variable that is acting as 
+  Data = data
   nucleotide_view(data.sequence, data.structs, data.nucleotide_activations);
   PSIview(data);
   HierarchicalBarChart(data, data.feature_activations);
-  FeatureSelection();
+  FeatureSelection(featureName =null, data=data);
 })
-
-function recursive_total_strength(data) {
-  if (!("children" in data)) { return data.strength; }
-  else { return d3.sum(d3.map(data["children"], recursive_total_strength).keys()) }
-}
-
-const FeatureSelection = (featureName = null) => {
-  console.log(featureName);
-  // Define the image array, each with a unique feature identifier
-  const imagesInclusion = [
-    { url: "static/images/incl_1.png", feature: "incl_1" },
-    { url: "static/images/incl_2.png", feature: "incl_2" },
-    { url: "static/images/incl_3.png", feature: "incl_3" },
-    { url: "static/images/incl_4.png", feature: "incl_4" },
-    { url: "static/images/incl_5.png", feature: "incl_5" },
-    { url: "static/images/incl_6.png", feature: "incl_6" }
-  ];
-
-  const imagesSkipping = [
-    { url: "static/images/skip_2.png", feature: "skip_2" },
-    { url: "static/images/skip_3.png", feature: "skip_3" },
-    { url: "static/images/skip_4.png", feature: "skip_4" },
-    { url: "static/images/skip_5.png", feature: "skip_5" },
-    { url: "static/images/skip_6.png", feature: "skip_6" }
-  ];
-
-  const longSkippingImages = [
-    { url: "static/images/g_poor.png", feature: "g_poor" },
-    { url: "static/images/skip_struct.png", feature: "struct" }
-  ]
-
-  // Select all SVGs within the div.svg-grid container and bind the image data
-  const svgContainer = d3.select("div.svg-grid-inclusion").selectAll("svg.feature-svg")
-    .data(imagesInclusion);
-
-  // Update the SVGs with new data
-  svgContainer.each(function (d, i) {
-    const svg = d3.select(this);
-
-    // Clear previous contents if any
-    svg.selectAll("*").remove();
-
-    // Append image to each SVG
-    svg.append("image")
-      .attr("xlink:href", d.url)
-      .attr("width", "100px")
-      .attr("height", "50px")
-      .attr("preserveAspectRatio", "xMidYMid meet");
-
-    // Highlight the feature if it matches the featureName
-    if (d.feature === featureName) {
-      svg.style("border", `2px solid ${inclusion_highlight_color}`) // Adds a red border for highlight
-    } else {
-      svg.style("border", "none")
-        .style("box-shadow", "none");
-    }
-  });
-
-
-  const svgContainer2 = d3.select("div.svg-grid-skipping").selectAll("svg.feature-svg")
-    .data(imagesSkipping);
-  // Update the SVGs with new data
-  svgContainer2.each(function (d, i) {
-    const svg = d3.select(this);
-    // Clear previous contents if any
-    svg.selectAll("*").remove();
-
-    // Append image to each SVG
-    svg.append("image")
-      .attr("xlink:href", d.url)
-      .attr("width", "100px")
-      .attr("height", "50px")
-      .attr("preserveAspectRatio", "xMidYMid meet");
-    // Highlight the feature if it matches the featureName
-    if (d.feature === featureName) {
-      svg.style("border", `2px solid ${skipping_highlight_color}`) // Adds a red border for highlight
-      // .style("box-shadow", "0 0 10px #ff0000"); // Optional: adds a glow effect
-    } else {
-      svg.style("border", "none")
-        .style("box-shadow", "none");
-    }
-  });
-
-  const svgContainer3 = d3.select("div.svg-grid-long-skipping").selectAll("svg.feature-long-svg ")
-    .data(longSkippingImages);
-  // Update the SVGs with new data
-  svgContainer3.each(function (d, i) {
-    const svg = d3.select(this);
-    // Clear previous contents if any
-    svg.selectAll("*").remove();
-
-    // Append image to each SVG
-    svg.append("image")
-      .attr("xlink:href", d.url)
-      .attr("width", "400px")
-      .attr("height", "60px")
-      .attr("preserveAspectRatio", "xMidYMid meet");
-    
-    // Highlight the feature if it matches the featureName
-    if(featureName){
-      var name = ""
-      try{
-        var name = featureName.split("_")[1]
-        console.log(name)
-      }catch(err){
-        console.log(err)
-      }
-      if (d.feature === name) {
-      svg.style("border", `2px solid ${skipping_highlight_color}`) // Adds a red border for highlight
-    } else {
-      svg.style("border", "none")
-        .style("box-shadow", "none");
-    }
-    } else {
-      svg.style("border", "none")
-        .style("box-shadow", "none");
-    }
-  });
-};
 
 /**
  * 
  * PSI view function
  */
 const PSIview = (data) => {
+  // detal_force and predicted_psi values are coming from the actual json file. 
   const deltaForce = data.delta_force;
   const predictedPSI = data.predicted_psi;
 
@@ -249,29 +72,29 @@ const PSIview = (data) => {
 
   svg.attr('width', width).attr('height', height);
 
-  // const questionMark = svg
-  //   .append("g")
-  //   .attr("class", "question-mark");
+  const questionMark = svg
+    .append("g")
+    .attr("class", "question-mark");
 
-  // questionMark
-  //   .append("circle")
-  //   .attr("class", "tooltip-question")
-  //   .attr("cx", width - 15)
-  //   .attr("cy", height - 15)
-  //   .attr("r", 7)
-  //   .style("fill", "whitesmoke")
-  //   .style("stroke", "black")
-  //   .style("stroke-width", "1px");
+  questionMark
+    .append("circle")
+    .attr("class", "tooltip-question")
+    .attr("cx", width - 15)
+    .attr("cy", height - 15)
+    .attr("r", 7)
+    .style("fill", "whitesmoke")
+    .style("stroke", "black")
+    .style("stroke-width", "1px");
 
-  // questionMark
-  //   .append("text")
-  //   .attr("x", width - 15)
-  //   .attr("y", height - 15)
-  //   .attr("text-anchor", "middle")
-  //   .attr("alignment-baseline", "middle")
-  //   .style("font-size", "10px")
-  //   .style("font-weight", "bold")
-  //   .text("?");
+  questionMark
+    .append("text")
+    .attr("x", width - 15)
+    .attr("y", height - 15)
+    .attr("text-anchor", "middle")
+    .attr("alignment-baseline", "middle")
+    .style("font-size", "10px")
+    .style("font-weight", "bold")
+    .text("?");
 
   const chartGroup = svg.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`);
 
@@ -375,7 +198,7 @@ const PSIview = (data) => {
 
 
 /**
- * 1
+ * 
  * Feature view 1 
  */
 const HierarchicalBarChart = (parent, data) => {
@@ -599,7 +422,7 @@ const HierarchicalBarChart2 = (parent, data) => {
   // Sort children by strength in descending order and keep only the top 10
   const topChildren = root.children
     .sort((a, b) => b.value - a.value)
-    .slice(0, 8);
+    // .slice(0, 8);
 
   // Use the topChildren for xScale domain
   const xScale = d3.scaleBand()
@@ -661,11 +484,12 @@ const HierarchicalBarChart2 = (parent, data) => {
     .attr("text-anchor", "middle")
     .attr("dominant-baseline", "middle");
 
+  FeatureSelection(featureName = null,data=parent)
   // Create bars for topChildren
   svg.selectAll(".bar")
     .data(topChildren)
     .enter().append("rect")
-    .attr("class", "bar")
+    .attr("class",  function (d) { return "bar " + d.data.name; })
     .attr("x", d => xScale(d.data.name))
     .attr("y", d => yScale(d.value))
     .attr("width", xScale.bandwidth())
@@ -675,47 +499,45 @@ const HierarchicalBarChart2 = (parent, data) => {
     .attr("stroke-width", 1)
     .on("click", (event, d) => {
       if (topChildren[d].children) {
-        // console.log(topChildren[d].data.name)
+        featureSelected = topChildren[d].data.name
         FeatureSelection(topChildren[d].data.name)
         HierarchicalBarChart3(topChildren[d], topChildren[d].data.name);
         if (topChildren[d].data.name.slice(-4) != "bias") {
           nucleotide_feature_view(parent, parent.feature_activations, topChildren[d].data.name);
         }
-        // setSelectedNode(d.data);
       }
     })
     // Highlight bar on mouseover
     .on("mouseover", function (event, d) {
+      FeatureSelection(topChildren[d].data.name,data=data)
       d3.select(this).transition()
         .duration(100)
         .attr("fill", highlightColor);
+
     })
-    .on("mouseout", function (event, d) {
+    .on("mouseleave", function (event, d) {
+      FeatureSelection(featureSelected)
       d3.select(this).transition()
         .duration(100)
         .attr("fill", color);
-
+      featureSelected = ''
+      
     });
 
 };
-
 
 /**
  * 
  * HierarchicalBarChart3
  */
-
 const HierarchicalBarChart3 = (data, parentName) => {
-  // console.log('Bar3');
-  // console.log('name', parentName);
 
   const margin = { top: 40, right: 20, bottom: 30, left: 40 };
   const width = parseFloat(d3.select("svg.feature-view-3").style("width")) - margin.left - margin.right;
   const height = parseFloat(d3.select("svg.feature-view-3").style("height")) - margin.top - margin.bottom;
 
   const getFillColor = (name) => {
-    // Custom logic for color
-    // console.log(typeof (String(name)))
+
     if (String(name).split("_")[0] === 'incl') {
       return inclusion_color;
     } else {
@@ -731,6 +553,7 @@ const HierarchicalBarChart3 = (data, parentName) => {
       return skipping_highlight_color;
     }
   };
+
   const color = getFillColor(parentName);
   const highlightColor = getHighlightColor(parentName);
 
@@ -826,7 +649,7 @@ const HierarchicalBarChart3 = (data, parentName) => {
       d3.select(this).transition()
         .duration(100)
         .attr("fill", highlightColor);
-      console.log(d3.select("svg.nucleotide-view").selectAll(".obj.bar"));
+      console.log(d3.select("svg.nucleotide-view").selectAll(".obj.bar"+ d.data.name));
       console.log(d);
       d3.select("svg.nucleotide-view").selectAll(".obj.bar." + d.data.name)
         .raise()
@@ -834,7 +657,7 @@ const HierarchicalBarChart3 = (data, parentName) => {
         .duration(300)
         .attr("fill", highlightColor);
     })
-    .on("mouseout", function (d) {
+    .on("mouseleave", function (d) {
       d3.select(this).transition()
         .duration(100)
         .attr("fill", color);
@@ -846,17 +669,8 @@ const HierarchicalBarChart3 = (data, parentName) => {
 };
 
 
-
-
-
-
-
 /**
- * @function nucleotide_view
- * @param {*} sequence 
- * @param {*} structs 
- * @param {*} data 
- * @returns 
+ * nucleotide_view 
  */
 
 function nucleotide_view(sequence, structs, data, classSelected = null) {
@@ -883,7 +697,6 @@ function nucleotide_view(sequence, structs, data, classSelected = null) {
 
   // Add X axis
   var positions = Array.from(new Array(sequence.length), (x, i) => i + 1);
-  console.log(positions)
   var x = d3.scaleBand()
     .range([margin.left, width - margin.right])
     .domain(positions)
@@ -936,14 +749,28 @@ function nucleotide_view(sequence, structs, data, classSelected = null) {
   var ySkip = d3.scaleLinear()
     .domain([0, max_strength])
     .range([margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle, height - margin.bottom]);
+  
+    // Set up for nucleotide sort
+  var sort_width = parseFloat(d3.select("svg.nucleotide-sort").style("width"));
+  var sort_height = parseFloat(d3.select("svg.nucleotide-sort").style("height"));
+  var svg_sort = d3.select("svg.nucleotide-sort");
 
-  const InclusionAxis = () => {
+  // Set up for nucleotide zoom
+  var zoom_width = parseFloat(d3.select("svg.nucleotide-zoom").style("width"));
+  var zoom_height = parseFloat(d3.select("svg.nucleotide-zoom").style("height"));
+  var svg_zoom = d3.select("svg.nucleotide-zoom");
+
+  const InclusionAxis = (color=false) => {
+    const barColor = color ? background_color:inclusion_color;
+    const barHighlightColor = color ? darkBackground: inclusion_highlight_color;
+
     var gyIncl = svg_nucl.append("g")
       .attr("class", "y axis")
       .attr("transform", "translate(" + margin.left + ",0)");
     gyIncl.transition().duration(800).call(d3.axisLeft(yIncl).ticks(4));
+
     svg_nucl.append("text")
-      .attr("class", "y label")
+      .attr("class", "ylabel_inclusion")
       .attr("text-anchor", "middle")
       .attr("x", -(margin.top + (height - margin.top - margin.bottom) / 4 - margin.middle / 2))
       .attr("y", margin.left)
@@ -962,7 +789,7 @@ function nucleotide_view(sequence, structs, data, classSelected = null) {
       .attr("y", function (d) { return yIncl(0); })
       .attr("width", x.bandwidth())
       .attr("height", 0)
-      .attr("fill", inclusion_color)
+      .attr("fill", barColor)
       .attr("stroke", line_color)
       .lower()
       .transition()
@@ -972,13 +799,17 @@ function nucleotide_view(sequence, structs, data, classSelected = null) {
       .delay(function (d, i) { return (i * 10) });
   }
 
-  const SkipAxis = () => {
+  const SkipAxis = (color = false) => {
+    const barColor = color ? background_color:skipping_color;
+    const barHighlightColor = color ? darkBackground: skipping_highlight_color;
+
     var gySkip = svg_nucl.append("g")
       .attr("class", "y axis")
       .attr("transform", "translate(" + margin.left + ",0)");
     gySkip.transition().duration(800).call(d3.axisLeft(ySkip).ticks(4));
+
     svg_nucl.append("text")
-      .attr("class", "y label")
+      .attr("class", "ylabel_skip")
       .attr("text-anchor", "middle")
       .attr("x", -(margin.top / 2 + (height - margin.top - margin.bottom) / 4 + margin.middle / 2 + height / 2 - margin.bottom / 2))
       .attr("y", margin.left)
@@ -986,8 +817,8 @@ function nucleotide_view(sequence, structs, data, classSelected = null) {
       .attr("font-size", "12px")
       .attr("transform", "rotate(-90)")
       .text("Skipping strength (a.u)");
-    svg_nucl.selectAll("nucleotide-skip-bar")
 
+    svg_nucl.selectAll("nucleotide-skip-bar")
       .data(data.children[1].children)
       .enter()
       .append("rect")
@@ -997,33 +828,47 @@ function nucleotide_view(sequence, structs, data, classSelected = null) {
       .attr("y", (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle))
       .attr("width", x.bandwidth())
       .attr("height", 0)
-      .attr("fill", skipping_color)
+      .attr("fill", barColor)
       .attr("stroke", line_color)
       .lower()
       .on("mouseover", function (d) {
-        d3.select(this).style("fill", skipping_highlight_color);
+        d3.select(this).style("fill", barHighlightColor);
+        console.log(barHighlightColor)
       })
       .on("mouseleave", function (d) {
-        d3.select(this).style("fill", skipping_color);
+        d3.select(this).style("fill", barColor);
+        console.log(barColor)
       })
       .transition()
       .duration(800)
       .attr("y", (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle))
       .attr("height", function (d) { return ySkip(recursive_total_strength(d)) - (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle); })
       .delay(function (d, i) { return (i * 10); });
-  }
+  };
 
-  // Nucleotide bars
   if (classSelected === "incl") {
     InclusionAxis()
+    SkipAxis(true)
+    hovering('skip')
+    clicking('skip')
   } else if (classSelected === "skip") {
     SkipAxis()
+    InclusionAxis(true)
+    hovering('incl')
+    clicking('incl')
   } else {
     InclusionAxis()
     SkipAxis()
+    hovering()
+    clicking()
   }
-
-  // Highlight on hover
+function hovering(color= null){
+  console.log(color)
+  const skipBarColor = color =='skip' ? background_color:skipping_color;
+  const skipBarHighlightColor = color =='skip' ? darkBackground: skipping_highlight_color;
+  const inclBarColor = color =='incl' ? background_color:inclusion_color;
+  const inclBarHighlightColor = color =='incl' ? darkBackground: inclusion_highlight_color;
+   // Hghlight on hover
   gxNu.selectAll(".tick")
     .each(function (d) {
       d3.select(this)
@@ -1040,43 +885,38 @@ function nucleotide_view(sequence, structs, data, classSelected = null) {
         .attr("class")
         .slice(9, -4);
       d3.select(".obj.incl.free." + pos)
-        .style("fill", inclusion_highlight_color);
+        .style("fill", inclBarHighlightColor);
       d3.select(".obj.skip.free." + pos)
-        .style("fill", skipping_highlight_color);
+        .style("fill", skipBarHighlightColor);
       d3.select(".obj.nt." + pos)
         .style("font-weight", "bold");
     })
-
     .on("mouseleave", function (d) {
       var pos = d3.select(this)
         .attr("class")
         .slice(9, -4);
       d3.select(".obj.incl.free." + pos)
-        .style("fill", inclusion_color);
+        .style("fill", inclBarColor);
       d3.select(".obj.skip.free." + pos)
-        .style("fill", skipping_color);
+        .style("fill", skipBarColor);
       d3.select(".obj.nt." + pos)
         .style("font-weight", "normal");
     });
-
-  // Set up for nucleotide sort
-  var sort_width = parseFloat(d3.select("svg.nucleotide-sort").style("width"));
-  var sort_height = parseFloat(d3.select("svg.nucleotide-sort").style("height"));
-  var svg_sort = d3.select("svg.nucleotide-sort");
-
-  // Set up for nucleotide zoom
-  var zoom_width = parseFloat(d3.select("svg.nucleotide-zoom").style("width"));
-  var zoom_height = parseFloat(d3.select("svg.nucleotide-zoom").style("height"));
-  var svg_zoom = d3.select("svg.nucleotide-zoom");
-
-  // Show nucleotide zoom on hover
+};
+function clicking(color=null){
+    // Show nucleotide zoom on click
+  console.log(color)
+  const skipBarColor = color =='skip' ? background_color:skipping_color;
+  const skipBarHighlightColor = color =='skip' ? darkBackground: skipping_highlight_color;
+  const inclBarColor = color =='incl' ? background_color:inclusion_color;
+  const inclBarHighlightColor = color =='incl' ? darkBackground: inclusion_highlight_color;
   svg_nucl.selectAll(".obj.free")
     .on("click", function (d) {
       d3.selectAll(".obj.incl")
-        .style("fill", inclusion_color)
+        .style("fill", inclBarColor)
         .classed("free", true);
       d3.selectAll(".obj.skip")
-        .style("fill", skipping_color)
+        .style("fill", skipBarColor)
         .classed("free", true);
       d3.selectAll(".obj.nt")
         .style("font-weight", "normal")
@@ -1086,10 +926,10 @@ function nucleotide_view(sequence, structs, data, classSelected = null) {
         .attr("class")
         .slice(9, -4);
       d3.select(".obj.incl.free." + pos)
-        .style("fill", inclusion_highlight_color)
+        .style("fill", inclBarHighlightColor)
         .classed("free", false);
       d3.select(".obj.skip.free." + pos)
-        .style("fill", skipping_highlight_color)
+        .style("fill", skipBarHighlightColor)
         .classed("free", false);
       d3.select(".obj.nt." + pos)
         .style("font-weight", "bold")
@@ -1097,7 +937,7 @@ function nucleotide_view(sequence, structs, data, classSelected = null) {
       nucleotide_sort(sequence, structs, pos, margin, sort_width, sort_height, svg_sort, svg_zoom);
       nucleotide_zoom(sequence, structs, pos, margin, zoom_width, zoom_height, svg_zoom, max_strength);
     });
-
+}
   return svg_nucl
 }
 
@@ -1122,9 +962,6 @@ function nucleotide_feature_view(parent, data, feature_name) {
       return d.name.split(" ")[1] == feature_name;
     });
   }
-
-  // console.log(data, class_name, feature_name);
-
   var max_strength = d3.max(d3.map(data, function (d) { return d.strength / d.length; }).keys());
 
   // X scale
@@ -1137,9 +974,8 @@ function nucleotide_feature_view(parent, data, feature_name) {
 
   // Y Axis
 
-
-
   if (class_name == "incl") {
+    svg.selectAll("text.ylabel_skip").remove();
     var yIncl = d3.scaleLinear()
       .domain([0, max_strength])
       .range([margin.top + (height - margin.top - margin.bottom) / 2 - margin.middle, margin.top]);
@@ -1174,6 +1010,7 @@ function nucleotide_feature_view(parent, data, feature_name) {
       .delay(function (d, i) { return (i * 10); });
   }
   if (class_name == "skip") {
+    svg.selectAll("text.ylabel_inclusion").remove();
     var ySkip = d3.scaleLinear()
       .domain([0, max_strength])
       .range([margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle, height - margin.bottom]);
@@ -1437,13 +1274,6 @@ function nucleotide_sort(sequence, structs, pos, margin, width, height, svg_sort
 }
 
 function nucleotide_zoom(sequence, structs, pos, margin, zoom_width, height, svg_zoom, max_strength) {
-
-  /**
-   * @mateus 
-   * adjusting the height of so the Zoom view doesnt get cutout. 
-   */
-
-
   height = height
 
   svg_zoom.selectAll("*").remove(); // Clear SVG before redrawing
@@ -1789,20 +1619,4 @@ function nucleotide_zoom(sequence, structs, pos, margin, zoom_width, height, svg
     .duration(1000)
     .attr("opacity", 1);
 
-}
-
-function flatten_nested_json(data) {
-  if (!("children" in data)) { return [data]; }
-  var result = [];
-  data.children.forEach(function (child) {
-    var grandchildren = flatten_nested_json(child)
-    grandchildren.forEach(function (grandchild) {
-      result.push({
-        "name": data.name + " " + grandchild.name,
-        "strength": grandchild.strength,
-        "length": grandchild.length
-      });
-    })
-  });
-  return result;
 }

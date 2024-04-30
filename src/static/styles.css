@@ -165,7 +165,7 @@ input[type=submit]:hover {
 }
 
 .feature-svg {
-  border: 1px solid black;
+  border: 2px solid black;
   width: 100px;
   height: 50px;
   box-sizing: border-box;
@@ -175,8 +175,6 @@ input[type=submit]:hover {
 /* 
 Shiwen Toggle button styling
 */
-
-/* styles.css */
 
 
 .toggleButton {
