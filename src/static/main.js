@@ -187,6 +187,7 @@ function PSIview(data) {
     .attr("stroke", "#000")
     .attr("stroke-width", 1)
     .on("click", function (event, d) {
+      featureSelection()
       nucleotideView(data.sequence, data.structs, data.nucleotide_activations);
     });
 
@@ -299,7 +300,7 @@ function hierarchicalBarChart(parent, data) {
         // setSelectedNode(d.data);
         const svgElement = d3.select("svg.feature-view-3");
         svgElement.selectAll("*").remove();
-        featureSelection()
+        featureSelection(featureName=null, className=className)
         nucleotideView(parent.sequence, parent.structs, parent.nucleotide_activations, className);
       }
     })
@@ -475,7 +476,6 @@ const hierarchicalBarChart2 = (parent, data) => {
     .attr("class", "y-axis")
     .call(yAxis);
 
-
   const tooltip = svg.append("text")
     .attr("class", "tooltip")
     .style("opacity", 0)
@@ -498,8 +498,11 @@ const hierarchicalBarChart2 = (parent, data) => {
     .attr("stroke-width", 1)
     .on("click", (event, d) => {
       if (topChildren[d].children) {
+        // svg.select(this).style("fill",highlightColor);
         featureSelected = topChildren[d].data.name
-        featureSelection(topChildren[d].data.name)
+        console.log(featureSelected)
+        var className = topChildren[d].data.name.split('_')[0]
+        featureSelection(topChildren[d].data.name, className= className)
         hierarchicalBarChart3(topChildren[d], topChildren[d].data.name);
         if (topChildren[d].data.name.slice(-4) != "bias") {
           nucleotideFeatureView(parent, parent.feature_activations, topChildren[d].data.name);
@@ -508,14 +511,16 @@ const hierarchicalBarChart2 = (parent, data) => {
     })
     // Highlight bar on mouseover
     .on("mouseover", function (event, d) {
-      featureSelection(topChildren[d].data.name, data = data)
+      var className = topChildren[d].data.name.split('_')[0]
+      featureSelection(topChildren[d].data.name,className= className)
       d3.select(this).transition()
         .duration(100)
         .attr("fill", highlightColor);
 
     })
     .on("mouseleave", function (event, d) {
-      featureSelection(featureSelected)
+      var className = topChildren[d].data.name.split('_')[0]
+      featureSelection(featureSelected,className= className)
       d3.select(this).transition()
         .duration(100)
         .attr("fill", color);

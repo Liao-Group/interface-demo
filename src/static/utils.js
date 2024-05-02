@@ -33,105 +33,138 @@ function flatten_nested_json(data) {
   return result;
 }
 
+// Define the image arrays, each with a unique feature identifier
+const imagesData = {
+  inclusion: [
+    { url: "static/regular/incl_1.png", feature: "incl_1" },
+    { url: "static/regular/incl_2.png", feature: "incl_2" },
+    { url: "static/regular/incl_3.png", feature: "incl_3" },
+    { url: "static/regular/incl_4.png", feature: "incl_4" },
+    { url: "static/regular/incl_5.png", feature: "incl_5" },
+    { url: "static/regular/incl_6.png", feature: "incl_6" },
+    { url: "static/regular/incl_7.png", feature: "incl_7" },
+  ],
+  skipping: [
+    { url: "static/regular/skip_1.png", feature: "skip_1" },
+    { url: "static/regular/skip_2.png", feature: "skip_2" },
+    { url: "static/regular/skip_3.png", feature: "skip_3" },
+    { url: "static/regular/skip_4.png", feature: "skip_4" },
+    { url: "static/regular/skip_5.png", feature: "skip_5" },
+    { url: "static/regular/skip_6.png", feature: "skip_6" },
+  ],
+  longSkipping: [
+    { url: "static/regular/g_poor.png", feature: "skip_g_poor" },
+    { url: "static/regular/skip_struct.png", feature: "skip_struct" }
+  ]
+};
 
-function featureSelection(featureName = null) {
+function featureSelection(featureName = null, className = null) {
   // Function to update SVGs with new data and highlight the selected feature
   const updateSVGs = (containerSelector, svgSelector, imagesArray, colors) => {
-    const svgContainer = d3.select(containerSelector).selectAll(svgSelector)
-      .data(imagesArray);
+    const svgContainer = d3.select(containerSelector)
+      .selectAll(svgSelector)
+      .data(imagesArray, d => d.feature);
 
-    svgContainer.each(function (d) {
+    const svgEnter = svgContainer.enter()
+      .append("svg")
+      .attr("class", svgSelector.slice(1));
+
+    svgEnter.append("rect").attr("class", "background");
+    svgEnter.append("image");
+
+    const svgMerged = svgEnter.merge(svgContainer);
+
+    svgMerged.each(function (d) {
       const svg = d3.select(this);
-      svg.selectAll("*").remove();
 
-      if (d.feature === featureName) {
-        svg.style("border", `3px solid ${colors[1]}`);
+      if (d.feature.split('_')[0] === className) {
+        svg.style("border", `2px solid ${colors[1]}`);
       } else {
         svg.style("border", "none").style("box-shadow", "none");
       }
 
-      svg.append("image")
-        .attr("xlink:href", d.url)
-        .attr("width", "100px")
-        .attr("height", "50px")
-        .attr("preserveAspectRatio", "xMidYMid meet")
-        .on("mouseover", (event, data) => {
-          d3.select("svg.feature-view-2")
-            .selectAll(".bar." + d.feature)
-            .transition(300)
-            .style("fill", colors[1])
-          svg.style("border", `3px solid ${colors[1]}`);
-        })
+      const background = svg.select(".background")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("width", "100%")
+        .attr("height", "100%")
+        .style("fill", "none");
+
+      // console.log(featureName)
+
+
+      try {
+        if (d.feature === featureName) {
+          background.style("fill", colors[0])
+        }
+        else if (d.feature.split('_')[1] === featureName.split('_')[1] && featureName.split('_')[1] == 'struct') {
+          background.style("fill", colors[0]);
+        } else {
+          background.style("fill", "none");
+        }
+      } catch (error) {
+        console.log(error)
+        background.style("fill", "none");
+      }
+
+      // if (d.feature === featureName) {
+      //   background.style("fill", colors[0]);
+      // } else {
+      //   background.style("fill", "none");
+      // }
+      if (svgSelector === ".feature-long-svg") {
+        svg.select("image")
+          .attr("xlink:href", d.url)
+          .attr("preserveAspectRatio", "none")
+          // .attr("viewBox", "0 0 400 50") // Adjust viewBox to match the aspect ratio of the image
+          .attr("width", "100%") // Use percentage width
+          .attr("height", "100%"); // Use percentage height
+      } else {
+        svg.select("image")
+          .attr("xlink:href", d.url)
+          .attr("preserveAspectRatio", "none")
+          // .attr("viewBox", "0 0 100 50") // Adjust viewBox to match the aspect ratio of the image
+          .attr("width", "100%") // Use percentage width
+          .attr("height", "100%"); // Use percentage height
+      }
+
+      svg.on("mouseover", (event, data) => {
+        d3.select("svg.feature-view-2")
+          .selectAll(".bar." + d.feature)
+          .transition(300)
+          .style("fill", colors[1]);
+
+        background.transition(300).style("fill", colors[0]);
+        svg.select(this).style("border", `3px solid ${colors[1]}`);
+      })
         .on("mouseout", (event, data) => {
           d3.select("svg.feature-view-2")
             .selectAll(".bar." + d.feature)
             .transition(300)
-            .style("fill", colors[0])
-          svg.style("border", "none").style("box-shadow", "none");
+            .style("fill", colors[0]);
+
+          if (d.feature !== featureName) {
+            background.transition(300).style("fill", "none");
+            svg.select(this).style("border", "none").style("box-shadow", "none");
+          }
         })
         .on("click", (event, info) => {
-          console.log("clicked",d.feature)
-          svg.style("border", `3px solid ${colors[1]}`);
-          featureSelection(d.feature)
-          if(Data){
-            nucleotide_feature_view(Data, Data.feature_activations, d.feature);
+          console.log("clicked", d.feature);
+          featureSelection(d.feature, className);
+          if (Data) {
+            nucleotideFeatureView(Data, Data.feature_activations, d.feature);
           }
         });
+    });
 
-
-    })
-  };
-  // Define the image arrays, each with a unique feature identifier
-  const imagesData = {
-    inclusion: [
-      { url: "static/images/incl_1.png", feature: "incl_1" },
-      { url: "static/images/incl_2.png", feature: "incl_2" },
-      { url: "static/images/incl_3.png", feature: "incl_3" },
-      { url: "static/images/incl_4.png", feature: "incl_4" },
-      { url: "static/images/incl_5.png", feature: "incl_5" },
-      { url: "static/images/incl_6.png", feature: "incl_6" }
-    ],
-    skipping: [
-      { url: "static/images/skip_2.png", feature: "skip_2" },
-      { url: "static/images/skip_3.png", feature: "skip_3" },
-      { url: "static/images/skip_4.png", feature: "skip_4" },
-      { url: "static/images/skip_5.png", feature: "skip_5" },
-      { url: "static/images/skip_6.png", feature: "skip_6" }
-    ],
-    longSkipping: [
-      { url: "static/images/g_poor.png", feature: "g_poor" },
-      { url: "static/images/skip_struct.png", feature: "struct" }
-    ]
+    svgContainer.exit().remove();
   };
   // Update SVGs for inclusion images
-  updateSVGs("div.svg-grid-inclusion", "svg.feature-svg", imagesData.inclusion, [inclusion_color,inclusion_highlight_color]);
+  updateSVGs("div.svg-grid-inclusion", ".feature-svg", imagesData.inclusion, [inclusion_color, inclusion_highlight_color]);
 
   // Update SVGs for skipping images
-  updateSVGs("div.svg-grid-skipping", "svg.feature-svg", imagesData.skipping, [skipping_color,skipping_highlight_color]);
+  updateSVGs("div.svg-grid-skipping", ".feature-svg", imagesData.skipping, [skipping_color, skipping_highlight_color]);
 
   // Update SVGs for long skipping images
-  const svgContainer3 = d3.select("div.svg-grid-long-skipping").selectAll("svg.feature-long-svg")
-    .data(imagesData.longSkipping);
-
-  svgContainer3.each(function (d) {
-    const svg = d3.select(this);
-    svg.selectAll("*").remove();
-
-    svg.append("image")
-      .attr("xlink:href", d.url)
-      .attr("width", "400px")
-      .attr("height", "60px")
-      .attr("preserveAspectRatio", "xMidYMid meet");
-
-    if (featureName) {
-      const name = featureName.split("_")[1] || "";
-      if (d.feature === name) {
-        svg.style("border", `3px solid ${skipping_highlight_color}`);
-      } else {
-        svg.style("border", "none").style("box-shadow", "none");
-      }
-    } else {
-      svg.style("border", "none").style("box-shadow", "none");
-    }
-  });
-};
+  updateSVGs("div.svg-grid-long-skipping", ".feature-long-svg", imagesData.longSkipping, [skipping_color, skipping_highlight_color]);
+}

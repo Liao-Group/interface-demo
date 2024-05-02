@@ -11,6 +11,8 @@ The demo version only contains the interface being rendered using HTML, CSS and 
     - utils.js will contain functions that support other graph rendering functions.
     - events.js will contain any  
 
+## Styling Notes: 
+- We are using `rem` for specifiying the dimensions dynamicly as the size of the screen changes
 #### Todo:
 - Rename some functions to proper javascript naming conventions. 
 - properly remove other functions from main.js file.    

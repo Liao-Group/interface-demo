@@ -89,53 +89,69 @@ html {
   input[type=submit]:hover {
   background-color: #0c5405;
   }
+  
   .feature-legend-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.3125rem;
-  margin-right: 0;
-  padding-right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3125rem;
+    margin-right: 0;
+    padding-right: 0;
   }
+  
   .feature-legend-title {
-  margin-top: 0.625rem;
-  margin-bottom: 0.625rem;
-  text-align: center;
-  font-size: 1.125rem;
-  font-weight: 50;
+    margin-top: 0.625rem;
+    margin-bottom: 0.625rem;
+    text-align: center;
+    font-size: 1.125rem;
+    font-weight: 50;
   }
+  
   .feature-legend-grids {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.3125rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3125rem;
   }
+  
+  .feature-grids-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 0.3125rem;
+  }
+  
   .svg-grid-inclusion,
   .svg-grid-skipping {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(3, 1fr);
-  text-align: center;
-  gap: 0.3125rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    text-align: center;
+    gap: 0.2rem;
   }
+  
   .svg-grid-long-skipping {
-  display: grid;
-  align-content: left;
-  gap: 0.3125rem;
+    display: flex;
+    flex-direction: row;
+    gap: 0.2rem;
+    width: 75%;
   }
+  
   .feature-long-svg {
-  border: 1px solid black;
-  width: 25rem;
-  height: 3.4375rem;
-  box-sizing: border-box;
-  border-radius: 0.3125rem;
+    border: 1px solid black;
+    width: calc(100% - 0.3125rem);
+    height: 3rem;
+    box-sizing: border-box;
+    border-radius: 0.3125rem;
+    object-fit: fill; 
   }
+  
   .feature-svg {
-  border: 2px solid black;
-  width: 6.25rem;
-  height: 3.125rem;
-  box-sizing: border-box;
-  border-radius: 0.3125rem;
+    border: 2px solid black;
+    width: 6.25rem;
+    height: 3rem;
+    box-sizing: border-box;
+    border-radius: 0.3125rem;
+    object-fit: fill; 
   }
   .toggleButton {
   width: 2.625rem;
@@ -206,38 +222,44 @@ html {
   width: 80%;
   }
   @media screen and (max-width: 1024px) {
-  .grid-container {
-  grid-template-areas:
-  "fl fl fl fl pv pv f1 f1"
-  "fl fl fl fl pv pv f1 f1"
-  "f2 f2 f2 f2 f3 f3 f3 f3"
-  "f2 f2 f2 f2 f3 f3 f3 f3"
-  "nv nv nv nv nz nz ns ns"
-  "nv nv nv nv nz nz ns ns";
+    .grid-container {
+      grid-template-areas:
+        "fl fl fl fl pv pv f1 f1"
+        "fl fl fl fl pv pv f1 f1"
+        "f2 f2 f2 f2 f3 f3 f3 f3"
+        "f2 f2 f2 f2 f3 f3 f3 f3"
+        "nv nv nv nv nz nz ns ns"
+        "nv nv nv nv nz nz ns ns";
+    }
   }
-  }
+  
   @media screen and (max-width: 768px) {
-  .grid-container {
-  grid-template-areas:
-  "fl fl pv pv"
-  "fl fl pv pv"
-  "f1 f1 f2 f2"
-  "f1 f1 f2 f2"
-  "f3 f3 f3 f3"
-  "nv nv nz ns"
-  "nv nv nz ns";
+    .grid-container {
+      grid-template-areas:
+        "fl fl pv pv"
+        "fl fl pv pv"
+        "f1 f1 f2 f2"
+        "f1 f1 f2 f2"
+        "f3 f3 f3 f3"
+        "nv nv nz ns"
+        "nv nv nz ns";
+    }
   }
-  }
+  
   @media screen and (max-width: 480px) {
-  .grid-container {
-  grid-template-areas:
-  "fl"
-  "pv"
-  "f1"
-  "f2"
-  "f3"
-  "nv"
-  "nz"
-  "ns";
+    .grid-container {
+      grid-template-areas:
+        "fl"
+        "pv"
+        "f1"
+        "f2"
+        "f3"
+        "nv"
+        "nz"
+        "ns";
+    }
+    .feature-long-svg, .feature-svg {
+      width: 100%; /* Both SVG types take full width */
+      height: auto; /* Height is automatic to maintain aspect ratio */
   }
   }
