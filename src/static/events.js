@@ -3,6 +3,11 @@ let defaultSetting = "off";
 // toggle outline
 // also thinking on separating this 
 // check for toggle state before refreshing
+
+document.addEventListener('DOMContentLoaded', function () {
+  PSIview(Data)
+  console.log("DOM fully loaded and parsed");
+});
 document.addEventListener('DOMContentLoaded', function () {
   const toggleButton = document.getElementById('toggleButton');
 

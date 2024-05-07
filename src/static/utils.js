@@ -36,25 +36,27 @@ function flatten_nested_json(data) {
 // Define the image arrays, each with a unique feature identifier
 const imagesData = {
   inclusion: [
-    { url: "static/regular/incl_1.png", feature: "incl_1" },
-    { url: "static/regular/incl_2.png", feature: "incl_2" },
-    { url: "static/regular/incl_3.png", feature: "incl_3" },
-    { url: "static/regular/incl_4.png", feature: "incl_4" },
-    { url: "static/regular/incl_5.png", feature: "incl_5" },
-    { url: "static/regular/incl_6.png", feature: "incl_6" },
-    { url: "static/regular/incl_7.png", feature: "incl_7" },
+    { url: "static/transparent/incl_1.png", feature: "incl_1" },
+    { url: "static/transparent/incl_2.png", feature: "incl_2" },
+    { url: "static/transparent/incl_3.png", feature: "incl_3" },
+    { url: "static/transparent/incl_4.png", feature: "incl_4" },
+    { url: "static/transparent/incl_5.png", feature: "incl_5" },
+    { url: "static/transparent/incl_6.png", feature: "incl_6" },
+    { url: "static/transparent/incl_7.png", feature: "incl_7" },
+    { url: "static/transparent/incl_7.png", feature: "incl_8" },
+
   ],
   skipping: [
-    { url: "static/regular/skip_1.png", feature: "skip_1" },
-    { url: "static/regular/skip_2.png", feature: "skip_2" },
-    { url: "static/regular/skip_3.png", feature: "skip_3" },
-    { url: "static/regular/skip_4.png", feature: "skip_4" },
-    { url: "static/regular/skip_5.png", feature: "skip_5" },
-    { url: "static/regular/skip_6.png", feature: "skip_6" },
+    { url: "static/transparent/skip_1.png", feature: "skip_1" },
+    { url: "static/transparent/skip_2.png", feature: "skip_2" },
+    { url: "static/transparent/skip_3.png", feature: "skip_3" },
+    { url: "static/transparent/skip_4.png", feature: "skip_4" },
+    { url: "static/transparent/skip_5.png", feature: "skip_5" },
+    { url: "static/transparent/skip_6.png", feature: "skip_6" },
   ],
   longSkipping: [
-    { url: "static/regular/g_poor.png", feature: "skip_g_poor" },
-    { url: "static/regular/skip_struct.png", feature: "skip_struct" }
+    { url: "static/transparent/g_poor.png", feature: "skip_g_poor" },
+    { url: "static/transparent/skip_struct.png", feature: "skip_struct" }
   ]
 };
 
@@ -80,7 +82,7 @@ function featureSelection(featureName = null, className = null) {
       if (d.feature.split('_')[0] === className) {
         svg.style("border", `2px solid ${colors[1]}`);
       } else {
-        svg.style("border", "none").style("box-shadow", "none");
+        svg.style("border", `2px solid gray`).style("box-shadow", "none");
       }
 
       const background = svg.select(".background")

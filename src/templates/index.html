@@ -18,9 +18,9 @@
 <body>
   <!-- Javascript code that use d3.js to draw figures -->
     <script src="static/events.js"></script>
-
   <script src="static/utils.js"></script>
   <script src="static/main.js"></script>
+
   <!-- Input exon -->
 
      <form id="exonForm" method="post">
@@ -55,8 +55,8 @@
 </div>
 
   <div class="grid-container">
-    <div class="psi-view">
-      <svg class="psi-view" width="100%" height="100%"></svg>
+    <div class="psi-view" id = "psi-view">
+      <svg class="psi-view" preserveAspectRatio="xMidYMid meet"></svg>
     </div>
     <div class="feature-view-1">
       <svg class="feature-view-1" width="100%" height="100%"></svg>
