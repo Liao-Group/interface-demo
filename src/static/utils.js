@@ -43,8 +43,6 @@ const imagesData = {
     { url: "static/transparent/incl_5.png", feature: "incl_5" },
     { url: "static/transparent/incl_6.png", feature: "incl_6" },
     { url: "static/transparent/incl_7.png", feature: "incl_7" },
-    { url: "static/transparent/incl_7.png", feature: "incl_8" },
-
   ],
   skipping: [
     { url: "static/transparent/skip_1.png", feature: "skip_1" },
@@ -60,7 +58,36 @@ const imagesData = {
   ]
 };
 
-function featureSelection(featureName = null, className = null) {
+const newImagesData = {
+  inclusion: [
+    { url: "static/transparent/incl_1.png", feature: "incl_1" },
+    { url: "static/transparent/incl_2.png", feature: "incl_2" },
+    { url: "static/transparent/incl_3.png", feature: "incl_3" },
+    { url: "static/transparent/incl_4.png", feature: "incl_4" },
+    { url: "static/transparent/incl_5.png", feature: "incl_5" },
+    { url: "static/transparent/incl_6.png", feature: "incl_6" },
+    { url: "static/transparent/incl_7.png", feature: "incl_7" },
+    { url: "static/transparent/incl_8.png", feature: "incl_8" },
+    { url: "static/transparent/incl_9.png", feature: "incl_9" },
+  ],
+  skipping: [
+    { url: "static/transparent/skip_1.png", feature: "skip_1" },
+    { url: "static/transparent/skip_2.png", feature: "skip_2" },
+    { url: "static/transparent/skip_3.png", feature: "skip_3" },
+    { url: "static/transparent/skip_4.png", feature: "skip_4" },
+    { url: "static/transparent/skip_5.png", feature: "skip_5" },
+    { url: "static/transparent/skip_6.png", feature: "skip_6" },
+    { url: "static/transparent/skip_7.png", feature: "skip_7" },
+    { url: "static/transparent/skip_8.png", feature: "skip_8" },
+    { url: "static/transparent/skip_9.png", feature: "skip_9" },
+  ],
+  longSkipping: [
+    { url: "static/transparent/g_poor.png", feature: "skip_g_poor" },
+    { url: "static/transparent/skip_struct.png", feature: "skip_struct" }
+  ]
+};
+
+function featureSelection(featureName = null, className = null, use_new_grouping = false) {
   // Function to update SVGs with new data and highlight the selected feature
   const updateSVGs = (containerSelector, svgSelector, imagesArray, colors) => {
     const svgContainer = d3.select(containerSelector)
@@ -152,7 +179,7 @@ function featureSelection(featureName = null, className = null) {
         })
         .on("click", (event, info) => {
           console.log("clicked", d.feature);
-          featureSelection(d.feature, className);
+          featureSelection(d.feature, className, use_new_grouping = use_new_grouping);
           if (Data) {
             nucleotideFeatureView(Data, Data.feature_activations, d.feature);
           }
@@ -161,6 +188,16 @@ function featureSelection(featureName = null, className = null) {
 
     svgContainer.exit().remove();
   };
+  if(use_new_grouping) {
+  // Update SVGs for inclusion images
+  updateSVGs("div.svg-grid-inclusion", ".feature-svg", newImagesData.inclusion, [inclusion_color, inclusion_highlight_color]);
+
+  // Update SVGs for skipping images
+  updateSVGs("div.svg-grid-skipping", ".feature-svg", newImagesData.skipping, [skipping_color, skipping_highlight_color]);
+
+  // Update SVGs for long skipping images
+  updateSVGs("div.svg-grid-long-skipping", ".feature-long-svg", newImagesData.longSkipping, [skipping_color, skipping_highlight_color]);
+  } else {
   // Update SVGs for inclusion images
   updateSVGs("div.svg-grid-inclusion", ".feature-svg", imagesData.inclusion, [inclusion_color, inclusion_highlight_color]);
 
@@ -169,4 +206,5 @@ function featureSelection(featureName = null, className = null) {
 
   // Update SVGs for long skipping images
   updateSVGs("div.svg-grid-long-skipping", ".feature-long-svg", imagesData.longSkipping, [skipping_color, skipping_highlight_color]);
+  }
 }

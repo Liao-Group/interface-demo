@@ -33,6 +33,7 @@ This variable represents the data coming formt he json file.
  other values as we call that function. 
 */
 var Data = []
+var use_new_grouping = false;
 window.addEventListener('resize', function () {
 
   PSIview(Data); // Redraw the graph with the same data
@@ -50,7 +51,9 @@ d3.json("./get-data", function (data) {
   nucleotideView(data.sequence, data.structs, data.nucleotide_activations);
   PSIview(data);
   hierarchicalBarChart(data, data.feature_activations);
-  featureSelection(featureName = null, data = data);
+  use_new_grouping = data.use_new_grouping == 1;
+  console.log(use_new_grouping);
+  featureSelection(featureName = null, data = data, use_new_grouping = use_new_grouping);
 })
 
 
@@ -64,6 +67,8 @@ function PSIview(data) {
   // detal_force and predicted_psi values are coming from the actual json file. 
   const deltaForce = data.delta_force;
   const predictedPSI = data.predicted_psi;
+  const plotPSI = false; // CHOICE: whether to plot deltaForce or predictedPSI
+
   d3.select("svg.psi-view").selectAll("*").remove();;
   const svgContainer = d3.select(".psi-view"); // Ensure you have a container with this class
   const width = svgContainer.node().clientWidth;
@@ -78,15 +83,34 @@ function PSIview(data) {
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
 
-  const lowerBound = -(Math.abs(deltaForce) + 5);
-  const upperBound = Math.abs(deltaForce) + 5;
+  /* Change y range to a fix range */
+  // const lowerBound = -(Math.abs(deltaForce) + 5);
+  // const upperBound = Math.abs(deltaForce) + 5;
+  const lowerBound = -120;
+  const upperBound = 120;
 
   const yScale = d3.scaleLinear().domain([lowerBound, upperBound]).range([chartHeight, 0]);
-  const yAxis = d3.axisLeft(yScale).ticks(5);
+  var yAxis = d3.axisLeft(yScale).ticks(5);
+  if(plotPSI){
+    // Conversion from predicted psi to delta force
+    const deltaForceConversion = [-18.76, -7.77, 0.00, 7.82, 23.07];
+    yAxis = d3.axisLeft(yScale).ticks(5)
+      .tickFormat(function(d, i) { return deltaForceConversion[i]; });
+  }
   console.log(yScale(deltaForce))
 
-  const yScale2 = d3.scaleLinear().domain([0, 1]).range([chartHeight, 0]);
-  const yAxis2 = d3.axisRight(yScale2).ticks(6);
+  // Conversion from predicted psi to delta force
+  const predictePSIConversion = [0.000001, 0.000006, 0.000038, 0.000243, 0.004538, 0.071174, 0.499993, 0.892360, 0.971595, 0.982911, 0.985533, 0.987334, 0.988231];
+  var yScale2 = d3.scaleLinear().domain([-0.1, 1.1]).range([chartHeight, 0]);
+  var yAxis2 = d3.axisRight(yScale2).ticks(13)
+    .tickFormat(function(d, i) { 
+      if(predictePSIConversion[i] < 0.1) { return d3.format(".0e")(predictePSIConversion[i]); }
+      else { return d3.format(".3")(predictePSIConversion[i]); }
+    });
+  if(plotPSI){
+    yScale2 = d3.scaleLinear().domain([0, 1]).range([chartHeight, 0]);
+    yAxis2 = d3.axisRight(yScale2).ticks(6);
+  }
 
   svg.attr('width', width).attr('height', height);
 
@@ -127,7 +151,7 @@ function PSIview(data) {
   chartGroup.append('text')
     .attr('transform', `translate(${chartWidth + 60}, ${chartHeight/2}) rotate(-90)`)
     .attr("font-size", `${12*heightRatio}px`)
-    .attr('dy', '-1.25em')
+    .attr('dy', '-0.75em')
     .style('text-anchor', 'middle')
     .text('Predicted PSI')
     .on("mouseover", function (event, d) {
@@ -169,8 +193,14 @@ function PSIview(data) {
     .attr("stroke-width", 1);
 
   const barColor = deltaForce < 0 ? skipping_color : inclusion_color;
-  const barPosition = yScale(Math.max(0, deltaForce));
-  const barHeight = Math.abs(yScale(deltaForce) - yScale(0));
+  // Plot by deltaForce
+  var barPosition = yScale(Math.max(0, deltaForce));
+  var barHeight = Math.abs(yScale(deltaForce) - yScale(0));
+  if(plotPSI){
+    // Plot by predicted PSI
+    barPosition = yScale2(Math.max(0.5, predictedPSI));
+    barHeight = Math.abs((yScale2(predictedPSI) - yScale2(0.5)));
+  }
 
   const bar = chartGroup.append('rect')
     .attr('x', 8)
@@ -181,7 +211,7 @@ function PSIview(data) {
     .attr("stroke", "#000")
     .attr("stroke-width", 1)
     .on("click", function (event, d) {
-      featureSelection()
+      featureSelection(use_new_grouping = use_new_grouping, use_new_grouping = use_new_grouping)
       nucleotideView(data.sequence, data.structs, data.nucleotide_activations);
     });
 
@@ -241,8 +271,10 @@ function hierarchicalBarChart(parent, data) {
     .range([0, chartWidth])
     .padding(0.2);
 
+  /* Change y range to a fix range */
   const yScale = d3.scaleLinear()
-    .domain([0, root.value])
+    // .domain([0, root.value])
+    .domain([0, 180])
     .range([chartHeight, 0]);
 
   // Axes
@@ -304,7 +336,7 @@ function hierarchicalBarChart(parent, data) {
         hierarchicalBarChart2(parent, data.children[d])
         const svgElement = d3.select("svg.feature-view-3");
         svgElement.selectAll("*").remove();
-        featureSelection(featureName=null, className=className)
+        featureSelection(featureName=null, className=className, use_new_grouping = use_new_grouping)
         nucleotideView(parent.sequence, parent.structs, parent.nucleotide_activations, className);
       }
     })
@@ -408,8 +440,10 @@ const hierarchicalBarChart2 = (parent, data) => {
     .range([0, width])
     .padding(0.2);
 
+  /* Change y range to a fix range */
   const yScale = d3.scaleLinear()
-    .domain([0, d3.max(topChildren, d => d.value)]) // Update to use the max of topChildren
+    // .domain([0, d3.max(topChildren, d => d.value)]) // Update to use the max of topChildren
+    .domain([0, 70])
     .range([height, 0]);
 
   // Axes
@@ -461,7 +495,7 @@ const hierarchicalBarChart2 = (parent, data) => {
     .attr("text-anchor", "middle")
     .attr("dominant-baseline", "middle");
 
-  featureSelection(featureName = null, data = parent)
+  featureSelection(featureName = null, data = parent, use_new_grouping = use_new_grouping)
   // Create bars for topChildren
   svg.selectAll(".bar")
     .data(topChildren)
@@ -480,7 +514,7 @@ const hierarchicalBarChart2 = (parent, data) => {
         featureSelected = topChildren[d].data.name
         console.log(featureSelected)
         var className = topChildren[d].data.name.split('_')[0]
-        featureSelection(topChildren[d].data.name, className= className)
+        featureSelection(topChildren[d].data.name, className= className, use_new_grouping = use_new_grouping)
         hierarchicalBarChart3(topChildren[d], topChildren[d].data.name);
         if (topChildren[d].data.name.slice(-4) != "bias") {
           nucleotideFeatureView(parent, parent.feature_activations, topChildren[d].data.name);
@@ -490,7 +524,7 @@ const hierarchicalBarChart2 = (parent, data) => {
     // Highlight bar on mouseover
     .on("mouseover", function (event, d) {
       var className = topChildren[d].data.name.split('_')[0]
-      featureSelection(topChildren[d].data.name,className= className)
+      featureSelection(topChildren[d].data.name,className= className, use_new_grouping = use_new_grouping)
       d3.select(this).transition()
         .duration(100)
         .attr("fill", highlightColor);
@@ -498,7 +532,7 @@ const hierarchicalBarChart2 = (parent, data) => {
     })
     .on("mouseleave", function (event, d) {
       var className = topChildren[d].data.name.split('_')[0]
-      featureSelection(featureSelected,className= className)
+      featureSelection(featureSelected,className= className, use_new_grouping = use_new_grouping)
       d3.select(this).transition()
         .duration(100)
         .attr("fill", color);
@@ -559,8 +593,10 @@ function hierarchicalBarChart3(data, parentName){
     .range([0, width])
     .padding(0.2);
 
+  /* Change y range to a fix range */
   const yScale = d3.scaleLinear()
-    .domain([0, d3.max(topChildren, d => d.value)])
+    // .domain([0, d3.max(topChildren, d => d.value)])
+    .domain([0, 20])
     .range([height, 0]);
 
   // Axes
@@ -727,7 +763,9 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
   // Add Y axis
   var max_incl = d3.max(d3.map(data.children[0].children, recursive_total_strength).keys());
   var max_skip = d3.max(d3.map(data.children[1].children, recursive_total_strength).keys());
-  var max_strength = d3.max([max_incl, max_skip]);
+  /* Change y range to a fix range */
+  // var max_strength = d3.max([max_incl, max_skip]);
+  var max_strength = 10;
   var yIncl = d3.scaleLinear()
     .domain([0, max_strength])
     .range([margin.top + (height - margin.top - margin.bottom) / 2 - margin.middle, margin.top]);
@@ -951,7 +989,9 @@ function nucleotideFeatureView(parent, data, feature_name) {
       return d.name.split(" ")[1] == feature_name;
     });
   }
-  var max_strength = d3.max(d3.map(data, function (d) { return d.strength / d.length; }).keys());
+  /* Change y range to a fix range */
+  // var max_strength = d3.max(d3.map(data, function (d) { return d.strength / d.length; }).keys());
+  var max_strength = 6;
 
   // X scale
   var sequence = parent.sequence;
@@ -963,6 +1003,8 @@ function nucleotideFeatureView(parent, data, feature_name) {
 
   // Y Axis
 
+  console.log(data.filter(function(d){ return (d.strength / d.length) > 0.01 }));
+
   if (class_name == "incl") {
     svg.selectAll("text.ylabel_skip").remove();
     var yIncl = d3.scaleLinear()
@@ -973,7 +1015,8 @@ function nucleotideFeatureView(parent, data, feature_name) {
       .attr("transform", "translate(" + margin.left + ",0)");
     gyIncl.transition().duration(800).call(d3.axisLeft(yIncl).ticks(3));
     svg.selectAll("nucleotide-incl-bar")
-      .data(data)
+      // Filter out nucleotide feature with strength < 0.01
+      .data(data.filter(function(d){ return (d.strength / d.length) > 0.01 }))
       .enter()
       .append("rect")
       .datum(function (d) { return d; })
@@ -1010,7 +1053,8 @@ function nucleotideFeatureView(parent, data, feature_name) {
 
 
     svg.selectAll("nucleotide-skip-bar")
-      .data(data)
+      // Filter out nucleotide feature with strength < 0.01
+      .data(data.filter(function(d){ return (d.strength / d.length) > 0.01 }))
       .enter()
       .append("rect")
       .datum(function (d) { return d; })
@@ -1058,9 +1102,11 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom,colors) {
   // Data preparation
   const inclData = flatten_nested_json(d3.selectAll(`.obj.incl.${pos}`).datum());
   const skipData = flatten_nested_json(d3.selectAll(`.obj.skip.${pos}`).datum());
-  const maxIncl = d3.max(inclData.map(d => d.strength));
-  const maxSkip = d3.max(skipData.map(d => d.strength));
-  const maxStrength = d3.max([maxIncl, maxSkip]);
+  /* Change y range to a fix range */
+  // const maxIncl = d3.max(inclData.map(d => d.strength));
+  // const maxSkip = d3.max(skipData.map(d => d.strength));
+  // const maxStrength = d3.max([maxIncl, maxSkip]);
+  const maxStrength = 6;
 
   const topInclData = inclData.sort((a, b) => b.strength - a.strength).slice(0, 10);
   const topSkipData = skipData.sort((a, b) => b.strength - a.strength).slice(0, 10);
@@ -1262,8 +1308,10 @@ function nucleotideZoom(sequence, structs, pos, margin, zoom_width, height, svg_
     .domain(positions)
     .padding(0);
 
+  /* Change y range to a fix range */
   const zoom_yIncl = d3.scaleLinear()
-    .domain([0, max_strength])
+    // .domain([0, max_strength])
+    .domain([0, 6])
     .range([margin.top + (height - margin.top - margin.bottom) / 2 - margin.middle, margin.top]);
 
   const zoom_ySkip = d3.scaleLinear()
