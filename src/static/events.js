@@ -5,10 +5,6 @@ let defaultSetting = "off";
 // check for toggle state before refreshing
 
 document.addEventListener('DOMContentLoaded', function () {
-  PSIview(Data)
-  console.log("DOM fully loaded and parsed");
-});
-document.addEventListener('DOMContentLoaded', function () {
   const toggleButton = document.getElementById('toggleButton');
 
   // toggle circle
@@ -55,7 +51,6 @@ document.addEventListener("DOMContentLoaded", function () {
   if (selectedOption) {
     document.getElementById("option").value = selectedOption;
   }
-
   document.getElementById("exonForm").addEventListener("submit", function () {
     var selectedValue = document.getElementById("option").value;
     localStorage.setItem("selectedOption", selectedValue);
@@ -65,14 +60,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // setting dropdown
 function toggleDropdown() {
-  
   var dropdown = document.getElementById("myDropdown");
-  
   if (dropdown.style.display === "block") {
       dropdown.style.display = "none";
   }
-  
   else {
       dropdown.style.display = "block";
   }
 }
+
+// event for when the screen is resized and we need to re-render the graphs in the page again

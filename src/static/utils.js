@@ -33,61 +33,27 @@ function flatten_nested_json(data) {
   return result;
 }
 
-// Define the image arrays, each with a unique feature identifier
-const imagesData = {
-  inclusion: [
-    { url: "static/transparent/incl_1.png", feature: "incl_1" },
-    { url: "static/transparent/incl_2.png", feature: "incl_2" },
-    { url: "static/transparent/incl_3.png", feature: "incl_3" },
-    { url: "static/transparent/incl_4.png", feature: "incl_4" },
-    { url: "static/transparent/incl_5.png", feature: "incl_5" },
-    { url: "static/transparent/incl_6.png", feature: "incl_6" },
-    { url: "static/transparent/incl_7.png", feature: "incl_7" },
-  ],
-  skipping: [
-    { url: "static/transparent/skip_1.png", feature: "skip_1" },
-    { url: "static/transparent/skip_2.png", feature: "skip_2" },
-    { url: "static/transparent/skip_3.png", feature: "skip_3" },
-    { url: "static/transparent/skip_4.png", feature: "skip_4" },
-    { url: "static/transparent/skip_5.png", feature: "skip_5" },
-    { url: "static/transparent/skip_6.png", feature: "skip_6" },
-  ],
-  longSkipping: [
-    { url: "static/transparent/g_poor.png", feature: "skip_g_poor" },
-    { url: "static/transparent/skip_struct.png", feature: "skip_struct" }
-  ]
-};
 
-const newImagesData = {
-  inclusion: [
-    { url: "static/transparent/incl_1.png", feature: "incl_1" },
-    { url: "static/transparent/incl_2.png", feature: "incl_2" },
-    { url: "static/transparent/incl_3.png", feature: "incl_3" },
-    { url: "static/transparent/incl_4.png", feature: "incl_4" },
-    { url: "static/transparent/incl_5.png", feature: "incl_5" },
-    { url: "static/transparent/incl_6.png", feature: "incl_6" },
-    { url: "static/transparent/incl_7.png", feature: "incl_7" },
-    { url: "static/transparent/incl_8.png", feature: "incl_8" },
-    { url: "static/transparent/incl_9.png", feature: "incl_9" },
-  ],
-  skipping: [
-    { url: "static/transparent/skip_1.png", feature: "skip_1" },
-    { url: "static/transparent/skip_2.png", feature: "skip_2" },
-    { url: "static/transparent/skip_3.png", feature: "skip_3" },
-    { url: "static/transparent/skip_4.png", feature: "skip_4" },
-    { url: "static/transparent/skip_5.png", feature: "skip_5" },
-    { url: "static/transparent/skip_6.png", feature: "skip_6" },
-    { url: "static/transparent/skip_7.png", feature: "skip_7" },
-    { url: "static/transparent/skip_8.png", feature: "skip_8" },
-    { url: "static/transparent/skip_9.png", feature: "skip_9" },
-  ],
-  longSkipping: [
-    { url: "static/transparent/g_poor.png", feature: "skip_g_poor" },
-    { url: "static/transparent/skip_struct.png", feature: "skip_struct" }
-  ]
-};
 
-function featureSelection(featureName = null, className = null, use_new_grouping = false) {
+function featureSelection(featureName = null, className = null, use_new_grouping = null) {
+  const gridContainer = document.querySelector('.feature-legend-container');
+  const featureLongSVGs = document.querySelectorAll('.feature-long-svg');
+  const featureSVGs = document.querySelectorAll('.feature-svg');
+  const width = gridContainer.clientWidth;
+  const height = gridContainer.clientHeight;
+
+  const widthRatio = width/ 591;
+  const heightRatio = height / 381;
+  console.log(width,height)
+
+  featureLongSVGs.forEach(svg => {
+    svg.style.width = `calc(100% -${0.350*heightRatio}rem)`;
+    svg.style.height = `${3*heightRatio}rem`;
+  });
+  featureSVGs.forEach(svg => {
+    svg.style.width = `${6.25*widthRatio}rem`;
+    svg.style.height = `${3*heightRatio}rem`;
+  });
   // Function to update SVGs with new data and highlight the selected feature
   const updateSVGs = (containerSelector, svgSelector, imagesArray, colors) => {
     const svgContainer = d3.select(containerSelector)
@@ -135,12 +101,6 @@ function featureSelection(featureName = null, className = null, use_new_grouping
         console.log(error)
         background.style("fill", "none");
       }
-
-      // if (d.feature === featureName) {
-      //   background.style("fill", colors[0]);
-      // } else {
-      //   background.style("fill", "none");
-      // }
       if (svgSelector === ".feature-long-svg") {
         svg.select("image")
           .attr("xlink:href", d.url)
@@ -207,4 +167,12 @@ function featureSelection(featureName = null, className = null, use_new_grouping
   // Update SVGs for long skipping images
   updateSVGs("div.svg-grid-long-skipping", ".feature-long-svg", imagesData.longSkipping, [skipping_color, skipping_highlight_color]);
   }
+
+  // featureLongSVGs.forEach(svg => {
+  //   svg.style.height = `${3*heightRatio}rem`;
+  // });
+  // featureSVGs.forEach(svg => {
+  //   svg.style.width = `${6.25*widthRatio}rem`;
+  //   svg.style.height = `${3*heightRatio}rem`;
+  // });
 }
