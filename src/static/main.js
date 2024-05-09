@@ -14,16 +14,6 @@ var positionsParent = []
 var positionsChildren = []
 var use_new_grouping = false
 
-window.addEventListener('resize',function(){
-  featureSelection(featureSelected=null,className = null,use_new_grouping =use_new_grouping)
-  PSIview(Data); // Redraw the graph with the same data
-  hierarchicalBarChart(Data, Data.feature_activations)
-  nucleotideView(Data.sequence, Data.structs, Data.nucleotide_activations)
-  hierarchicalBarChart2(featuresParent, featuresChildren)
-  console.log(positionsChildren,positionsParent)
-  hierarchicalBarChart3(positionsChildren,positionsParent)
-});
-
 
 d3.json("./get-data", function (data) {
   // setting the value for this Data variable that is acting as 
@@ -35,7 +25,6 @@ d3.json("./get-data", function (data) {
   console.log(use_new_grouping);
   featureSelection(featureName = null, data = data, use_new_grouping = use_new_grouping);
 })
-
 /**
  * PSI view function
  * currently working with the reisizing, I will probaly have to figure it out how to have a better ratio and 
@@ -107,8 +96,8 @@ function PSIview(data) {
     .call(yAxis2);
 
   const tooltip1 = chartGroup.append('text')
-    .attr('x', (chartWidth / 2)  * widthRatio)
-    .attr('y', (height - margin.bottom - 20)*heightRatio)
+    .attr('x', chartWidth / 2)
+    .attr('y', height - margin.bottom - 20)
     .attr('text-anchor', 'middle')
     .attr('font-size', `${12*heightRatio}px`)
     .attr('font-weight', 'bold')
@@ -126,41 +115,48 @@ function PSIview(data) {
     .style('opacity', 0)
     .text('Predicted PSI: ' + predictedPSI.toFixed(2));
 
-  chartGroup.append('text')
-    .attr('transform', `translate(${chartWidth + 60}, ${chartHeight/2}) rotate(-90)`)
-    .attr("font-size", `${12*heightRatio}px`)
-    .attr('dy', '-0.75em')
-    .style('text-anchor', 'middle')
-    .text('Predicted PSI')
-    .on("mouseover", function (event, d) {
+  const psi = chartGroup.append('text')
+  .attr('transform', `translate(${chartWidth + 60}, ${chartHeight/2}) rotate(-90)`)
+  .attr("font-size", `${12*heightRatio}px`)
+  .attr('dy', '-1.25em')
+  .style('text-anchor', 'middle')
+  .text('Predicted PSI')
+
+    psi.on("mouseover", function (event, d) {
       tooltip2.transition()
         .duration(200)
         .style("opacity", .9);
+        console.log("over")
+
     })
-    .on("mouseout", function (event, d) {
+    psi.on("mouseout", function (event, d) {
       tooltip2.transition()
         .duration(200)
         .style("opacity", 0);
     });
 
-  chartGroup.append('text')
-    .attr('transform', 'rotate(-90)')
-    .attr('x', -chartHeight / 2)
-    .attr('y', -margin.left - 3)
-    .attr("font-size", `${12*heightRatio}px`)
-    .attr('dy', '2.25em')
-    .style('text-anchor', 'middle')
-    .text('Δ Strength (a.u)')
-    .on("mouseover", function (event, d) {
-      tooltip1.transition()
-        .duration(200)
-        .style("opacity", .9);
-    })
-    .on("mouseout", function (event, d) {
-      tooltip1.transition()
-        .duration(200)
-        .style("opacity", 0);
-    });
+  const strength = chartGroup.append('text')
+  .attr('transform', 'rotate(-90)')
+  .attr('x', -chartHeight / 2)
+  .attr('dy', '-3em')
+  .attr("font-size", `${12*heightRatio}px`)
+  // .attr('dy', '-1.50em')
+  .style('text-anchor', 'middle')
+  .text('Δ Strength (a.u)')
+
+  // .on("mouseover", function (event, d) {
+  //     tooltip1.transition()
+  //     .duration(200)
+  //     .style("opacity", .9);
+  
+  //   console.log("over");
+  
+  //   })
+  //   .on("mouseout", function (event, d) {
+  //     tooltip1.transition()
+  //       .duration(200)
+  //       .style("opacity", 0);
+  //   });
 
   chartGroup.append("line")
     .attr("x1", 0)
@@ -191,6 +187,19 @@ function PSIview(data) {
     .on("click", function (event, d) {
       // featureSelection(use_new_grouping = use_new_grouping, use_new_grouping = use_new_grouping)
       nucleotideView(data.sequence, data.structs, data.nucleotide_activations);
+    })
+    .on("mouseover", function (event, d) {
+      tooltip1.transition()
+      .duration(200)
+      .style("opacity", .9);
+  
+    console.log("over");
+  
+    })
+    .on("mouseout", function (event, d) {
+      tooltip1.transition()
+        .duration(200)
+        .style("opacity", 0);
     });
 
   bar.transition()
@@ -329,7 +338,7 @@ function hierarchicalBarChart(parent, data) {
   // Initialize legend
   var legendItemSize = 12*widthRatio;
   var legendSpacing = 4;
-  var xOffset = (chartWidth - 70)*widthRatio; // Adjust the x-offset to position the legend
+  var xOffset = chartWidth-(margin.left+5 *widthRatio); // Adjust the x-offset to position the legend
   var yOffset = margin.top* heightRatio;
 
   var legend = svg
@@ -422,7 +431,7 @@ const hierarchicalBarChart2 = (parent, data) => {
 
   /* Change y range to a fix range */
   const yScale = d3.scaleLinear()
-    .domain([0, d3.max(topChildren, d => d.value)]) // Update to use the max of topChildren
+    .domain([0, 70]) // Update to use the max of topChildren
     .range([chartHeight, 0]);
 
   // Axes
@@ -580,7 +589,7 @@ function hierarchicalBarChart3(data, parentName){
 
   /* Change y range to a fix range */
   const yScale = d3.scaleLinear()
-    .domain([0, d3.max(topChildren, d => d.value)])
+    .domain([0, 20])
     .range([chartHeight, 0]);
 
   // Axes

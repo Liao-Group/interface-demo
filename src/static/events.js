@@ -70,3 +70,13 @@ function toggleDropdown() {
 }
 
 // event for when the screen is resized and we need to re-render the graphs in the page again
+
+window.addEventListener('resize',function(){
+  featureSelection(featureSelected=null,className = null,use_new_grouping =use_new_grouping)
+  PSIview(Data); // Redraw the graph with the same data
+  hierarchicalBarChart(Data, Data.feature_activations)
+  nucleotideView(Data.sequence, Data.structs, Data.nucleotide_activations)
+  hierarchicalBarChart2(featuresParent, featuresChildren)
+  console.log(positionsChildren,positionsParent)
+  hierarchicalBarChart3(positionsChildren,positionsParent)
+});

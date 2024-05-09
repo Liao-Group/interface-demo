@@ -136,10 +136,11 @@ html {
     width: 75%;
   }
   
+  /* thi vw usin is dynamic */
   .feature-long-svg {
     border: 1px solid black;
-    width: calc(100% - 0.350rem);
-    height: 3rem;
+    width: 18vw; 
+    height: 3vw; 
     box-sizing: border-box;
     border-radius: 0.3125rem;
     object-fit: fill; 
@@ -147,8 +148,8 @@ html {
   
   .feature-svg {
     border: 2px solid black;
-    width: 6.25rem;
-    height: 3rem;
+    width: 6vw; 
+    height: 2.5vw; 
     box-sizing: border-box;
     border-radius: 0.3125rem;
     object-fit: fill; 

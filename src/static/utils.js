@@ -46,14 +46,14 @@ function featureSelection(featureName = null, className = null, use_new_grouping
   const heightRatio = height / 381;
   console.log(width,height)
 
-  featureLongSVGs.forEach(svg => {
-    svg.style.width = `calc(100% -${0.350*heightRatio}rem)`;
-    svg.style.height = `${3*heightRatio}rem`;
-  });
-  featureSVGs.forEach(svg => {
-    svg.style.width = `${6.25*widthRatio}rem`;
-    svg.style.height = `${3*heightRatio}rem`;
-  });
+  // featureLongSVGs.forEach(svg => {
+  //   svg.style.width = `calc(100% -${0.350*heightRatio}rem)`;
+  //   svg.style.height = `calc(100% -${0.5*heightRatio}rem)`;
+  // });
+  // featureSVGs.forEach(svg => {
+  //   svg.style.width = `calc(100% -${0.125*heightRatio}rem)`;
+  //   svg.style.height = `calc(50% -${0.125*heightRatio}rem)`;
+  // });
   // Function to update SVGs with new data and highlight the selected feature
   const updateSVGs = (containerSelector, svgSelector, imagesArray, colors) => {
     const svgContainer = d3.select(containerSelector)
