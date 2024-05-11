@@ -15,9 +15,9 @@ html {
   height: 100vh;
   display: grid;
   grid-template-areas:
-  "fl fl fl fl fl fl pv pv f1 f1 f2 f2 f2 f2 f3 f3 f3 f3 f3"
-  "fl fl fl fl fl fl pv pv f1 f1 f2 f2 f2 f2 f3 f3 f3 f3 f3"
-  "fl fl fl fl fl fl pv pv f1 f1 f2 f2 f2 f2 f3 f3 f3 f3 f3"
+  "fl fl fl fl fl pv pv f1 f1 f2 f2 f2 f2 f3 f3 f3 f3 f3 f3"
+  "fl fl fl fl fl pv pv f1 f1 f2 f2 f2 f2 f3 f3 f3 f3 f3 f3"
+  "fl fl fl fl fl pv pv f1 f1 f2 f2 f2 f2 f3 f3 f3 f3 f3 f3"
   "nv nv nv nv nv nv nv nv nv nv nv nv nv nz nz nz ns ns ns"
   "nv nv nv nv nv nv nv nv nv nv nv nv nv nz nz nz ns ns ns"
   "nv nv nv nv nv nv nv nv nv nv nv nv nv nz nz nz ns ns ns"
@@ -139,8 +139,8 @@ html {
   /* thi vw usin is dynamic */
   .feature-long-svg {
     border: 1px solid black;
-    width: 18vw; 
-    height: 3vw; 
+    width: 16vw; 
+    height: 2.75vw; 
     box-sizing: border-box;
     border-radius: 0.3125rem;
     object-fit: fill; 
@@ -148,8 +148,8 @@ html {
   
   .feature-svg {
     border: 2px solid black;
-    width: 6vw; 
-    height: 2.5vw; 
+    width: 5.5vw; 
+    height: 2.25vw; 
     box-sizing: border-box;
     border-radius: 0.3125rem;
     object-fit: fill; 
