@@ -14,17 +14,6 @@ var positionsParent = []
 var positionsChildren = []
 var use_new_grouping = false
 
-
-d3.json("./get-data", function (data) {
-  // setting the value for this Data variable that is acting as 
-  Data = data
-  nucleotideView(data.sequence, data.structs, data.nucleotide_activations);
-  PSIview(data);
-  hierarchicalBarChart(data, data.feature_activations);
-  use_new_grouping = data.use_new_grouping == 1;
-  console.log(use_new_grouping);
-  featureSelection(featureName = null, data = data, use_new_grouping = use_new_grouping);
-})
 /**
  * PSI view function
  * currently working with the reisizing, I will probaly have to figure it out how to have a better ratio and 

@@ -45,17 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 });
 
-// logic for the selection persistence in the exon selection. 
-document.addEventListener("DOMContentLoaded", function () {
-  var selectedOption = localStorage.getItem("selectedOption");
-  if (selectedOption) {
-    document.getElementById("option").value = selectedOption;
-  }
-  document.getElementById("exonForm").addEventListener("submit", function () {
-    var selectedValue = document.getElementById("option").value;
-    localStorage.setItem("selectedOption", selectedValue);
-  });
-});
+
 
 
 // setting dropdown
@@ -80,3 +70,49 @@ window.addEventListener('resize',function(){
   console.log(positionsChildren,positionsParent)
   hierarchicalBarChart3(positionsChildren,positionsParent)
 });
+
+
+document.addEventListener("DOMContentLoaded", async function() {
+  const form = document.getElementById("exonForm");
+  let selectedOption = localStorage.getItem("selectedOption");
+  console.log("Selected option from storage:", selectedOption);
+
+  if (!selectedOption) {
+      selectedOption = 'teaser'; // Default to 'teaser' if nothing in storage
+      localStorage.setItem("selectedOption", selectedOption);
+  }
+
+  document.getElementById("option").value = selectedOption;
+  await fetchData(selectedOption); // Fetch data immediately on load
+
+  form.addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const selectedValue = document.getElementById("option").value;
+      localStorage.setItem("selectedOption", selectedValue);
+      console.log("New selection saved:", selectedValue);
+      await fetchData(selectedValue);
+  });
+});
+
+async function fetchData(option) {
+  try {
+      const response = await fetch(`./get-data?option=${option}`);
+      const data = await response.json();
+      if (data.error) {
+          console.error("Error fetching data:", data.error);
+          // Optionally, inform the user visually
+      } else {
+          use_new_grouping = data.use_new_grouping === 1;
+          console.log("Using new grouping:", use_new_grouping);
+          window.Data = data;
+          // Render data
+          featureSelection(null, data, use_new_grouping);
+          nucleotideView(data.sequence, data.structs, data.nucleotide_activations);
+          PSIview(data);
+          hierarchicalBarChart(data, data.feature_activations);
+      }
+  } catch (error) {
+      console.error("Failed to fetch or parse data:", error);
+      // Optionally, inform the user visually
+  }
+}

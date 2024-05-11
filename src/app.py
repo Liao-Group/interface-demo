@@ -3,8 +3,8 @@
 from flask import Flask
 
 from flask import (request, jsonify,
-    Flask, flash, redirect, render_template, session, 
-    abort, send_from_directory, send_file
+    Flask,render_template,
+
 )
 import pandas as pd
 import json
@@ -22,21 +22,28 @@ data = DataStore()
 
 @app.route("/", methods=["GET", "POST"])
 def homepage():
-    # Default data option or from POST request
-    option = request.form.get('option', 'teaser')
-    try:
-        with open(f'src/data/{option}.json', 'r') as file:
-            json_data = json.load(file)
-            data.data = json_data
-    except FileNotFoundError:
-        json_data = {"error": "Data file not found"}
+    # # Default data option or from POST request
+    # option = request.form.get('option', 'teaser')
+    # try:
+    #     with open(f'src/data/{option}.json', 'r') as file:
+    #         json_data = json.load(file)
+    #         data.data = json_data
+    # except FileNotFoundError:
+    #     json_data = {"error": "Data file not found"}
 
     return render_template("./index.html")
 
 
-@app.route("/get-data",methods=["GET","POST"])
+@app.route("/get-data", methods=["GET"])
 def get_data():
-    return jsonify(data.data)
+    option = request.args.get('option', 'teaser')
+    try:
+        with open(f'src/data/{option}.json', 'r') as file:
+            json_data = json.load(file)
+        print("called")
+    except FileNotFoundError:
+        json_data = {"error": "Data file not found"}
+    return jsonify(json_data)
 
 if __name__ == "__main__":
     app.run(debug=True)
