@@ -134,19 +134,19 @@ function PSIview(data) {
   .style('text-anchor', 'middle')
   .text('Δ Strength (a.u)')
 
-  // .on("mouseover", function (event, d) {
-  //     tooltip1.transition()
-  //     .duration(200)
-  //     .style("opacity", .9);
+  .on("mouseover", function (event, d) {
+      tooltip1.transition()
+      .duration(200)
+      .style("opacity", .9);
   
-  //   console.log("over");
+    console.log("over");
   
-  //   })
-  //   .on("mouseout", function (event, d) {
-  //     tooltip1.transition()
-  //       .duration(200)
-  //       .style("opacity", 0);
-  //   });
+    })
+    .on("mouseout", function (event, d) {
+      tooltip1.transition()
+        .duration(200)
+        .style("opacity", 0);
+    });
 
   chartGroup.append("line")
     .attr("x1", 0)
@@ -178,19 +178,19 @@ function PSIview(data) {
       // featureSelection(use_new_grouping = use_new_grouping, use_new_grouping = use_new_grouping)
       nucleotideView(data.sequence, data.structs, data.nucleotide_activations);
     })
-    .on("mouseover", function (event, d) {
-      tooltip1.transition()
-      .duration(200)
-      .style("opacity", .9);
+    // .on("mouseover", function (event, d) {
+    //   tooltip1.transition()
+    //   .duration(200)
+    //   .style("opacity", .9);
   
-    console.log("over");
+    // console.log("over");
   
-    })
-    .on("mouseout", function (event, d) {
-      tooltip1.transition()
-        .duration(200)
-        .style("opacity", 0);
-    });
+    // })
+    // .on("mouseout", function (event, d) {
+    //   tooltip1.transition()
+    //     .duration(200)
+    //     .style("opacity", 0);
+    // });
 
   bar.transition()
     .duration(1000)
