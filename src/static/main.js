@@ -1282,9 +1282,9 @@ function nucleotideZoom(sequence, structs, pos, margin, zoom_width, height, svg_
     .padding(0);
 
   /* Change y range to a fix range */
+  max_strength = 6;
   const zoom_yIncl = d3.scaleLinear()
-    // .domain([0, max_strength])
-    .domain([0, 6])
+    .domain([0, max_strength])
     .range([margin.top + (height - margin.top - margin.bottom) / 2 - margin.middle, margin.top]);
 
   const zoom_ySkip = d3.scaleLinear()
