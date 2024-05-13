@@ -45,13 +45,14 @@ function PSIview(data) {
   const lowerBound = -120;
   const upperBound = 120;
 
-  const yScale = d3.scaleLinear().domain([lowerBound, upperBound]).range([chartHeight, 0]);
+  var yScale = d3.scaleLinear().domain([lowerBound, upperBound]).range([chartHeight, 0]);
   var yAxis = d3.axisLeft(yScale).ticks(5);
   if(plotPSI){
-    // Conversion from predicted psi to delta force
-    const deltaForceConversion = [-18.76, -7.77, 0.00, 7.82, 23.07];
-    yAxis = d3.axisLeft(yScale).ticks(5)
-      .tickFormat(function(d, i) { return deltaForceConversion[i]; });
+    const deltaForce = [-20, -10, -5, 0, 5, 10, 20];
+    const correspondingPSI = [0.071174, 0.232515, 0.361840, 0.5, 0.638148, 0.756705, 0.892360];
+    yScale = d3.scaleLinear().domain([0, 1]).range([chartHeight, 0]);
+    yAxis = d3.axisLeft(yScale).tickValues(correspondingPSI)
+      .tickFormat(function(d, i) { return deltaForce[i]; });
   }
   console.log(yScale(deltaForce))
 
@@ -150,8 +151,8 @@ function PSIview(data) {
   chartGroup.append("line")
     .attr("x1", 0)
     .attr("x2", chartWidth + 5)
-    .attr("y1", yScale(0))
-    .attr("y2", yScale(0))
+    .attr("y1", plotPSI ? yScale2(0.5) : yScale(0))
+    .attr("y2", plotPSI ? yScale2(0.5) : yScale(0))
     .attr("stroke", "black")
     .attr("stroke-width", 1);
 
@@ -167,7 +168,7 @@ function PSIview(data) {
 
   const bar = chartGroup.append('rect')
     .attr('x', 8)
-    .attr('y', yScale(0))
+    .attr('y', plotPSI ? yScale2(0.5) : yScale(0))
     .attr('width', chartWidth - 10)
     .attr('height', 0)
     .attr('fill', barColor)
@@ -193,7 +194,7 @@ function PSIview(data) {
 
   bar.transition()
     .duration(1000)
-    .attr('y', Math.min(yScale(0), barPosition))
+    .attr('y', plotPSI ? Math.min(yScale2(0.5), barPosition) : Math.min(yScale(0), barPosition))
     .attr('height', barHeight);
 };
 /**
@@ -1282,9 +1283,9 @@ function nucleotideZoom(sequence, structs, pos, margin, zoom_width, height, svg_
     .padding(0);
 
   /* Change y range to a fix range */
+  max_strength = 6;
   const zoom_yIncl = d3.scaleLinear()
-    // .domain([0, max_strength])
-    .domain([0, 6])
+    .domain([0, max_strength])
     .range([margin.top + (height - margin.top - margin.bottom) / 2 - margin.middle, margin.top]);
 
   const zoom_ySkip = d3.scaleLinear()
