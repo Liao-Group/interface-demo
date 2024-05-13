@@ -41,25 +41,19 @@ function featureSelection(featureName = null, className = null, use_new_grouping
   const featureSVGs = document.querySelectorAll('.feature-svg');
   const width = gridContainer.clientWidth;
   const height = gridContainer.clientHeight;
-
-  const widthRatio = width/ 591;
+  const titleDiv = document.querySelector('.feature-legend-title'); // Select the title div
+  const widthRatio = width / 491;
   const heightRatio = height / 381;
-  console.log(width,height)
+  
+  titleDiv.style.fontSize = `${0.875*widthRatio}rem`;
 
-  // featureLongSVGs.forEach(svg => {
-  //   svg.style.width = `calc(100% -${0.350*heightRatio}rem)`;
-  //   svg.style.height = `calc(100% -${0.5*heightRatio}rem)`;
-  // });
-  // featureSVGs.forEach(svg => {
-  //   svg.style.width = `calc(100% -${0.125*heightRatio}rem)`;
-  //   svg.style.height = `calc(50% -${0.125*heightRatio}rem)`;
-  // });
   // Function to update SVGs with new data and highlight the selected feature
   const updateSVGs = (containerSelector, svgSelector, imagesArray, colors) => {
     const svgContainer = d3.select(containerSelector)
       .selectAll(svgSelector)
       .data(imagesArray, d => d.feature);
 
+    
     const svgEnter = svgContainer.enter()
       .append("svg")
       .attr("class", svgSelector.slice(1));
@@ -75,7 +69,7 @@ function featureSelection(featureName = null, className = null, use_new_grouping
       if (d.feature.split('_')[0] === className) {
         svg.style("border", `2px solid ${colors[1]}`);
       } else {
-        svg.style("border", `2px solid gray`).style("box-shadow", "none");
+        svg.style("border", `2px solid ${lightOther}`).style("box-shadow", "none");
       }
 
       const background = svg.select(".background")

@@ -110,6 +110,8 @@ async function fetchData(option) {
           nucleotideView(data.sequence, data.structs, data.nucleotide_activations);
           PSIview(data);
           hierarchicalBarChart(data, data.feature_activations);
+          d3.select("svg.feature-view-2").selectAll("*").remove();
+          d3.select("svg.feature-view-3").selectAll("*").remove();;
       }
   } catch (error) {
       console.error("Failed to fetch or parse data:", error);

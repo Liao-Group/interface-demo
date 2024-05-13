@@ -35,7 +35,7 @@ function PSIview(data) {
   const svg = d3.select("svg.psi-view")
     .attr("width", width)
     .attr("height", height);
-  const margin = { top: 40, right: 60, bottom: 30, left: 50 };
+  const margin = { top: 40, right: 50 * widthRatio, bottom: 30, left: 50 * widthRatio};
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
 
@@ -53,7 +53,6 @@ function PSIview(data) {
     yAxis = d3.axisLeft(yScale).ticks(5)
       .tickFormat(function(d, i) { return deltaForceConversion[i]; });
   }
-  console.log(yScale(deltaForce))
 
   // Conversion from predicted psi to delta force
   const predictePSIConversion = [0.000001, 0.000006, 0.000038, 0.000243, 0.004538, 0.071174, 0.499993, 0.892360, 0.971595, 0.982911, 0.985533, 0.987334, 0.988231];
@@ -70,19 +69,32 @@ function PSIview(data) {
 
   svg.attr('width', width).attr('height', height);
 
+
   const chartGroup = svg.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`);
 
-  chartGroup.append('g').call(yAxis);
+  chartGroup.append('g')
+    .attr('transform', `translate(${chartWidth / 2 - 30 * widthRatio}, 0)`)
+    .call(yAxis);
+
+  chartGroup.append('g')
+    .attr('transform', `translate(${chartWidth / 2 + 30 * widthRatio}, 0)`)
+    .call(yAxis2);
+
+  chartGroup.append("line")
+    .attr("x1", chartWidth / 2 - 30 * widthRatio)
+    .attr("x2", chartWidth / 2 + 30 * widthRatio)
+    .attr("y1", yScale(0))
+    .attr("y2", yScale(0))
+    .attr("stroke", "black")
+    .attr("stroke-width", 1);
+
   svg.append('text')
     .attr('x', (width / 2))
     .attr('y', (margin.top / 2))
     .attr('text-anchor', 'middle')
-    .style('font-size', `${14*widthRatio}px`)
+    .style('font-size', `${14 * widthRatio}px`)
     .text('Difference-to-Prediction');
 
-  chartGroup.append('g')
-    .attr('transform', `translate(${chartWidth + 5}, 0)`)
-    .call(yAxis2);
 
   const tooltip1 = chartGroup.append('text')
     .attr('x', chartWidth / 2)
@@ -131,29 +143,9 @@ function PSIview(data) {
   .attr("font-size", `${12*heightRatio}px`)
   // .attr('dy', '-1.50em')
   .style('text-anchor', 'middle')
-  .text('Δ Strength (a.u)')
+  .text('Δ Strength (a.u.)')
 
-  // .on("mouseover", function (event, d) {
-  //     tooltip1.transition()
-  //     .duration(200)
-  //     .style("opacity", .9);
-  
-  //   console.log("over");
-  
-  //   })
-  //   .on("mouseout", function (event, d) {
-  //     tooltip1.transition()
-  //       .duration(200)
-  //       .style("opacity", 0);
-  //   });
 
-  chartGroup.append("line")
-    .attr("x1", 0)
-    .attr("x2", chartWidth + 5)
-    .attr("y1", yScale(0))
-    .attr("y2", yScale(0))
-    .attr("stroke", "black")
-    .attr("stroke-width", 1);
 
   const barColor = deltaForce < 0 ? skipping_color : inclusion_color;
   // Plot by deltaForce
@@ -164,11 +156,14 @@ function PSIview(data) {
     barPosition = yScale2(Math.max(0.5, predictedPSI));
     barHeight = Math.abs((yScale2(predictedPSI) - yScale2(0.5)));
   }
+// to adjust the width of the bar in the graph we make the 
+// graph rectangle fixed and the make the margins dynamic. 
+const barWidth = 30;
 
   const bar = chartGroup.append('rect')
-    .attr('x', 8)
+    .attr('x', (chartWidth / 2) - (barWidth / 2))
     .attr('y', yScale(0))
-    .attr('width', chartWidth - 10)
+    .attr('width', 30)
     .attr('height', 0)
     .attr('fill', barColor)
     .attr("stroke", "#000")
@@ -275,7 +270,7 @@ function hierarchicalBarChart(parent, data) {
     .attr("x", -chartHeight / 2)
     .attr("y", -31)
     .attr("font-size", `${12*heightRatio}px`)
-    .text("Strength (a.u)");
+    .text("Strength (a.u.)");
 
   // Append the axes to the SVG
   svg.append("g")
@@ -366,8 +361,8 @@ const hierarchicalBarChart2 = (parent, data) => {
   const svgContainer = d3.select(".feature-view-2"); // Ensure you have a container with this class
   const width = svgContainer.node().clientWidth;
   const height = svgContainer.node().clientHeight;
-  // const heightRatio = height/370;
-  // const widthRatio = width/193;
+  const heightRatio = height/370;
+  const widthRatio = width/391;
 
   const margin = { top: 40, right: 20, bottom: 30, left: 40 };
   const chartWidth = width - margin.left - margin.right;
@@ -431,7 +426,7 @@ const hierarchicalBarChart2 = (parent, data) => {
     .attr("x", chartWidth / 2)
     .attr("y", - margin.top / 2)
     .attr("text-anchor", "middle")
-    .style('font-size', '14px')
+    .attr("font-size", `${14*widthRatio}px`)
     .text((data.name == "incl" ? "Inclusion" : "Skipping") + ' Features');
 
   svg.append("text")
@@ -439,6 +434,7 @@ const hierarchicalBarChart2 = (parent, data) => {
     .attr("text-anchor", "middle")
     .attr("x", chartWidth / 2)
     .attr("y", chartHeight + margin.bottom - 15)
+    .attr("font-size", `${12*widthRatio}px`)
     .text("Features");
 
   svg.append("text")
@@ -447,7 +443,9 @@ const hierarchicalBarChart2 = (parent, data) => {
     .attr("transform", "rotate(-90)")
     .attr("x", -chartHeight / 2)
     .attr("y", -25)
-    .text("Strength (a.u)");
+    .attr("font-size", `${12*heightRatio}px`)
+
+    .text("Strength (a.u.)");
 
   // Append the axes to the SVG
   svg.append("g")
@@ -528,8 +526,8 @@ function hierarchicalBarChart3(data, parentName){
   const svgContainer = d3.select(".feature-view-3"); // Ensure you have a container with this class
   const width = svgContainer.node().clientWidth;
   const height = svgContainer.node().clientHeight;
-  // const heightRatio = height/370;
-  // const widthRatio = width/193;
+  const heightRatio = height/370;
+  const widthRatio = width/591;
 
   const margin = { top: 40, right: 20, bottom: 30, left: 40 };
   const charWidth = width - margin.left - margin.right;
@@ -589,7 +587,7 @@ function hierarchicalBarChart3(data, parentName){
     .attr("x", charWidth / 2)
     .attr("y", - margin.top / 2)
     .attr("text-anchor", "middle")
-    .style('font-size', '14px')
+    .style('font-size', `${14*widthRatio}px`)
     .text("Strongest Positions for Given Feature");
 
   svg.append("text")
@@ -597,6 +595,7 @@ function hierarchicalBarChart3(data, parentName){
     .attr("text-anchor", "middle")
     .attr("x", charWidth / 2)
     .attr("y", chartHeight + 15)
+    .attr("font-size", `${12*widthRatio}px`)
     .text("Positions");
 
   svg.append("text")
@@ -605,8 +604,8 @@ function hierarchicalBarChart3(data, parentName){
     .attr("transform", "rotate(-90)")
     .attr("x", -chartHeight / 2)
     .attr("y", -25)
-    .attr("font-size", "12px")
-    .text("Strength (a.u) ");
+    .attr("font-size", `${12*heightRatio}px`)
+    .text("Strength (a.u.) ");
 
   // Append the axes to the SVG
   svg.append("g")
@@ -669,7 +668,7 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
   const svgContainer = d3.select(".nucleotide-view"); // Ensure you have a container with this class
   const width = svgContainer.node().clientWidth;
   const height = svgContainer.node().clientHeight;
-  const heightRatio = height/640;
+  const heightRatio = height/622;
   const widthRatio = width/1290;
 
   console.log(width,height)
@@ -679,10 +678,10 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
   
   // Title
   svg_nucl.append("text")
-    .attr("x", (width / 2)*widthRatio)
+    .attr("x", width / 2)
     .attr("y", margin.top / 2 + 5)
     .attr("text-anchor", "middle")
-    .style("font-size", "14px")
+    .style("font-size", `${14*widthRatio}px`)
     .text("Exon View");
 
   // Add X axis
@@ -746,6 +745,7 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
     .domain([0, max_strength])
     .range([margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle, height - margin.bottom]);
 
+  //I think we can revome this declarations and bring to inside the functions.
   // Set up for nucleotide sort
   var sort_width = parseFloat(d3.select("svg.nucleotide-sort").style("width"));
   var sort_height = parseFloat(d3.select("svg.nucleotide-sort").style("height"));
@@ -774,7 +774,7 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
       .attr("dy", "-2.25em")
       .attr("font-size", `${12*heightRatio}px`)
       .attr("transform", "rotate(-90)")
-      .text("Inclusion strength (a.u)");
+      .text("Inclusion strength (a.u.)");
 
     svg_nucl.selectAll("nucleotide-incl-bar")
       .data(data.children[0].children)
@@ -814,7 +814,7 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
       .attr("dy", "-2.25em")
       .attr("font-size", `${12*heightRatio}px`)
       .attr("transform", "rotate(-90)")
-      .text("Skipping strength (a.u)");
+      .text("Skipping strength (a.u.)");
 
     svg_nucl.selectAll("nucleotide-skip-bar")
       .data(data.children[1].children)
@@ -903,7 +903,6 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
   };
   function clicking(color = null) {
     // Show nucleotide zoom on click
-    console.log(color)
     const skipBarColor = color == 'skip' ? lightOther : skipping_color;
     const skipBarHighlightColor = color == 'skip' ? darkBackground : skipping_highlight_color;
     const inclBarColor = color == 'incl' ? lightOther : inclusion_color;
@@ -976,7 +975,7 @@ function nucleotideFeatureView(parent, data, feature_name) {
 
   // Y Axis
 
-  console.log(data.filter(function(d){ return (d.strength / d.length) > 0.01 }));
+  // console.log(data.filter(function(d){ return (d.strength / d.length) > 0.01 }));
 
   if (class_name == "incl") {
     svg.selectAll("text.ylabel_skip").remove();
@@ -1062,6 +1061,10 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom,colors) {
   const skippingColor = colors[0]
   const skippingHighlightColor = colors[1]
 
+  const heightRatio = height/622;
+  const widthRatio = width/292;
+
+
   svg_sort.selectAll("*").remove(); // Clear SVG before redrawing
 
   // Add title
@@ -1069,7 +1072,7 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom,colors) {
     .attr("x", width / 2)
     .attr("y", margin.top / 2 + 5)
     .attr("text-anchor", "middle")
-    .style("font-size", "14px")
+    .style("font-size", `${14*widthRatio}px`)
     .text("Nucleotide View");
 
   // Data preparation
@@ -1129,10 +1132,10 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom,colors) {
     .attr("x", -(margin.top + (height - margin.top - margin.bottom) / 4 - margin.middle / 2))
     .attr("y", margin.left)
     .attr("dy", "-2.25em")
-    .attr("font-size", "12px")
+    .attr("font-size", `${12*heightRatio}px`)
     .attr("transform", "rotate(-90)")
     .style("fill", background_color)
-    .text("Inclusion strength (a.u)");
+    .text("Inclusion strength (a.u.)");
 
   const sortSkipYLabel = svg_sort.append("text")
     .attr("class", "y label")
@@ -1140,10 +1143,10 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom,colors) {
     .attr("x", -(margin.top / 2 + (height - margin.top - margin.bottom) / 4 + margin.middle / 2 + height / 2 - margin.bottom / 2))
     .attr("y", margin.left)
     .attr("dy", "-2.25em")
-    .attr("font-size", "12px")
+    .attr("font-size", `${12*heightRatio}px`)
     .attr("transform", "rotate(-90)")
     .style("fill", background_color)
-    .text("Skipping strength (a.u)");
+    .text("Skipping strength (a.u.)");
 
   // X axis rendering
   sortXInclAxis.tickFormat(() => "");
@@ -1271,6 +1274,8 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom,colors) {
  * nucleotideZoom
  */
 function nucleotideZoom(sequence, structs, pos, margin, zoom_width, height, svg_zoom, max_strength,colors) {
+  const heightRatio = height/622;
+  const widthRatio = zoom_width/292;
   const int_pos = parseInt(pos.slice(4));
   const positions = Array.from({ length: 11 }, (_, i) => i - 5);
 
@@ -1298,7 +1303,7 @@ function nucleotideZoom(sequence, structs, pos, margin, zoom_width, height, svg_
     .attr("x", zoom_width / 2)
     .attr("y", margin.top / 2 + 5)
     .attr("text-anchor", "middle")
-    .style("font-size", "14px")
+    .style("font-size", `${14*widthRatio}px`)
     .text("Nucleotide Features");
 
   // Add X axis
@@ -1349,10 +1354,10 @@ function nucleotideZoom(sequence, structs, pos, margin, zoom_width, height, svg_
     .attr("x", -(margin.top + (height - margin.top - margin.bottom) / 4 - margin.middle / 2))
     .attr("y", margin.left)
     .attr("dy", "-3.25em")
-    .attr("font-size", "12px")
+    .attr("font-size", `${12*heightRatio}px`)
     .attr("transform", "rotate(-90)")
     .style("fill", background_color)
-    .text("Inclusion strength (a.u)");
+    .text("Inclusion strength (a.u.)");
 
   const zoom_skip_ylabel = svg_zoom.append("text")
     .attr("class", "y label")
@@ -1360,10 +1365,10 @@ function nucleotideZoom(sequence, structs, pos, margin, zoom_width, height, svg_
     .attr("x", -(margin.top / 2 + (height - margin.top - margin.bottom) / 4 + margin.middle / 2 + height / 2 - margin.bottom / 2))
     .attr("y", margin.left)
     .attr("dy", "-3.25em")
-    .attr("font-size", "12px")
+    .attr("font-size", `${12*heightRatio}px`)
     .attr("transform", "rotate(-90)")
     .style("fill", background_color)
-    .text("Skipping strength (a.u)");
+    .text("Skipping strength (a.u.)");
 
   zoom_incl_ylabel.transition().duration(800).style("fill", "black");
   zoom_skip_ylabel.transition().duration(800).style("fill", "black");
