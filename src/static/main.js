@@ -1004,10 +1004,10 @@ function nucleotideFeatureView(parent, data, feature_name) {
       .attr("opacity", 0.8)
       .lower()
       .on("mouseover", function (d) {
-        d3.select(this).style("fill", inclusion_highlight_color);
+        d3.select(this).transition().duration(300).attr("fill", inclusion_highlight_color);
       })
       .on("mouseleave", function (d) {
-        d3.select(this).style("fill", inclusion_color);
+        d3.select(this).transition().duration(100).attr("fill", inclusion_color);
       })
       .transition()
       .duration(800)
@@ -1042,10 +1042,10 @@ function nucleotideFeatureView(parent, data, feature_name) {
       .attr("opacity", 0.8)
       .lower()
       .on("mouseover", function (d) {
-        d3.select(this).style("fill", skipping_highlight_color);
+        d3.select(this).transition().duration(300).attr("fill", skipping_highlight_color);
       })
       .on("mouseleave", function (d) {
-        d3.select(this).style("fill", skipping_color);
+        d3.select(this).transition().duration(100).attr("fill", skipping_color);
       })
       .transition()
       .duration(800)
