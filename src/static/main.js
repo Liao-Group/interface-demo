@@ -1202,6 +1202,9 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom,colors) {
   inclBars.on("mouseover", function (event, d) {
     d3.select(this).transition().duration(100).attr("fill", inclusionHighlightColor);
     const featureClass = d3.select(this).attr("class").split(" ")[3];
+    var featureName = featureClass.split("-")[1];
+    var className = featureName.split('_')[0];
+    featureSelection(featureName, className, use_new_grouping);
     d3.selectAll(`.incl.wide-bar.${featureClass}`)
       .raise()
       .transition()
@@ -1217,6 +1220,7 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom,colors) {
 
   inclBars.on("mouseout", function (event, d) {
     d3.select(this).transition().duration(100).attr("fill", inclusionColor);
+    featureSelection('', 'incl', use_new_grouping);
     svg_zoom.selectAll(".incl.wide-bar").attr("fill", inclusionColor).attr("opacity", 0.5);
     svg_zoom.selectAll(".incl.annotate").attr("opacity", 0);
   });
@@ -1243,6 +1247,9 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom,colors) {
   skipBars.on("mouseover", function (event, d) {
     d3.select(this).transition().duration(100).attr("fill", skippingHighlightColor);
     const featureClass = d3.select(this).attr("class").split(" ")[3];
+    var featureName = featureClass.split("-")[1];
+    var className = featureName.split('_')[0];
+    featureSelection(featureName, className, use_new_grouping);
     d3.selectAll(`.skip.wide-bar.${featureClass}`)
       .raise()
       .transition()
@@ -1258,6 +1265,7 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom,colors) {
 
   skipBars.on("mouseout", function (event, d) {
     d3.select(this).transition().duration(100).attr("fill", skippingColor);
+    featureSelection('', 'skip', use_new_grouping);
     svg_zoom.selectAll(".skip.wide-bar").attr("fill", skippingColor).attr("opacity", 0.5);
     svg_zoom.selectAll(".skip.annotate").attr("opacity", 0);
   });
