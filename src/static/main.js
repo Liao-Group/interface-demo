@@ -245,7 +245,7 @@ function hierarchicalBarChart(parent, data) {
   /* Change y range to a fix range */
   const yScale = d3.scaleLinear()
     // .domain([0, root.value])
-    .domain([0, 180])
+    .domain([0, 150])
     .range([chartHeight, 0]);
 
   // Axes
@@ -421,7 +421,7 @@ const hierarchicalBarChart2 = (parent, data) => {
 
   /* Change y range to a fix range */
   const yScale = d3.scaleLinear()
-    .domain([0, 70]) // Update to use the max of topChildren
+    .domain([0, 75]) // Update to use the max of topChildren
     .range([chartHeight, 0]);
 
   // Axes
@@ -579,7 +579,7 @@ function hierarchicalBarChart3(data, parentName){
 
   /* Change y range to a fix range */
   const yScale = d3.scaleLinear()
-    .domain([0, 20])
+    .domain([0, 18])
     .range([chartHeight, 0]);
 
   // Axes
@@ -739,7 +739,7 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
   var max_skip = d3.max(d3.map(data.children[1].children, recursive_total_strength).keys());
   /* Change y range to a fix range */
   // var max_strength = d3.max([max_incl, max_skip]);
-  var max_strength = 10;
+  var max_strength = 9;
   var yIncl = d3.scaleLinear()
     .domain([0, max_strength])
     .range([margin.top + (height - margin.top - margin.bottom) / 2 - margin.middle, margin.top]);
