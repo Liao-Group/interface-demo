@@ -71,9 +71,10 @@ window.addEventListener('resize',function(){
   hierarchicalBarChart3(positionsChildren,positionsParent)
 });
 
-
 document.addEventListener("DOMContentLoaded", async function() {
   const form = document.getElementById("exonForm");
+  const selectElement = document.getElementById("option");
+
   let selectedOption = localStorage.getItem("selectedOption");
   console.log("Selected option from storage:", selectedOption);
 
@@ -82,12 +83,11 @@ document.addEventListener("DOMContentLoaded", async function() {
       localStorage.setItem("selectedOption", selectedOption);
   }
 
-  document.getElementById("option").value = selectedOption;
+  selectElement.value = selectedOption;
   await fetchData(selectedOption); // Fetch data immediately on load
 
-  form.addEventListener("submit", async function(e) {
-      e.preventDefault();
-      const selectedValue = document.getElementById("option").value;
+  selectElement.addEventListener("change", async function() {
+      const selectedValue = selectElement.value;
       localStorage.setItem("selectedOption", selectedValue);
       console.log("New selection saved:", selectedValue);
       await fetchData(selectedValue);
@@ -111,7 +111,7 @@ async function fetchData(option) {
           PSIview(data);
           hierarchicalBarChart(data, data.feature_activations);
           d3.select("svg.feature-view-2").selectAll("*").remove();
-          d3.select("svg.feature-view-3").selectAll("*").remove();;
+          d3.select("svg.feature-view-3").selectAll("*").remove();
       }
   } catch (error) {
       console.error("Failed to fetch or parse data:", error);

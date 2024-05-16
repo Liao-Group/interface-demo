@@ -35,7 +35,7 @@ function PSIview(data) {
   const svg = d3.select("svg.psi-view")
     .attr("width", width)
     .attr("height", height);
-  const margin = { top: 40, right: 50*widthRatio, bottom: 30, left: 50*widthRatio};
+  const margin = { top: 40, right: 50, bottom: 30, left: 50};
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
 
@@ -79,8 +79,8 @@ function PSIview(data) {
     .call(yAxis2);
 
   chartGroup.append("line")
-    .attr("x1", chartWidth / 2 - 20 *widthRatio )
-    .attr("x2", chartWidth / 2 + 20*widthRatio)
+    .attr("x1", chartWidth / 2 - 30 *widthRatio )
+    .attr("x2", chartWidth / 2 + 30*widthRatio)
     .attr("y1", plotPSI ? yScale2(0.5) : yScale(0))
     .attr("y2", plotPSI ? yScale2(0.5) : yScale(0))
     .attr("stroke", "black")
@@ -117,7 +117,7 @@ function PSIview(data) {
   const psi = chartGroup.append('text')
   .attr('transform', `translate(${chartWidth + 60}, ${chartHeight/2}) rotate(-90)`)
   .attr("font-size", `${12*heightRatio}px`)
-  .attr('dy', '-1.25em')
+  .attr('dy', '-1.50em')
   .style('text-anchor', 'middle')
   .text('Predicted PSI')
 
@@ -137,12 +137,11 @@ function PSIview(data) {
   const strength = chartGroup.append('text')
   .attr('transform', 'rotate(-90)')
   .attr('x', -chartHeight / 2)
-  .attr('dy', '-3em')
+  .attr('dy', '-2.25em')
   .attr("font-size", `${12*heightRatio}px`)
   // .attr('dy', '-1.50em')
   .style('text-anchor', 'middle')
   .text('Δ Strength (a.u.)')
-
   .on("mouseover", function (event, d) {
       tooltip1.transition()
       .duration(200)
@@ -157,13 +156,6 @@ function PSIview(data) {
         .style("opacity", 0);
     });
 
-  chartGroup.append("line")
-    .attr("x1", 0)
-    .attr("x2", chartWidth + 5)
-    .attr("y1", plotPSI ? yScale2(0.5) : yScale(0))
-    .attr("y2", plotPSI ? yScale2(0.5) : yScale(0))
-    .attr("stroke", "black")
-    .attr("stroke-width", 1);
 
   const barColor = deltaForce < 0 ? skipping_color : inclusion_color;
   // Plot by deltaForce
@@ -190,19 +182,7 @@ const barWidth = 30;
       // featureSelection(use_new_grouping = use_new_grouping, use_new_grouping = use_new_grouping)
       nucleotideView(data.sequence, data.structs, data.nucleotide_activations);
     })
-    // .on("mouseover", function (event, d) {
-    //   tooltip1.transition()
-    //   .duration(200)
-    //   .style("opacity", .9);
-  
-    // console.log("over");
-  
-    // })
-    // .on("mouseout", function (event, d) {
-    //   tooltip1.transition()
-    //     .duration(200)
-    //     .style("opacity", 0);
-    // });
+
 
   bar.transition()
     .duration(1000)
