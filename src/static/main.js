@@ -35,7 +35,7 @@ function PSIview(data) {
   const svg = d3.select("svg.psi-view")
     .attr("width", width)
     .attr("height", height);
-  const margin = { top: 40, right: 50 * widthRatio, bottom: 30, left: 50 * widthRatio};
+  const margin = { top: 40, right: 50*widthRatio, bottom: 30, left: 50*widthRatio};
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
 
@@ -79,8 +79,8 @@ function PSIview(data) {
     .call(yAxis2);
 
   chartGroup.append("line")
-    .attr("x1", chartWidth / 2 - 30 * widthRatio)
-    .attr("x2", chartWidth / 2 + 30 * widthRatio)
+    .attr("x1", chartWidth / 2 - 20 *widthRatio )
+    .attr("x2", chartWidth / 2 + 20*widthRatio)
     .attr("y1", plotPSI ? yScale2(0.5) : yScale(0))
     .attr("y2", plotPSI ? yScale2(0.5) : yScale(0))
     .attr("stroke", "black")
@@ -143,6 +143,19 @@ function PSIview(data) {
   .style('text-anchor', 'middle')
   .text('Δ Strength (a.u.)')
 
+  .on("mouseover", function (event, d) {
+      tooltip1.transition()
+      .duration(200)
+      .style("opacity", .9);
+  
+    console.log("over");
+  
+    })
+    .on("mouseout", function (event, d) {
+      tooltip1.transition()
+        .duration(200)
+        .style("opacity", 0);
+    });
 
   chartGroup.append("line")
     .attr("x1", 0)
@@ -167,11 +180,8 @@ const barWidth = 30;
 
   const bar = chartGroup.append('rect')
     .attr('x', (chartWidth / 2) - (barWidth / 2))
-    .attr('y', yScale(0))
     .attr('width', 30)
-    .attr('x', 8)
     .attr('y', plotPSI ? yScale2(0.5) : yScale(0))
-    .attr('width', chartWidth - 10)
     .attr('height', 0)
     .attr('fill', barColor)
     .attr("stroke", "#000")
@@ -180,19 +190,19 @@ const barWidth = 30;
       // featureSelection(use_new_grouping = use_new_grouping, use_new_grouping = use_new_grouping)
       nucleotideView(data.sequence, data.structs, data.nucleotide_activations);
     })
-    .on("mouseover", function (event, d) {
-      tooltip1.transition()
-      .duration(200)
-      .style("opacity", .9);
+    // .on("mouseover", function (event, d) {
+    //   tooltip1.transition()
+    //   .duration(200)
+    //   .style("opacity", .9);
   
-    console.log("over");
+    // console.log("over");
   
-    })
-    .on("mouseout", function (event, d) {
-      tooltip1.transition()
-        .duration(200)
-        .style("opacity", 0);
-    });
+    // })
+    // .on("mouseout", function (event, d) {
+    //   tooltip1.transition()
+    //     .duration(200)
+    //     .style("opacity", 0);
+    // });
 
   bar.transition()
     .duration(1000)
