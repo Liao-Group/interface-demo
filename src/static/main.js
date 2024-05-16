@@ -257,7 +257,7 @@ function hierarchicalBarChart(parent, data) {
   /* Change y range to a fix range */
   const yScale = d3.scaleLinear()
     // .domain([0, root.value])
-    .domain([0, 180])
+    .domain([0, 150])
     .range([chartHeight, 0]);
 
   // Axes
@@ -433,7 +433,7 @@ const hierarchicalBarChart2 = (parent, data) => {
 
   /* Change y range to a fix range */
   const yScale = d3.scaleLinear()
-    .domain([0, 70]) // Update to use the max of topChildren
+    .domain([0, 75]) // Update to use the max of topChildren
     .range([chartHeight, 0]);
 
   // Axes
@@ -594,7 +594,7 @@ function hierarchicalBarChart3(data, parentName){
 
   /* Change y range to a fix range */
   const yScale = d3.scaleLinear()
-    .domain([0, 20])
+    .domain([0, 18])
     .range([chartHeight, 0]);
 
   // Axes
@@ -755,7 +755,7 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
   var max_skip = d3.max(d3.map(data.children[1].children, recursive_total_strength).keys());
   /* Change y range to a fix range */
   // var max_strength = d3.max([max_incl, max_skip]);
-  var max_strength = 10;
+  var max_strength = 9;
   var yIncl = d3.scaleLinear()
     .domain([0, max_strength])
     .range([margin.top + (height - margin.top - margin.bottom) / 2 - margin.middle, margin.top]);
@@ -1020,10 +1020,10 @@ function nucleotideFeatureView(parent, data, feature_name) {
       .attr("opacity", 0.8)
       .lower()
       .on("mouseover", function (d) {
-        d3.select(this).style("fill", inclusion_highlight_color);
+        d3.select(this).transition().duration(300).attr("fill", inclusion_highlight_color);
       })
       .on("mouseleave", function (d) {
-        d3.select(this).style("fill", inclusion_color);
+        d3.select(this).transition().duration(100).attr("fill", inclusion_color);
       })
       .transition()
       .duration(800)
@@ -1058,10 +1058,10 @@ function nucleotideFeatureView(parent, data, feature_name) {
       .attr("opacity", 0.8)
       .lower()
       .on("mouseover", function (d) {
-        d3.select(this).style("fill", skipping_highlight_color);
+        d3.select(this).transition().duration(300).attr("fill", skipping_highlight_color);
       })
       .on("mouseleave", function (d) {
-        d3.select(this).style("fill", skipping_color);
+        d3.select(this).transition().duration(100).attr("fill", skipping_color);
       })
       .transition()
       .duration(800)
@@ -1222,6 +1222,9 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom,colors) {
   inclBars.on("mouseover", function (event, d) {
     d3.select(this).transition().duration(100).attr("fill", inclusionHighlightColor);
     const featureClass = d3.select(this).attr("class").split(" ")[3];
+    var featureName = featureClass.split("-")[1];
+    var className = featureName.split('_')[0];
+    featureSelection(featureName, className, use_new_grouping);
     d3.selectAll(`.incl.wide-bar.${featureClass}`)
       .raise()
       .transition()
@@ -1237,6 +1240,7 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom,colors) {
 
   inclBars.on("mouseout", function (event, d) {
     d3.select(this).transition().duration(100).attr("fill", inclusionColor);
+    featureSelection('', 'incl', use_new_grouping);
     svg_zoom.selectAll(".incl.wide-bar").attr("fill", inclusionColor).attr("opacity", 0.5);
     svg_zoom.selectAll(".incl.annotate").attr("opacity", 0);
   });
@@ -1263,6 +1267,9 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom,colors) {
   skipBars.on("mouseover", function (event, d) {
     d3.select(this).transition().duration(100).attr("fill", skippingHighlightColor);
     const featureClass = d3.select(this).attr("class").split(" ")[3];
+    var featureName = featureClass.split("-")[1];
+    var className = featureName.split('_')[0];
+    featureSelection(featureName, className, use_new_grouping);
     d3.selectAll(`.skip.wide-bar.${featureClass}`)
       .raise()
       .transition()
@@ -1278,6 +1285,7 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom,colors) {
 
   skipBars.on("mouseout", function (event, d) {
     d3.select(this).transition().duration(100).attr("fill", skippingColor);
+    featureSelection('', 'skip', use_new_grouping);
     svg_zoom.selectAll(".skip.wide-bar").attr("fill", skippingColor).attr("opacity", 0.5);
     svg_zoom.selectAll(".skip.annotate").attr("opacity", 0);
   });
