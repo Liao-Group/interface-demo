@@ -237,7 +237,7 @@ function hierarchicalBarChart(parent, data) {
   /* Change y range to a fix range */
   const yScale = d3.scaleLinear()
     // .domain([0, root.value])
-    .domain([0, 150])
+    .domain([0, 170])
     .range([chartHeight, 0]);
 
   // Axes
@@ -321,7 +321,7 @@ function hierarchicalBarChart(parent, data) {
   var legendItemSize = 12*widthRatio;
   var legendSpacing = 4;
   var xOffset = chartWidth-(margin.left+5 *widthRatio); // Adjust the x-offset to position the legend
-  var yOffset = margin.top* heightRatio;
+  var yOffset = (margin.top -30)* heightRatio;
 
   var legend = svg
     .selectAll('.legendItem')
