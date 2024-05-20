@@ -44,8 +44,50 @@ function featureSelection(featureName = null, className = null, use_new_grouping
   const titleDiv = document.querySelector('.feature-legend-title'); // Select the title div
   const widthRatio = width / 491;
   const heightRatio = height / 381;
+  console.log(widthRatio,heightRatio)
   
   titleDiv.style.fontSize = `${0.875*widthRatio}rem`;
+
+  const legendInfo = [{ title: `Skipping`, color: skipping_color }, { title: `Inclusion`, color: inclusion_color }];
+
+d3.select('.legend').selectAll("*").remove();
+// Append SVG to the legend div
+const svg = d3.select('.legend')
+  .append('svg')
+  // .attr('width', width)
+  // .attr('height', height);
+
+// Initialize legend
+const legendItemSize = 20*widthRatio;
+const legendSpacing = 4;
+const xOffset = width - 400*widthRatio; // Adjust the x-offset to position the legend within visible range
+const yOffset = 20;  // Start drawing from top with a small margin
+
+const legend = svg.selectAll('.legendItem')
+  .data(legendInfo)
+  .enter()
+  .append('g')
+  .attr('class', 'legendItem')
+  .attr('transform', (d, i) => {
+    var x = xOffset;
+    var y = yOffset + (legendItemSize + legendSpacing) * i;
+    return `translate(${x}, ${y})`;
+  });
+
+// Create legend color squares
+legend.append('rect')
+  .attr('width', legendItemSize)
+  .attr('height', legendItemSize)
+  .style('fill', d => d.color);
+
+// Create legend labels
+legend.append('text')
+  .attr('x', legendItemSize + 5)
+  .attr('y', legendItemSize / 2)
+  .attr('dy', '0.35em')
+  .style('font-size', `${20*widthRatio}px`)  // Adjust font size here
+  .text(d => d.title);
+
 
   // Function to update SVGs with new data and highlight the selected feature
   const updateSVGs = (containerSelector, svgSelector, imagesArray, colors) => {
@@ -78,8 +120,6 @@ function featureSelection(featureName = null, className = null, use_new_grouping
         .attr("width", "100%")
         .attr("height", "100%")
         .style("fill", "none");
-
-      // console.log(featureName)
 
 
       try {
@@ -142,7 +182,7 @@ function featureSelection(featureName = null, className = null, use_new_grouping
 
     svgContainer.exit().remove();
   };
-  if(use_new_grouping) {
+
   // Update SVGs for inclusion images
   updateSVGs("div.svg-grid-inclusion", ".feature-svg", newImagesData.inclusion, [inclusion_color, inclusion_highlight_color]);
 
@@ -151,22 +191,5 @@ function featureSelection(featureName = null, className = null, use_new_grouping
 
   // Update SVGs for long skipping images
   updateSVGs("div.svg-grid-long-skipping", ".feature-long-svg", newImagesData.longSkipping, [skipping_color, skipping_highlight_color]);
-  } else {
-  // Update SVGs for inclusion images
-  updateSVGs("div.svg-grid-inclusion", ".feature-svg", imagesData.inclusion, [inclusion_color, inclusion_highlight_color]);
 
-  // Update SVGs for skipping images
-  updateSVGs("div.svg-grid-skipping", ".feature-svg", imagesData.skipping, [skipping_color, skipping_highlight_color]);
-
-  // Update SVGs for long skipping images
-  updateSVGs("div.svg-grid-long-skipping", ".feature-long-svg", imagesData.longSkipping, [skipping_color, skipping_highlight_color]);
-  }
-
-  // featureLongSVGs.forEach(svg => {
-  //   svg.style.height = `${3*heightRatio}rem`;
-  // });
-  // featureSVGs.forEach(svg => {
-  //   svg.style.width = `${6.25*widthRatio}rem`;
-  //   svg.style.height = `${3*heightRatio}rem`;
-  // });
 }
