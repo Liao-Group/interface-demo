@@ -142,7 +142,7 @@ function featureSelection(featureName = null, className = null, use_new_grouping
 
     svgContainer.exit().remove();
   };
-  if(use_new_grouping) {
+
   // Update SVGs for inclusion images
   updateSVGs("div.svg-grid-inclusion", ".feature-svg", newImagesData.inclusion, [inclusion_color, inclusion_highlight_color]);
 
@@ -151,22 +151,5 @@ function featureSelection(featureName = null, className = null, use_new_grouping
 
   // Update SVGs for long skipping images
   updateSVGs("div.svg-grid-long-skipping", ".feature-long-svg", newImagesData.longSkipping, [skipping_color, skipping_highlight_color]);
-  } else {
-  // Update SVGs for inclusion images
-  updateSVGs("div.svg-grid-inclusion", ".feature-svg", imagesData.inclusion, [inclusion_color, inclusion_highlight_color]);
 
-  // Update SVGs for skipping images
-  updateSVGs("div.svg-grid-skipping", ".feature-svg", imagesData.skipping, [skipping_color, skipping_highlight_color]);
-
-  // Update SVGs for long skipping images
-  updateSVGs("div.svg-grid-long-skipping", ".feature-long-svg", imagesData.longSkipping, [skipping_color, skipping_highlight_color]);
-  }
-
-  // featureLongSVGs.forEach(svg => {
-  //   svg.style.height = `${3*heightRatio}rem`;
-  // });
-  // featureSVGs.forEach(svg => {
-  //   svg.style.width = `${6.25*widthRatio}rem`;
-  //   svg.style.height = `${3*heightRatio}rem`;
-  // });
 }

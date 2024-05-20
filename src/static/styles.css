@@ -134,14 +134,14 @@ html {
     display: grid;
     flex-direction: column;
     gap: 0.2rem;
-    width: 50%;
+    width:50%;
     margin-left: auto; /* This will push the grid to the right */
   }
   
   .feature-long-svg {
     border: 1px solid black;
     width: 11.225vw;
-    height: 3vw;
+    height: 2.5vw;
     box-sizing: border-box;
     border-radius: 0.3125rem;
     object-fit: fill;
