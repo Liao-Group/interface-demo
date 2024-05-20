@@ -67,7 +67,6 @@ window.addEventListener('resize',function(){
   hierarchicalBarChart(Data, Data.feature_activations)
   nucleotideView(Data.sequence, Data.structs, Data.nucleotide_activations)
   hierarchicalBarChart2(featuresParent, featuresChildren)
-  console.log(positionsChildren,positionsParent)
   hierarchicalBarChart3(positionsChildren,positionsParent)
 });
 
@@ -115,6 +114,5 @@ async function fetchData(option) {
       }
   } catch (error) {
       console.error("Failed to fetch or parse data:", error);
-      // Optionally, inform the user visually
   }
 }

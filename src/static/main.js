@@ -194,7 +194,7 @@ const barWidth = 30;
  * OBS: The legend in this one doesnt adjust well on other screens
  */
 function hierarchicalBarChart(parent, data) {
-  d3.select("svg.feature-view-1").selectAll("*").remove();;
+  d3.select("svg.feature-view-1").selectAll("*").remove();
   const svgContainer = d3.select(".feature-view-1"); // Ensure you have a container with this class
   const width = svgContainer.node().clientWidth;
   const height = svgContainer.node().clientHeight;
@@ -211,8 +211,6 @@ function hierarchicalBarChart(parent, data) {
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
   
-  const legendInfo = [{ title: `Skipping`, color: skipping_color }, { title: `Inclusion`, color: inclusion_color }];
-
   const getFillColor = (node) => {
     if (typeof node === "number") {
       return node === 1 ? skipping_color : inclusion_color;
@@ -317,39 +315,6 @@ function hierarchicalBarChart(parent, data) {
         .attr("fill", getFillColor(d));
     });
 
-  // Initialize legend
-  var legendItemSize = 12*widthRatio;
-  var legendSpacing = 4;
-  var xOffset = chartWidth-(margin.left+5 *widthRatio); // Adjust the x-offset to position the legend
-  var yOffset = (margin.top -30)* heightRatio;
-
-  var legend = svg
-    .selectAll('.legendItem')
-    .data(legendInfo)
-    .enter()
-    .append('g')
-    .attr('class', 'legendItem')
-    .attr('transform', (d, i) => {
-      var x = xOffset;
-      var y = yOffset + (legendItemSize + legendSpacing) * i;
-      return `translate(${x}, ${y})`;
-    });
-
-  // Create legend color squares
-  legend
-    .append('rect')
-    .attr('width', legendItemSize)
-    .attr('height', legendItemSize)
-    .style('fill', d => d.color);
-
-  // Create legend labels
-  legend
-    .append('text')
-    .attr('x', legendItemSize + 5)
-    .attr('y', legendItemSize / 2)
-    .attr('dy', '0.35em')
-    .style('font-size', `${12*widthRatio}px`)
-    .text(d => d.title);
 };
 /**
  * hierarchicalBarChart2

@@ -129,13 +129,25 @@ html {
     text-align: center;
     gap: 0.2rem;
   }
-  
+
   .svg-grid-long-skipping {
     display: grid;
-    flex-direction: column;
+    flex-direction: row;
     gap: 0.2rem;
     width:50%;
     margin-left: auto; /* This will push the grid to the right */
+  } 
+  .bottom{
+    display: flex;
+    flex-direction: row;
+    gap: 0.3125rem;
+    justify-content: space-between;
+  }
+  .legend {
+    margin-right: auto; /* This will push the grid to the right */
+    display: grid;
+    width:50%;
+    height:5vw;
   }
   
   .feature-long-svg {
