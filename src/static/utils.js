@@ -54,8 +54,6 @@ d3.select('.legend').selectAll("*").remove();
 // Append SVG to the legend div
 const svg = d3.select('.legend')
   .append('svg')
-  // .attr('width', width)
-  // .attr('height', height);
 
 // Initialize legend
 const legendItemSize = 20*widthRatio;

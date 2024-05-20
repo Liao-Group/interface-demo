@@ -172,7 +172,7 @@ const barWidth = 30;
 
   const bar = chartGroup.append('rect')
     .attr('x', (chartWidth / 2) - (barWidth / 2))
-    .attr('width', 30)
+    .attr('width', barWidth)
     .attr('y', plotPSI ? yScale2(0.5) : yScale(0))
     .attr('height', 0)
     .attr('fill', barColor)
@@ -277,6 +277,7 @@ function hierarchicalBarChart(parent, data) {
   svg.append("g")
     .attr("class", "y-axis")
     .call(yAxis);
+  const barWidth = 30;
 
   // Create bars
   svg.selectAll(".bar")
@@ -285,7 +286,7 @@ function hierarchicalBarChart(parent, data) {
     .attr("class", "bar")
     .attr("x", d => xScale(d.data.name))
     .attr("y", d => yScale(d.value))
-    .attr("width", xScale.bandwidth())
+    .attr("width", barWidth)
     .attr("height", d => chartHeight - yScale(d.value))
     .attr("fill", d => getFillColor(d))
     .attr("stroke", "#000")
@@ -325,7 +326,7 @@ const hierarchicalBarChart2 = (parent, data) => {
   const width = svgContainer.node().clientWidth;
   const height = svgContainer.node().clientHeight;
   const heightRatio = height/370;
-  const widthRatio = width/391;
+  const widthRatio = width/491;
 
   const margin = { top: 40, right: 20, bottom: 30, left: 40 };
   const chartWidth = width - margin.left - margin.right;
@@ -435,13 +436,15 @@ const hierarchicalBarChart2 = (parent, data) => {
 
   featureSelection(featureName = null, data = parent, use_new_grouping = use_new_grouping)
   // Create bars for topChildren
+  const barWidth = 30;
+  const barSpacing = 6.5; 
   svg.selectAll(".bar")
     .data(topChildren)
     .enter().append("rect")
     .attr("class", function (d) { return "bar " + d.data.name; })
-    .attr("x", d => xScale(d.data.name))
+    .attr("x", (d,i) => (i * barSpacing) + xScale(d.data.name))
     .attr("y", d => yScale(d.value))
-    .attr("width", xScale.bandwidth())
+    .attr("width", barWidth)
     .attr("height", d => chartHeight - yScale(d.value))
     .attr("fill", d => color)
     .attr("stroke", "#000") // Set the color of the outline
@@ -489,8 +492,9 @@ function hierarchicalBarChart3(data, parentName){
   const svgContainer = d3.select(".feature-view-3"); // Ensure you have a container with this class
   const width = svgContainer.node().clientWidth;
   const height = svgContainer.node().clientHeight;
+
   const heightRatio = height/370;
-  const widthRatio = width/591;
+  const widthRatio = width/491;
 
   const margin = { top: 40, right: 20, bottom: 30, left: 40 };
   const charWidth = width - margin.left - margin.right;
@@ -530,12 +534,12 @@ function hierarchicalBarChart3(data, parentName){
   // Sort children by value in descending order and keep only the top 10
   const topChildren = children
     .sort((a, b) => b.value - a.value)
-    .slice(0, 10);
+    .slice(0, 8);
 
   const xScale = d3.scaleBand()
     .domain(topChildren.map(d => d.data.name))
     .range([0, charWidth])
-    .padding(0.2);
+    .padding(0.1);
 
   /* Change y range to a fix range */
   const yScale = d3.scaleLinear()
@@ -586,13 +590,15 @@ function hierarchicalBarChart3(data, parentName){
     .call(yAxis);
 
   // Create bars
+  const barWidth = 30;
+  const barSpacing = 2.5; 
   svg.selectAll(".bar")
     .data(topChildren)
     .enter().append("rect")
     .attr("class", function (d) { return "bar " + d.data.name; })
-    .attr("x", d => xScale(d.data.name))
+    .attr("x", (d,i) => (i * barSpacing) + xScale(d.data.name))
     .attr("y", d => yScale(d.value))
-    .attr("width", xScale.bandwidth())
+    .attr("width", barWidth)
     .attr("height", d => chartHeight - yScale(d.value))
     .attr("fill", d => color)
     .attr("stroke", "#000")
