@@ -33,7 +33,7 @@ function flatten_nested_json(data) {
   return result;
 }
 
-
+let selected = null
 
 function featureSelection(featureName = null, className = null, use_new_grouping = null) {
   const gridContainer = document.querySelector('.feature-legend-container');
@@ -85,8 +85,6 @@ legend.append('text')
   .attr('dy', '0.35em')
   .style('font-size', `${20*widthRatio}px`)  // Adjust font size here
   .text(d => d.title);
-
-
   // Function to update SVGs with new data and highlight the selected feature
   const updateSVGs = (containerSelector, svgSelector, imagesArray, colors) => {
     const svgContainer = d3.select(containerSelector)
@@ -130,48 +128,66 @@ legend.append('text')
           background.style("fill", "none");
         }
       } catch (error) {
-        console.log(error)
         background.style("fill", "none");
       }
+
       if (svgSelector === ".feature-long-svg") {
         svg.select("image")
           .attr("xlink:href", d.url)
           .attr("preserveAspectRatio", "none")
-          // .attr("viewBox", "0 0 400 50") // Adjust viewBox to match the aspect ratio of the image
           .attr("width", "100%") // Use percentage width
           .attr("height", "100%"); // Use percentage height
       } else {
         svg.select("image")
           .attr("xlink:href", d.url)
           .attr("preserveAspectRatio", "none")
-          // .attr("viewBox", "0 0 100 50") // Adjust viewBox to match the aspect ratio of the image
           .attr("width", "100%") // Use percentage width
           .attr("height", "100%"); // Use percentage height
       }
 
       svg.on("mouseover", (event, data) => {
-        d3.select("svg.feature-view-2")
-          .selectAll(".bar." + d.feature)
-          .transition(300)
-          .style("fill", colors[1]);
 
+          d3.select("svg.feature-view-2")
+            .selectAll(".bar." + d.feature)
+            .transition(300)
+            .attr("fill", colors[1]);
+       
         background.transition(300).style("fill", colors[0]);
         svg.select(this).style("border", `3px solid ${colors[1]}`);
       })
         .on("mouseout", (event, data) => {
-          d3.select("svg.feature-view-2")
+          console.log(d.feature ,selected)
+          if(d.feature !== selected){
+              d3.select("svg.feature-view-2")
             .selectAll(".bar." + d.feature)
             .transition(300)
-            .style("fill", colors[0]);
-
+            .attr("fill", colors[0]);
+          }
+          
           if (d.feature !== featureName) {
             background.transition(300).style("fill", "none");
             svg.select(this).style("border", "none").style("box-shadow", "none");
           }
         })
         .on("click", (event, info) => {
-          console.log("clicked", d.feature);
-          featureSelection(d.feature, className, use_new_grouping = use_new_grouping);
+          previous = selected
+          selected = d.feature
+
+          if(previous!== selected){
+             d3.select("svg.feature-view-2")
+              .selectAll(".bar." + d.feature)
+              .transition(300)
+              .attr("fill", colors[1]);
+            d3.select("svg.feature-view-2")
+              .selectAll(".bar." + previous)
+              .transition(300)
+              .attr("fill", colors[0]);
+          }
+
+          featureSelection(d.feature, d.feature.split("_")[0], use_new_grouping = use_new_grouping);
+          const childreData = d.feature.split("_")[0] === 'incl' ? Data.feature_activations.children[0] : Data.feature_activations.children[1] 
+          // hierarchicalBarChart2(d.feature.split("_")[0],childreData)
+          console.log(Data.feature_activations.children[0])
           if (Data) {
             nucleotideFeatureView(Data, Data.feature_activations, d.feature);
           }
