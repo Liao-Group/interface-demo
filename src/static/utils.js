@@ -89,10 +89,9 @@ legend.append('text')
       .selectAll(svgSelector)
       .data(imagesArray, d => d.feature);
 
-    
-    const svgEnter = svgContainer.enter()
+      const svgEnter = svgContainer.enter()
       .append("svg")
-      .attr("class", svgSelector.slice(1));
+      .attr("class", d => `${svgSelector.slice(1)} ${d.feature}`);
 
     svgEnter.append("rect").attr("class", "background");
     svgEnter.append("image");
@@ -180,11 +179,16 @@ legend.append('text')
               .selectAll(".bar." + previous)
               .transition(300)
               .attr("fill", colors[0]);
+            d3.select("svg.feature-view-2")
+              .selectAll(selectedFeatureBar)
+              .transition(300)
+              .attr("fill", colors[0]);
           }
 
           featureSelection(d.feature, d.feature.split("_")[0]);
           const childreData = d.feature.split("_")[0] === 'incl' ? Data.feature_activations.children[0] : Data.feature_activations.children[1] 
-          // hierarchicalBarChart2(d.feature.split("_")[0],childreData)
+          // this is causing to reset the feature legend 
+          hierarchicalBarChart2(d.feature.split("_")[0],childreData,selected)
           console.log(Data.feature_activations.children[0])
           if (Data) {
             nucleotideFeatureView(Data, Data.feature_activations, d.feature);

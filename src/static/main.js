@@ -333,7 +333,7 @@ function hierarchicalBarChart(parent, data) {
 /**
  * hierarchicalBarChart2
  */
-function hierarchicalBarChart2(parent, data){
+function hierarchicalBarChart2(parent, data,selectedFeatureBar = selected){
   d3.select("svg.feature-view-2").selectAll("*").remove();;
   const svgContainer = d3.select(".feature-view-2"); // Ensure you have a container with this class
   const width = svgContainer.node().clientWidth;
@@ -447,7 +447,7 @@ function hierarchicalBarChart2(parent, data){
     .attr("text-anchor", "middle")
     .attr("dominant-baseline", "middle");
 
-  featureSelection(featureName = null, data = parent)
+  // featureSelection(featureName = selectedFeatureBar, className = parent)
   // Create bars for topChildren
   const barWidth = 30;
   const barSpacing = 6.5;
@@ -466,7 +466,6 @@ function hierarchicalBarChart2(parent, data){
     .attr("stroke-width", 1)
     .on("click", function (event, d) {
 
-
       if (topChildren[d].children) {
         if (selectedFeatureBar === this) {
           selectedFeatureBar = null;
@@ -480,17 +479,14 @@ function hierarchicalBarChart2(parent, data){
           d3.select(selectedFeatureBar).attr("fill", highlightColor);  // Apply highlight color
         }
         featureSelected = topChildren[d].data.name
-        console.log(featureSelected)
         var className = topChildren[d].data.name.split('_')[0]
         positionsChildren = topChildren[d];
         positionsParent = topChildren[d].data.name
-        featureSelection(topChildren[d].data.name, className = className)
         hierarchicalBarChart3(topChildren[d], topChildren[d].data.name);
         if (topChildren[d].data.name.slice(-4) != "bias") {
           nucleotideFeatureView(parent, parent.feature_activations, topChildren[d].data.name);
         }
       }
-      // hierarchicalBarChart2(parent, data)
     })
     .on("mouseover", function (event, d) {
       // Apply highlight color on hover only if it's not the selected bar
