@@ -12,7 +12,6 @@ var featuresParent = []
 var featuresChildren = []
 var positionsParent = []
 var positionsChildren = []
-var use_new_grouping = false
 
 let selectedFeatureBar = null; 
 /**
@@ -176,7 +175,6 @@ function PSIview(data) {
     .attr("stroke", "#000")
     .attr("stroke-width", 1)
     .on("click", function (event, d) {
-      // featureSelection(use_new_grouping = use_new_grouping, use_new_grouping = use_new_grouping)
       nucleotideView(data.sequence, data.structs, data.nucleotide_activations);
     })
 
@@ -310,7 +308,7 @@ function hierarchicalBarChart(parent, data) {
         hierarchicalBarChart2(parent, data.children[d])
         const svgElement = d3.select("svg.feature-view-3");
         svgElement.selectAll("*").remove();
-        featureSelection(featureName = null, className = className, use_new_grouping = use_new_grouping)
+        featureSelection(featureName = null, className = className)
         nucleotideView(parent.sequence, parent.structs, parent.nucleotide_activations, className);
       }
     })
@@ -449,7 +447,7 @@ function hierarchicalBarChart2(parent, data){
     .attr("text-anchor", "middle")
     .attr("dominant-baseline", "middle");
 
-  featureSelection(featureName = null, data = parent, use_new_grouping = use_new_grouping)
+  featureSelection(featureName = null, data = parent)
   // Create bars for topChildren
   const barWidth = 30;
   const barSpacing = 6.5;
@@ -486,7 +484,7 @@ function hierarchicalBarChart2(parent, data){
         var className = topChildren[d].data.name.split('_')[0]
         positionsChildren = topChildren[d];
         positionsParent = topChildren[d].data.name
-        featureSelection(topChildren[d].data.name, className = className, use_new_grouping = use_new_grouping)
+        featureSelection(topChildren[d].data.name, className = className)
         hierarchicalBarChart3(topChildren[d], topChildren[d].data.name);
         if (topChildren[d].data.name.slice(-4) != "bias") {
           nucleotideFeatureView(parent, parent.feature_activations, topChildren[d].data.name);
@@ -497,7 +495,7 @@ function hierarchicalBarChart2(parent, data){
     .on("mouseover", function (event, d) {
       // Apply highlight color on hover only if it's not the selected bar
       var className = topChildren[d].data.name.split('_')[0]
-      featureSelection(topChildren[d].data.name, className = className, use_new_grouping = use_new_grouping)
+      featureSelection(topChildren[d].data.name, className = className)
       if (selectedFeatureBar !== this) {
         d3.select(this).transition()
           .duration(100)
@@ -507,7 +505,7 @@ function hierarchicalBarChart2(parent, data){
     .on("mouseout", function (event, d) {
       // Revert to normal color on mouse out only if it's not the selected bar
       var className = topChildren[d].data.name.split('_')[0]
-      featureSelection(featureSelected, className = className, use_new_grouping = use_new_grouping)
+      featureSelection(featureSelected, className = className)
       if (selectedFeatureBar !== this) {
         d3.select(this).transition()
           .duration(100)
@@ -1226,7 +1224,7 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom, colors) 
     const featureClass = d3.select(this).attr("class").split(" ")[3];
     var featureName = featureClass.split("-")[1];
     var className = featureName.split('_')[0];
-    featureSelection(featureName, className, use_new_grouping);
+    featureSelection(featureName, className);
     d3.selectAll(`.incl.wide-bar.${featureClass}`)
       .raise()
       .transition()
@@ -1242,7 +1240,7 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom, colors) 
 
   inclBars.on("mouseout", function (event, d) {
     d3.select(this).transition().duration(100).attr("fill", inclusionColor);
-    featureSelection('', 'incl', use_new_grouping);
+    featureSelection('', 'incl');
     svg_zoom.selectAll(".incl.wide-bar").attr("fill", inclusionColor).attr("opacity", 0.5);
     svg_zoom.selectAll(".incl.annotate").attr("opacity", 0);
   });
@@ -1271,7 +1269,7 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom, colors) 
     const featureClass = d3.select(this).attr("class").split(" ")[3];
     var featureName = featureClass.split("-")[1];
     var className = featureName.split('_')[0];
-    featureSelection(featureName, className, use_new_grouping);
+    featureSelection(featureName, className);
     d3.selectAll(`.skip.wide-bar.${featureClass}`)
       .raise()
       .transition()
@@ -1287,7 +1285,7 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom, colors) 
 
   skipBars.on("mouseout", function (event, d) {
     d3.select(this).transition().duration(100).attr("fill", skippingColor);
-    featureSelection('', 'skip', use_new_grouping);
+    featureSelection('', 'skip');
     svg_zoom.selectAll(".skip.wide-bar").attr("fill", skippingColor).attr("opacity", 0.5);
     svg_zoom.selectAll(".skip.annotate").attr("opacity", 0);
   });

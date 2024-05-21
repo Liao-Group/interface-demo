@@ -62,7 +62,7 @@ function toggleDropdown() {
 // event for when the screen is resized and we need to re-render the graphs in the page again
 
 window.addEventListener('resize',function(){
-  featureSelection(featureSelected=null,className = null,use_new_grouping =use_new_grouping)
+  featureSelection(featureSelected=null,className = null)
   PSIview(Data); // Redraw the graph with the same data
   hierarchicalBarChart(Data, Data.feature_activations)
   nucleotideView(Data.sequence, Data.structs, Data.nucleotide_activations)
@@ -101,11 +101,10 @@ async function fetchData(option) {
           console.error("Error fetching data:", data.error);
           // Optionally, inform the user visually
       } else {
-          use_new_grouping = data.use_new_grouping === 1;
-          console.log("Using new grouping:", use_new_grouping);
+          console.log("Using new grouping:");
           window.Data = data;
           // Render data
-          featureSelection(null, data, use_new_grouping);
+          featureSelection(null, data);
           nucleotideView(data.sequence, data.structs, data.nucleotide_activations);
           PSIview(data);
           hierarchicalBarChart(data, data.feature_activations);

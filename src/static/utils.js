@@ -35,10 +35,8 @@ function flatten_nested_json(data) {
 
 let selected = null
 
-function featureSelection(featureName = null, className = null, use_new_grouping = null) {
+function featureSelection(featureName = null, className = null) {
   const gridContainer = document.querySelector('.feature-legend-container');
-  const featureLongSVGs = document.querySelectorAll('.feature-long-svg');
-  const featureSVGs = document.querySelectorAll('.feature-svg');
   const width = gridContainer.clientWidth;
   const height = gridContainer.clientHeight;
   const titleDiv = document.querySelector('.feature-legend-title'); // Select the title div
@@ -184,7 +182,7 @@ legend.append('text')
               .attr("fill", colors[0]);
           }
 
-          featureSelection(d.feature, d.feature.split("_")[0], use_new_grouping = use_new_grouping);
+          featureSelection(d.feature, d.feature.split("_")[0]);
           const childreData = d.feature.split("_")[0] === 'incl' ? Data.feature_activations.children[0] : Data.feature_activations.children[1] 
           // hierarchicalBarChart2(d.feature.split("_")[0],childreData)
           console.log(Data.feature_activations.children[0])
