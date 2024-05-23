@@ -165,7 +165,7 @@ function PSIview(data) {
   }
   // to adjust the width of the bar in the graph we make the 
   // graph rectangle fixed and the make the margins dynamic. 
-  const barWidth = 30;
+  const barWidth = 25;
 
   const bar = chartGroup.append('rect')
     .attr('x', (chartWidth / 2) - (barWidth / 2))
@@ -177,6 +177,11 @@ function PSIview(data) {
     .attr("stroke-width", 1)
     .on("click", function (event, d) {
       nucleotideView(data.sequence, data.structs, data.nucleotide_activations);
+      featureSelection()
+      hierarchicalBarChart(data, data.feature_activations);
+      d3.select("svg.feature-view-2").selectAll("*").remove();
+      d3.select("svg.feature-view-3").selectAll("*").remove();
+
     })
 
 
@@ -273,7 +278,7 @@ function hierarchicalBarChart(parent, data) {
   svg.append("g")
     .attr("class", "y-axis")
     .call(yAxis);
-  const barWidth = 30;
+  const barWidth = 25;
   let selectedBar = null;  // Variable to store the selected bar
 
   // Create bars
@@ -627,7 +632,7 @@ function hierarchicalBarChart3(data, parentName) {
 
   // Create bars
   let selectedPosition = null
-  const barWidth = 30;
+  const barWidth = 25;
   const barSpacing = 2.5;
   svg.selectAll(".bar")
     .data(topChildren)
