@@ -117,7 +117,8 @@ function PSIview(data) {
   const psi = chartGroup.append('text')
     .attr('transform', `translate(${chartWidth + 60}, ${chartHeight / 2}) rotate(-90)`)
     .attr("font-size", `${12 * heightRatio}px`)
-    .attr('dy', '-1.50em')
+    // .attr("x", -chartWidth / 2)
+    .attr("y",  -23)
     .style('text-anchor', 'middle')
     .text('Predicted PSI')
 
@@ -136,7 +137,7 @@ function PSIview(data) {
   const strength = chartGroup.append('text')
     .attr('transform', 'rotate(-90)')
     .attr('x', -chartHeight / 2)
-    .attr('dy', '-2.25em')
+    .attr("y",  -25)
     .attr("font-size", `${12 * heightRatio}px`)
     // .attr('dy', '-1.50em')
     .style('text-anchor', 'middle')
@@ -196,7 +197,7 @@ function hierarchicalBarChart(parent, data) {
   const heightRatio = height / 370;
   const widthRatio = width / 193;
 
-  const margin = { top: 40, right: 20, bottom: 30, left: 50 };
+  const margin = { top: 40, right:20, bottom: 30, left: 50 };
   const svg = d3.select("svg.feature-view-1")
     .attr("width", width)
     .attr("height", height)
@@ -259,7 +260,7 @@ function hierarchicalBarChart(parent, data) {
     .attr("text-anchor", "middle")
     .attr("transform", "rotate(-90)")
     .attr("x", -chartHeight / 2)
-    .attr("y", -31)
+    .attr("y",  -32)
     .attr("font-size", `${12 * heightRatio}px`)
     .text("Strength (a.u.)");
 
@@ -341,7 +342,7 @@ function hierarchicalBarChart2(parent, data,selectedFeatureBar = selected){
   const heightRatio = height / 370;
   const widthRatio = width / 491;
 
-  const margin = { top: 40, right: 20, bottom: 30, left: 40 };
+  const margin = { top: 40, right:20, bottom: 30, left: 40 };
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
 
@@ -382,7 +383,7 @@ function hierarchicalBarChart2(parent, data,selectedFeatureBar = selected){
   // Sort children by strength in descending order and keep only the top 10
   const topChildren = root.children
     .sort((a, b) => b.value - a.value)
-  // .slice(0, 8);
+  .slice(0, 9);
 
   // Use the topChildren for xScale domain
   const xScale = d3.scaleBand()
@@ -450,7 +451,7 @@ function hierarchicalBarChart2(parent, data,selectedFeatureBar = selected){
   // featureSelection(featureName = selectedFeatureBar, className = parent)
   // Create bars for topChildren
   const barWidth = 30;
-  const barSpacing = 6.5;
+  const barSpacing = .9;
 
 
   svg.selectAll(".bar")
