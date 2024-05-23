@@ -34,6 +34,8 @@ function flatten_nested_json(data) {
 }
 
 let selected = null
+let selectedClass = null
+let previousClassColor = null
 
 function featureSelection(featureName = null, className = null) {
   const gridContainer = document.querySelector('.feature-legend-container');
@@ -169,7 +171,20 @@ legend.append('text')
         .on("click", (event, info) => {
           previous = selected
           selected = d.feature
-
+          previousClass = selectedClass
+          selectedClass = d.feature.split('_')[0]
+          if (previousClass!==selectedClass){
+          d3.select("svg.feature-view-1")
+          .selectAll(`.bar-${selectedClass}` )
+          .transition(300)
+          .attr("fill", colors[1]);
+          d3.select("svg.feature-view-1")
+          .selectAll(`.bar-${previousClass}` )
+          .transition(300)
+          .attr("fill", previousClassColor);
+          previousClassColor = colors[0]
+          }
+         
           if(previous!== selected){
              d3.select("svg.feature-view-2")
               .selectAll(".bar." + d.feature)

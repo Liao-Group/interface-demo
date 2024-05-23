@@ -289,7 +289,7 @@ function hierarchicalBarChart(parent, data) {
     .attr("stroke", "#000")
     .attr("stroke-width", 1)
     .on("click", function (event, d) {
-
+      console.log(this)
       if (selectedBar === this) {
         selectedBar = null;
         d3.select(this).attr("fill", d => getFillColor(d));  // Revert to normal color if deselected
@@ -448,7 +448,6 @@ function hierarchicalBarChart2(parent, data,selectedFeatureBar = selected){
     .attr("text-anchor", "middle")
     .attr("dominant-baseline", "middle");
 
-  // featureSelection(featureName = selectedFeatureBar, className = parent)
   // Create bars for topChildren
   const barWidth = 30;
   const barSpacing = .9;
