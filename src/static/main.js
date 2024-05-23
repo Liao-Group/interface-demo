@@ -10,8 +10,8 @@ This variable represents the data coming formt he json file.
 var Data = []
 var featuresParent = []
 var featuresChildren = []
-var positionsParent = []
-var positionsChildren = []
+var positionsParent = null
+var positionsChildren =null
 
 let selectedFeatureBar = null; 
 /**
@@ -165,7 +165,7 @@ function PSIview(data) {
   }
   // to adjust the width of the bar in the graph we make the 
   // graph rectangle fixed and the make the margins dynamic. 
-  const barWidth = 30;
+  const barWidth = 25;
 
   const bar = chartGroup.append('rect')
     .attr('x', (chartWidth / 2) - (barWidth / 2))
@@ -177,6 +177,11 @@ function PSIview(data) {
     .attr("stroke-width", 1)
     .on("click", function (event, d) {
       nucleotideView(data.sequence, data.structs, data.nucleotide_activations);
+      featureSelection()
+      hierarchicalBarChart(data, data.feature_activations);
+      d3.select("svg.feature-view-2").selectAll("*").remove();
+      d3.select("svg.feature-view-3").selectAll("*").remove();
+
     })
 
 
@@ -273,7 +278,7 @@ function hierarchicalBarChart(parent, data) {
   svg.append("g")
     .attr("class", "y-axis")
     .call(yAxis);
-  const barWidth = 30;
+  const barWidth = 25;
   let selectedBar = null;  // Variable to store the selected bar
 
   // Create bars
@@ -334,7 +339,7 @@ function hierarchicalBarChart(parent, data) {
 /**
  * hierarchicalBarChart2
  */
-function hierarchicalBarChart2(parent, data,selectedFeatureBar = selected){
+function hierarchicalBarChart2(parent, data){
   d3.select("svg.feature-view-2").selectAll("*").remove();;
   const svgContainer = d3.select(".feature-view-2"); // Ensure you have a container with this class
   const width = svgContainer.node().clientWidth;
@@ -383,7 +388,7 @@ function hierarchicalBarChart2(parent, data,selectedFeatureBar = selected){
   // Sort children by strength in descending order and keep only the top 10
   const topChildren = root.children
     .sort((a, b) => b.value - a.value)
-  .slice(0, 9);
+  // .slice(0, 9);
 
   // Use the topChildren for xScale domain
   const xScale = d3.scaleBand()
@@ -449,10 +454,20 @@ function hierarchicalBarChart2(parent, data,selectedFeatureBar = selected){
     .attr("dominant-baseline", "middle");
 
   // Create bars for topChildren
-  const barWidth = 30;
-  const barSpacing = .9;
+  const barWidth = 25;
+  const barSpacing = 4;
+  topChildren.forEach(ele => {
+    if(ele.data.name ===selected){
+      positionsChildren = ele;
+      positionsParent = ele.data.name
+    }
+    
+  });
+  console.log(positionsChildren,positionsParent)
+  if(positionsChildren){
+    hierarchicalBarChart3(positionsChildren,positionsParent);
 
-
+  }
   svg.selectAll(".bar")
     .data(topChildren)
     .enter().append("rect")
@@ -482,7 +497,7 @@ function hierarchicalBarChart2(parent, data,selectedFeatureBar = selected){
         var className = topChildren[d].data.name.split('_')[0]
         positionsChildren = topChildren[d];
         positionsParent = topChildren[d].data.name
-        hierarchicalBarChart3(topChildren[d], topChildren[d].data.name);
+        hierarchicalBarChart3(positionsChildren,positionsParent);
         if (topChildren[d].data.name.slice(-4) != "bias") {
           nucleotideFeatureView(parent, parent.feature_activations, topChildren[d].data.name);
         }
@@ -617,7 +632,7 @@ function hierarchicalBarChart3(data, parentName) {
 
   // Create bars
   let selectedPosition = null
-  const barWidth = 30;
+  const barWidth = 25;
   const barSpacing = 2.5;
   svg.selectAll(".bar")
     .data(topChildren)
