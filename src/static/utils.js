@@ -157,7 +157,7 @@ legend.append('text')
         .on("mouseout", (event, data) => {
           console.log(d.feature ,selected)
           if(d.feature !== selected){
-              d3.select("svg.feature-view-2")
+            d3.select("svg.feature-view-2")
             .selectAll(".bar." + d.feature)
             .transition(300)
             .attr("fill", colors[0]);
@@ -172,7 +172,11 @@ legend.append('text')
           previous = selected
           selected = d.feature
           previousClass = selectedClass
-          selectedClass = d.feature.split('_')[0]
+          selectedClass = d.feature.split('_')[0]      
+          const childreData = d.feature.split("_")[0] === 'incl' ? Data.feature_activations.children[0] : Data.feature_activations.children[1] 
+    
+          hierarchicalBarChart2(d.feature.split("_")[0],childreData)
+
           if (previousClass!==selectedClass){
           d3.select("svg.feature-view-1")
           .selectAll(`.bar-${selectedClass}` )
@@ -194,16 +198,10 @@ legend.append('text')
               .selectAll(".bar." + previous)
               .transition(300)
               .attr("fill", colors[0]);
-            d3.select("svg.feature-view-2")
-              .selectAll(selectedFeatureBar)
-              .transition(300)
-              .attr("fill", colors[0]);
           }
 
           featureSelection(d.feature, d.feature.split("_")[0]);
-          const childreData = d.feature.split("_")[0] === 'incl' ? Data.feature_activations.children[0] : Data.feature_activations.children[1] 
           // this is causing to reset the feature legend 
-          hierarchicalBarChart2(d.feature.split("_")[0],childreData,selected)
           console.log(Data.feature_activations.children[0])
           if (Data) {
             nucleotideFeatureView(Data, Data.feature_activations, d.feature);
