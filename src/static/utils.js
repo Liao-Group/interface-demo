@@ -48,7 +48,7 @@ function featureSelection(featureName = null, className = null) {
   
   titleDiv.style.fontSize = `${0.875*widthRatio}rem`;
 
-  const legendInfo = [{ title: `Skipping`, color: skipping_color }, { title: `Inclusion`, color: inclusion_color }];
+  const legendInfo = [{ title: `Skipping`, color: skipping_color,highlight:skipping_highlight_color }, { title: `Inclusion`, color: inclusion_color }];
 
 d3.select('.legend').selectAll("*").remove();
 // Append SVG to the legend div
@@ -74,9 +74,16 @@ const legend = svg.selectAll('.legendItem')
 
 // Create legend color squares
 legend.append('rect')
+  .attr('class', (d)=>'rectangle ' + d.name)
   .attr('width', legendItemSize)
   .attr('height', legendItemSize)
-  .style('fill', d => d.color);
+  .attr('fill', d => d.color);
+
+if (className ==="skip"){
+
+
+}
+
 
 // Create legend labels
 legend.append('text')
@@ -176,19 +183,6 @@ legend.append('text')
           const childreData = d.feature.split("_")[0] === 'incl' ? Data.feature_activations.children[0] : Data.feature_activations.children[1] 
     
           hierarchicalBarChart2(d.feature.split("_")[0],childreData)
-
-          // if (previousClass!==selectedClass){
-          // d3.select("svg.feature-view-1")
-          // .selectAll(`.bar-${selectedClass}` )
-          // // .transition(300)
-          // .attr("fill", colors[1]);
-          // d3.select("svg.feature-view-1")
-          // .selectAll(`.bar-${previousClass}` )
-          // // .transition(300)
-          // .attr("fill", previousClassColor);
-          // previousClassColor = colors[0]
-          // }
-          
           if(selectedClass === 'skip'){
             d3.select("svg.feature-view-1")
             .selectAll(`.bar-incl` )
