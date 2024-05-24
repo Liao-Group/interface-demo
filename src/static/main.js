@@ -1093,8 +1093,15 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom,colors) {
   // const maxStrength = d3.max([maxIncl, maxSkip]);
   const maxStrength = 6;
 
-  const topInclData = inclData.sort((a, b) => b.strength - a.strength).slice(0, 10);
-  const topSkipData = skipData.sort((a, b) => b.strength - a.strength).slice(0, 10);
+  const filterData = [
+    {'name': '1', 'strength': 0, 'length': 0},{'name': '2', 'strength': 0, 'length': 0},
+    {'name': '3', 'strength': 0, 'length': 0},{'name': '4', 'strength': 0, 'length': 0},
+    {'name': '5', 'strength': 0, 'length': 0},{'name': '6', 'strength': 0, 'length': 0},
+    {'name': '7', 'strength': 0, 'length': 0},{'name': '8', 'strength': 0, 'length': 0},
+    {'name': '9', 'strength': 0, 'length': 0},{'name': '0', 'strength': 0, 'length': 0},
+  ];
+  const topInclData = inclData.sort((a, b) => b.strength - a.strength).concat(filterData).slice(0, 10);
+  const topSkipData = skipData.sort((a, b) => b.strength - a.strength).concat(filterData).slice(0, 10);
 
   // X axis setup
   const sortXIncl = d3.scaleBand()
