@@ -17,15 +17,16 @@
 
 <body>
   <!-- Javascript code that use d3.js to draw figures -->
+
   <script src="static/constants.js"></script>
   <script src="static/events.js"></script>
   <script src="static/utils.js"></script> 
-   <script src="static/main.js"></script>
+  <script src="static/main.js"></script>
 
 
   <!-- Input exon -->
 
-     <form id="exonForm" method="post">
+  <form id="exonForm" method="post">
     <div class="select-wrapper">
       <select name="option" id="option">
         <option value="teaser_18">Teaser</option>
@@ -35,11 +36,12 @@
         <option value="exon_s1_34c>a_18">Exon S1 Single Mutation</option>
         <option value="exon_s1_34c>a_46g>u_18">Exon S1 Double Mutation</option>
         <option value="exon_s1_34c>a_46g>u_18">Exon D1 G-poor</option>
+
       </select>
-      <div class="arrow" ></div>
+      <div class="arrow"></div>
     </div>
-    <input type="submit" value="Submit">
   </form>
+  
 
   <!--setting dropdown -->
   <div class="dropdown">
@@ -76,8 +78,13 @@
         <div class="feature-grids-wrapper">
           <div class="svg-grid-inclusion"></div>
           <div class="svg-grid-skipping"></div>
-        </div>
+        </div>  
+        <div class="bottom">
+        <div class="legend"></div>
         <div class="svg-grid-long-skipping"></div>
+        
+        </div>
+       
       </div>
     </div>
     <div class="nucleotide-view">

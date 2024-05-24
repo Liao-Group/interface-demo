@@ -33,36 +33,67 @@ function flatten_nested_json(data) {
   return result;
 }
 
+let selected = null
+let selectedClass = null
+let previousClassColor = null
 
-
-function featureSelection(featureName = null, className = null, use_new_grouping = null) {
+function featureSelection(featureName = null, className = null) {
   const gridContainer = document.querySelector('.feature-legend-container');
-  const featureLongSVGs = document.querySelectorAll('.feature-long-svg');
-  const featureSVGs = document.querySelectorAll('.feature-svg');
   const width = gridContainer.clientWidth;
   const height = gridContainer.clientHeight;
-
-  const widthRatio = width/ 591;
+  const titleDiv = document.querySelector('.feature-legend-title'); // Select the title div
+  const widthRatio = width / 491;
   const heightRatio = height / 381;
-  console.log(width,height)
+  console.log(widthRatio,heightRatio)
+  
+  titleDiv.style.fontSize = `${0.875*widthRatio}rem`;
 
-  // featureLongSVGs.forEach(svg => {
-  //   svg.style.width = `calc(100% -${0.350*heightRatio}rem)`;
-  //   svg.style.height = `calc(100% -${0.5*heightRatio}rem)`;
-  // });
-  // featureSVGs.forEach(svg => {
-  //   svg.style.width = `calc(100% -${0.125*heightRatio}rem)`;
-  //   svg.style.height = `calc(50% -${0.125*heightRatio}rem)`;
-  // });
+  const legendInfo = [{ title: `Skipping`, color: skipping_color }, { title: `Inclusion`, color: inclusion_color }];
+
+d3.select('.legend').selectAll("*").remove();
+// Append SVG to the legend div
+const svg = d3.select('.legend')
+  .append('svg')
+
+// Initialize legend
+const legendItemSize = 20*widthRatio;
+const legendSpacing = 4;
+const xOffset = width - 400*widthRatio; // Adjust the x-offset to position the legend within visible range
+const yOffset = 20;  // Start drawing from top with a small margin
+
+const legend = svg.selectAll('.legendItem')
+  .data(legendInfo)
+  .enter()
+  .append('g')
+  .attr('class', 'legendItem')
+  .attr('transform', (d, i) => {
+    var x = xOffset;
+    var y = yOffset + (legendItemSize + legendSpacing) * i;
+    return `translate(${x}, ${y})`;
+  });
+
+// Create legend color squares
+legend.append('rect')
+  .attr('width', legendItemSize)
+  .attr('height', legendItemSize)
+  .style('fill', d => d.color);
+
+// Create legend labels
+legend.append('text')
+  .attr('x', legendItemSize + 5)
+  .attr('y', legendItemSize / 2)
+  .attr('dy', '0.35em')
+  .style('font-size', `${20*widthRatio}px`)  // Adjust font size here
+  .text(d => d.title);
   // Function to update SVGs with new data and highlight the selected feature
   const updateSVGs = (containerSelector, svgSelector, imagesArray, colors) => {
     const svgContainer = d3.select(containerSelector)
       .selectAll(svgSelector)
       .data(imagesArray, d => d.feature);
 
-    const svgEnter = svgContainer.enter()
+      const svgEnter = svgContainer.enter()
       .append("svg")
-      .attr("class", svgSelector.slice(1));
+      .attr("class", d => `${svgSelector.slice(1)} ${d.feature}`);
 
     svgEnter.append("rect").attr("class", "background");
     svgEnter.append("image");
@@ -75,7 +106,7 @@ function featureSelection(featureName = null, className = null, use_new_grouping
       if (d.feature.split('_')[0] === className) {
         svg.style("border", `2px solid ${colors[1]}`);
       } else {
-        svg.style("border", `2px solid gray`).style("box-shadow", "none");
+        svg.style("border", `2px solid ${lightOther}`).style("box-shadow", "none");
       }
 
       const background = svg.select(".background")
@@ -84,8 +115,6 @@ function featureSelection(featureName = null, className = null, use_new_grouping
         .attr("width", "100%")
         .attr("height", "100%")
         .style("fill", "none");
-
-      // console.log(featureName)
 
 
       try {
@@ -98,48 +127,102 @@ function featureSelection(featureName = null, className = null, use_new_grouping
           background.style("fill", "none");
         }
       } catch (error) {
-        console.log(error)
         background.style("fill", "none");
       }
+
       if (svgSelector === ".feature-long-svg") {
         svg.select("image")
           .attr("xlink:href", d.url)
           .attr("preserveAspectRatio", "none")
-          // .attr("viewBox", "0 0 400 50") // Adjust viewBox to match the aspect ratio of the image
           .attr("width", "100%") // Use percentage width
           .attr("height", "100%"); // Use percentage height
       } else {
         svg.select("image")
           .attr("xlink:href", d.url)
           .attr("preserveAspectRatio", "none")
-          // .attr("viewBox", "0 0 100 50") // Adjust viewBox to match the aspect ratio of the image
           .attr("width", "100%") // Use percentage width
           .attr("height", "100%"); // Use percentage height
       }
 
       svg.on("mouseover", (event, data) => {
-        d3.select("svg.feature-view-2")
-          .selectAll(".bar." + d.feature)
-          .transition(300)
-          .style("fill", colors[1]);
 
+          d3.select("svg.feature-view-2")
+            .selectAll(".bar." + d.feature)
+            // .transition(300)
+            .attr("fill", colors[1]);
+       
         background.transition(300).style("fill", colors[0]);
         svg.select(this).style("border", `3px solid ${colors[1]}`);
       })
         .on("mouseout", (event, data) => {
-          d3.select("svg.feature-view-2")
+          console.log(d.feature ,selected)
+          if(d.feature !== selected){
+            d3.select("svg.feature-view-2")
             .selectAll(".bar." + d.feature)
-            .transition(300)
-            .style("fill", colors[0]);
-
+            // .transition(300)
+            .attr("fill", colors[0]);
+          }
+          
           if (d.feature !== featureName) {
             background.transition(300).style("fill", "none");
             svg.select(this).style("border", "none").style("box-shadow", "none");
           }
         })
         .on("click", (event, info) => {
-          console.log("clicked", d.feature);
-          featureSelection(d.feature, className, use_new_grouping = use_new_grouping);
+          previous = selected
+          selected = d.feature
+          previousClass = selectedClass
+          selectedClass = d.feature.split('_')[0]      
+          const childreData = d.feature.split("_")[0] === 'incl' ? Data.feature_activations.children[0] : Data.feature_activations.children[1] 
+    
+          hierarchicalBarChart2(d.feature.split("_")[0],childreData)
+
+          // if (previousClass!==selectedClass){
+          // d3.select("svg.feature-view-1")
+          // .selectAll(`.bar-${selectedClass}` )
+          // // .transition(300)
+          // .attr("fill", colors[1]);
+          // d3.select("svg.feature-view-1")
+          // .selectAll(`.bar-${previousClass}` )
+          // // .transition(300)
+          // .attr("fill", previousClassColor);
+          // previousClassColor = colors[0]
+          // }
+          
+          if(selectedClass === 'skip'){
+            d3.select("svg.feature-view-1")
+            .selectAll(`.bar-incl` )
+            // .transition(300)
+            .attr("fill", inclusion_color);
+            d3.select("svg.feature-view-1")
+            .selectAll(`.bar-skip` )
+            // .transition(300)
+            .attr("fill", skipping_highlight_color);
+          }else if (selectedClass === 'incl'){
+            d3.select("svg.feature-view-1")
+            .selectAll(`.bar-skip` )
+            // .transition(300)
+            .attr("fill", skipping_color);
+            d3.select("svg.feature-view-1")
+            .selectAll(`.bar-incl` )
+            // .transition(300)
+            .attr("fill", inclusion_highlight_color);
+          }
+         
+          if(previous!== selected){
+             d3.select("svg.feature-view-2")
+              .selectAll(".bar." + d.feature)
+              // .transition(300)
+              .attr("fill", colors[1]);
+            d3.select("svg.feature-view-2")
+              .selectAll(".bar." + previous)
+              // .transition(300)
+              .attr("fill", colors[0]);
+          }
+
+          featureSelection(d.feature, d.feature.split("_")[0]);
+          // this is causing to reset the feature legend 
+          console.log(Data.feature_activations.children[0])
           if (Data) {
             nucleotideFeatureView(Data, Data.feature_activations, d.feature);
           }
@@ -148,7 +231,7 @@ function featureSelection(featureName = null, className = null, use_new_grouping
 
     svgContainer.exit().remove();
   };
-  if(use_new_grouping) {
+
   // Update SVGs for inclusion images
   updateSVGs("div.svg-grid-inclusion", ".feature-svg", newImagesData.inclusion, [inclusion_color, inclusion_highlight_color]);
 
@@ -157,22 +240,5 @@ function featureSelection(featureName = null, className = null, use_new_grouping
 
   // Update SVGs for long skipping images
   updateSVGs("div.svg-grid-long-skipping", ".feature-long-svg", newImagesData.longSkipping, [skipping_color, skipping_highlight_color]);
-  } else {
-  // Update SVGs for inclusion images
-  updateSVGs("div.svg-grid-inclusion", ".feature-svg", imagesData.inclusion, [inclusion_color, inclusion_highlight_color]);
 
-  // Update SVGs for skipping images
-  updateSVGs("div.svg-grid-skipping", ".feature-svg", imagesData.skipping, [skipping_color, skipping_highlight_color]);
-
-  // Update SVGs for long skipping images
-  updateSVGs("div.svg-grid-long-skipping", ".feature-long-svg", imagesData.longSkipping, [skipping_color, skipping_highlight_color]);
-  }
-
-  // featureLongSVGs.forEach(svg => {
-  //   svg.style.height = `${3*heightRatio}rem`;
-  // });
-  // featureSVGs.forEach(svg => {
-  //   svg.style.width = `${6.25*widthRatio}rem`;
-  //   svg.style.height = `${3*heightRatio}rem`;
-  // });
 }

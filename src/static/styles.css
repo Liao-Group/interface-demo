@@ -15,10 +15,9 @@ html {
   height: 100vh;
   display: grid;
   grid-template-areas:
-  "fl fl fl fl fl fl pv pv f1 f1 f2 f2 f2 f2 f3 f3 f3 f3 f3"
-  "fl fl fl fl fl fl pv pv f1 f1 f2 f2 f2 f2 f3 f3 f3 f3 f3"
-  "fl fl fl fl fl fl pv pv f1 f1 f2 f2 f2 f2 f3 f3 f3 f3 f3"
-  "nv nv nv nv nv nv nv nv nv nv nv nv nv nz nz nz ns ns ns"
+  "fl fl fl fl fl pv pv f1 f1 f2 f2 f2 f2 f2 f3 f3 f3 f3 f3"
+  "fl fl fl fl fl pv pv f1 f1 f2 f2 f2 f2 f2 f3 f3 f3 f3 f3"
+  "fl fl fl fl fl pv pv f1 f1 f2 f2 f2 f2 f2 f3 f3 f3 f3 f3"
   "nv nv nv nv nv nv nv nv nv nv nv nv nv nz nz nz ns ns ns"
   "nv nv nv nv nv nv nv nv nv nv nv nv nv nz nz nz ns ns ns"
   "nv nv nv nv nv nv nv nv nv nv nv nv nv nz nz nz ns ns ns"
@@ -42,7 +41,7 @@ html {
   .select-wrapper {
   position: relative;
   display: inline-block;
-  width: 12.5rem;
+  width: 18rem;
   margin-right: 0.625rem;
   }
   .select-wrapper select {
@@ -121,6 +120,7 @@ html {
     display: flex;
     flex-direction: row;
     gap: 0.3125rem;
+    justify-content: space-between;
   }
   
   .svg-grid-inclusion,
@@ -131,32 +131,46 @@ html {
     text-align: center;
     gap: 0.2rem;
   }
+ 
   
   .svg-grid-long-skipping {
-    display: flex;
+    display: grid;
     flex-direction: row;
     gap: 0.2rem;
-    width: 75%;
+    width:50%;
+    margin-left: auto; /* This will push the grid to the right */
+  } .bottom{
+    display: flex;
+    flex-direction: row;
+    gap: 0.3125rem;
+    justify-content: space-between;
+  }
+  .legend {
+    margin-right: auto; /* This will push the grid to the right */
+    display: grid;
+    width:50%;
+    height:5vw;
   }
   
-  /* thi vw usin is dynamic */
   .feature-long-svg {
     border: 1px solid black;
-    width: 18vw; 
-    height: 3vw; 
+    width: 11.225vw;
+    height: 2.5vw;
     box-sizing: border-box;
     border-radius: 0.3125rem;
-    object-fit: fill; 
+    object-fit: fill;
+    order: 1;  /* This will ensure that the long SVG is positioned after the skipping grid */
   }
   
   .feature-svg {
     border: 2px solid black;
-    width: 6vw; 
-    height: 2.5vw; 
+    width: 5.5vw;
+    height: 2.5vw;
     box-sizing: border-box;
     border-radius: 0.3125rem;
-    object-fit: fill; 
+    object-fit: fill;
   }
+  
   .toggleButton {
   width: 2.625rem;
   height: 1.375rem;
@@ -226,139 +240,3 @@ html {
   width: 80%;
   }
 
-  
-/* 
-  @media screen and (max-width: 1024px) {
-    .grid-container {
-      grid-template-areas:
-        "fl fl fl fl pv pv f1 f1"
-        "fl fl fl fl pv pv f1 f1"
-        "f2 f2 f2 f2 f3 f3 f3 f3"
-        "f2 f2 f2 f2 f3 f3 f3 f3"
-        "nv nv nv nv nz nz ns ns"
-        "nv nv nv nv nz nz ns ns";
-    }
-    .feature-long-svg {
-      border: 1px solid black;
-      width: calc(100% - 0.6rem);
-      height: 3rem; 
-      box-sizing: border-box;
-      border-radius: 0.3125rem;
-      object-fit: fill;
-    }
-    .feature-svg {
-      border: 2px solid black;
-      width: 6rem;
-      height: 2rem;
-      box-sizing: border-box;
-      border-radius: 0.3125rem;
-      object-fit: fill;
-    }
-  }
-
-  @media screen and (max-width: 900px) {
-    .grid-container {
-      grid-template-areas:
-        "fl fl pv pv"
-        "fl fl pv pv"
-        "f1 f1 f2 f2"
-        "f1 f1 f2 f2"
-        "f3 f3 f3 f3"
-        "nv nv nz ns"
-        "nv nv nz ns";
-    }
-    .feature-long-svg {
-      border: 1px solid black;
-      width: calc(100% - 0.6rem);
-      height: 2rem; 
-      box-sizing: border-box;
-      border-radius: 0.3125rem;
-      object-fit: fill;
-    }
-    .feature-svg {
-      border: 2px solid black;
-      width: 4.25rem;
-      height: 1.5rem;
-      box-sizing: border-box;
-      border-radius: 0.3125rem;
-      object-fit: fill;
-    }
-  }
-  
-  @media screen and (max-width: 700px) {
-    
-    .feature-long-svg {
-      border: 1px solid black;
-      width: calc(100% - 0.6rem);
-      height: 1.5rem; 
-      box-sizing: border-box;
-      border-radius: 0.3125rem;
-      object-fit: fill;
-    }
-    .feature-svg {
-      border: 2px solid black;
-      width: 4.25rem;
-      height: 1rem;
-      box-sizing: border-box;
-      border-radius: 0.3125rem;
-      object-fit: fill;
-    }
-  }
-  @media screen and (max-width: 500px) {
-    .grid-container {
-      grid-template-areas:
-        "fl fl"
-        "pv pv"
-        "f1 f2"
-        "f3 f3"
-        "nv nz"
-        "ns ns";
-    }
-    .feature-long-svg {
-      border: 1px solid black;
-      width: calc(100% - 0.6rem);
-      height: 1.5rem; 
-      box-sizing: border-box;
-      border-radius: 0.3125rem;
-      object-fit: fill;
-    }
-    .feature-svg {
-      border: 2px solid black;
-      width: 3.5rem;
-      height: 1.25rem;
-      box-sizing: border-box;
-      border-radius: 0.3125rem;
-      object-fit: fill;
-    }
-  }
-  
-  @media screen and (max-width: 300px) {
-    .grid-container {
-      grid-template-areas:
-        "fl"
-        "pv"
-        "f1"
-        "f2"
-        "f3"
-        "nv"
-        "nz"
-        "ns";
-    }
-    .feature-long-svg {
-      border: 1px solid black;
-      width: calc(100% - 0.6rem);
-      height: 1rem; 
-      box-sizing: border-box;
-      border-radius: 0.3125rem;
-      object-fit: fill;
-    }
-    .feature-svg {
-      border: 2px solid black;
-      width: 100%;
-      height: 1rem;
-      box-sizing: border-box;
-      border-radius: 0.3125rem;
-      object-fit: fill;
-    }
-  }
-   */
