@@ -33,7 +33,7 @@ function flatten_nested_json(data) {
   return result;
 }
 
-const getFillColor = (input) => {
+function getFillColor(input){
   if (typeof input === "number") {
     return input === 1 ? skipping_color : inclusion_color;
   } else if (typeof input === "object" && input !== null) {
@@ -60,7 +60,7 @@ const getFillColor = (input) => {
   return inclusion_color; // Default color if input format is not recognized
 };
 
-const getHighlightColor = (input) => {
+function getHighlightColor(input){
   if (typeof input === "number") {
     return input === 1 ? skipping_highlight_color : inclusion_highlight_color;
   } else if (typeof input === "object" && input !== null) {
