@@ -18,6 +18,7 @@ var widthRatio
 
 
 let selectedFeatureBar = null;
+
 /**
  * PSI view function
  * currently working with the reisizing, I will probaly have to figure it out how to have a better ratio and 
@@ -220,20 +221,6 @@ function hierarchicalBarChart(parent, data) {
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
 
-  const getFillColor = (node) => {
-    if (typeof node === "number") {
-      return node === 1 ? skipping_color : inclusion_color;
-    } else if (node) {
-      return node.data.name === "skip" ? skipping_color : inclusion_color;
-    } else {
-      return inclusion_color; // Default color if node is neither a number nor an object
-    }
-  };
-
-  const getHighlightColor = (node) => {
-    return node === 1 ? skipping_highlight_color : inclusion_highlight_color;
-  };
-
   const root = d3.hierarchy(data).sum(d => d.strength);
 
   const xScale = d3.scaleBand()
@@ -360,25 +347,6 @@ function hierarchicalBarChart2(parent, data) {
   const margin = { top: 40, right: 20, bottom: 30, left: 40 };
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
-
-  const getFillColor = (data) => {
-    // Custom logic for color
-    if (data.name === 'incl') {
-      return inclusion_color;
-    } else {
-      return skipping_color;
-    }
-  };
-
-  const getHighlightColor = (data) => {
-
-    // Custom logic for color
-    if (data.name === 'incl') {
-      return inclusion_highlight_color;
-    } else {
-      return skipping_highlight_color;
-    }
-  };
 
   const color = getFillColor(data);
   const highlightColor = getHighlightColor(data);
@@ -557,22 +525,6 @@ function hierarchicalBarChart3(data, parentName) {
   const charWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
 
-  const getFillColor = (name) => {
-    if (String(name).split("_")[0] === 'incl') {
-      return inclusion_color;
-    } else {
-      return skipping_color;
-    }
-  };
-
-  const getHighlightColor = (name) => {
-    // Custom logic for color
-    if (String(name).split("_")[0] === 'incl') {
-      return inclusion_highlight_color;
-    } else {
-      return skipping_highlight_color;
-    }
-  };
 
   const color = getFillColor(parentName);
   const highlightColor = getHighlightColor(parentName);
@@ -611,12 +563,7 @@ function hierarchicalBarChart3(data, parentName) {
     .attr("x", charWidth / 2)
     .attr("y", - margin.top / 2)
     .attr("text-anchor", "middle")
-
-    // .style('font-size', '14px')
     .style('font-size', `${14 * widthRatio}px`)
-    // =======
-    //     .style('font-size', `${14 * widthRatio}px`)
-    // >>>>>>> main
     .text("Strongest Positions for Given Feature");
 
   svg.append("text")
