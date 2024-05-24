@@ -208,11 +208,7 @@ function hierarchicalBarChart(parent, data) {
   const height = svgContainer.node().clientHeight;
 
   const heightRatio = height/370;
-  // const widthRatio = width/193;
-// =======
-//   const heightRatio = height / 370;
-//   const widthRatio = width / 193;
-// >>>>>>> main
+
 
   const margin = { top: 40, right:20, bottom: 30, left: 50 };
   const svg = d3.select("svg.feature-view-1")
@@ -295,16 +291,15 @@ function hierarchicalBarChart(parent, data) {
 
   // Create bars
   svg.selectAll(".bar")
-    .data(root.children ? root.children : [])
-    .enter().append("rect")
-    .attr("class", d => `bar-${d.data.name}`)
-    .attr("x", d => xScale(d.data.name))
-    .attr("y", d => yScale(d.value))
-    .attr("width", barWidth)
-    .attr("height", d => chartHeight - yScale(d.value))
-    .attr("fill", d => getFillColor(d))
-    .attr("stroke", "#000")
-    .attr("stroke-width", 1)
+  .data(root.children ? root.children : [])
+  .enter().append("rect")
+  .attr("class", d => `bar-${d.data.name}`)
+  .attr("x", d => xScale(d.data.name))
+  .attr("y", chartHeight)
+  .attr("width", barWidth)
+  .attr("fill", d => getFillColor(d))
+  .attr("stroke", "#000")
+  .attr("stroke-width", 1)
     .on("click", function (event, d) {
       console.log(this)
       if (selectedBar === this) {
@@ -345,8 +340,11 @@ function hierarchicalBarChart(parent, data) {
           .duration(100)
           .attr("fill", getFillColor(d));
       }
-    });
-
+    }) 
+    .transition()
+    .duration(1000)
+    .attr("y", d => yScale(d.value))
+    .attr("height", d => chartHeight - yScale(d.value));
 };
 /**
  * hierarchicalBarChart2
@@ -732,11 +730,7 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
     .attr("x", width / 2)
     .attr("y", margin.top / 2 + 5)
     .attr("text-anchor", "middle")
-    // .style("font-size", "14px")
     .style('font-size', `${14*widthRatio}px`)
-// =======
-//     .style("font-size", `${14 * widthRatio}px`)
-// >>>>>>> main
     .text("Exon View");
 
   // Add X axis

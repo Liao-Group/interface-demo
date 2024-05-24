@@ -77,10 +77,3 @@ const newImagesData = {
     { url: "static/transparent/skip_struct.png", feature: "skip_struct" }
   ]
 };
-
-// var Data = []
-// var featuresParent = []
-// var featuresChildren = []
-// var positionsParent = []
-// var positionsChildren = []
-// var use_new_grouping = false
