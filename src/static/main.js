@@ -13,6 +13,7 @@ var featuresChildren = []
 var positionsParent = []
 var positionsChildren = []
 var use_new_grouping = false
+var widthRatio
 
 /**
  * PSI view function
@@ -30,7 +31,7 @@ function PSIview(data) {
   const width = svgContainer.node().clientWidth;
   const height = svgContainer.node().clientHeight;
   const heightRatio = height/370;
-  const widthRatio = width/193;
+  widthRatio = width/193;
 
   const svg = d3.select("svg.psi-view")
     .attr("width", width)
@@ -48,8 +49,8 @@ function PSIview(data) {
   var yScale = d3.scaleLinear().domain([lowerBound, upperBound]).range([chartHeight, 0]);
   var yAxis = d3.axisLeft(yScale).ticks(5);
   if(plotPSI){
-    const deltaForce = [-20, -10, -5, 0, 5, 10, 20];
-    const correspondingPSI = [0.071174, 0.232515, 0.361840, 0.5, 0.638148, 0.756705, 0.892360];
+    const deltaForce = [-100, -20, -10, -5, 0, 5, 10, 20, 100];
+    const correspondingPSI = [0.000006, 0.071174, 0.232515, 0.361840, 0.5, 0.638148, 0.756705, 0.892360, 0.987334];
     yScale = d3.scaleLinear().domain([0, 1]).range([chartHeight, 0]);
     yAxis = d3.axisLeft(yScale).tickValues(correspondingPSI)
       .tickFormat(function(d, i) { return deltaForce[i]; });
@@ -207,7 +208,7 @@ function hierarchicalBarChart(parent, data) {
   const width = svgContainer.node().clientWidth;
   const height = svgContainer.node().clientHeight;
   const heightRatio = height/370;
-  const widthRatio = width/193;
+  // const widthRatio = width/193;
 
   const margin = { top: 40, right: 20, bottom: 30, left: 50};
   const svg = d3.select("svg.feature-view-1")
@@ -432,7 +433,8 @@ const hierarchicalBarChart2 = (parent, data) => {
     .attr("x", chartWidth / 2)
     .attr("y", - margin.top / 2)
     .attr("text-anchor", "middle")
-    .style('font-size', '14px')
+    // .style('font-size', '14px')
+    .style('font-size', `${14*widthRatio}px`)
     .text((data.name == "incl" ? "Inclusion" : "Skipping") + ' Features');
 
   svg.append("text")
@@ -590,7 +592,8 @@ function hierarchicalBarChart3(data, parentName){
     .attr("x", charWidth / 2)
     .attr("y", - margin.top / 2)
     .attr("text-anchor", "middle")
-    .style('font-size', '14px')
+    // .style('font-size', '14px')
+    .style('font-size', `${14*widthRatio}px`)
     .text("Strongest Positions for Given Feature");
 
   svg.append("text")
@@ -683,7 +686,8 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
     .attr("x", (width / 2)*widthRatio)
     .attr("y", margin.top / 2 + 5)
     .attr("text-anchor", "middle")
-    .style("font-size", "14px")
+    // .style("font-size", "14px")
+    .style('font-size', `${14*widthRatio}px`)
     .text("Exon View");
 
   // Add X axis
@@ -1070,12 +1074,19 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom,colors) {
     .attr("x", width / 2)
     .attr("y", margin.top / 2 + 5)
     .attr("text-anchor", "middle")
-    .style("font-size", "14px")
+    // .style("font-size", "14px")
+    .style('font-size', `${14*widthRatio}px`)
     .text("Nucleotide View");
 
   // Data preparation
-  const inclData = flatten_nested_json(d3.selectAll(`.obj.incl.${pos}`).datum());
-  const skipData = flatten_nested_json(d3.selectAll(`.obj.skip.${pos}`).datum());
+  if(d3.selectAll(`.obj.incl.${pos}`).size() == 0){ var inclData = []; } 
+  else {
+    var inclData = flatten_nested_json(d3.selectAll(`.obj.incl.${pos}`).datum());
+  }
+  if(d3.selectAll(`.obj.skip.${pos}`).size() == 0){ var skipData = []; } 
+  else {
+    var skipData = flatten_nested_json(d3.selectAll(`.obj.skip.${pos}`).datum());
+  }
   /* Change y range to a fix range */
   // const maxIncl = d3.max(inclData.map(d => d.strength));
   // const maxSkip = d3.max(skipData.map(d => d.strength));
@@ -1307,7 +1318,8 @@ function nucleotideZoom(sequence, structs, pos, margin, zoom_width, height, svg_
     .attr("x", zoom_width / 2)
     .attr("y", margin.top / 2 + 5)
     .attr("text-anchor", "middle")
-    .style("font-size", "14px")
+    // .style("font-size", "14px")
+    .style('font-size', `${14*widthRatio}px`)
     .text("Nucleotide Features");
 
   // Add X axis
@@ -1327,9 +1339,9 @@ function nucleotideZoom(sequence, structs, pos, margin, zoom_width, height, svg_
     .attr("class", "x axis")
     .attr("transform", `translate(0, ${margin.top + (height - margin.top - margin.bottom) / 2 - 5})`);
 
-  zoom_xAxis.tickFormat((d) => Array.from(structs.slice(int_pos - 6, int_pos + 5))[d + 5]);
+  zoom_xAxis.tickFormat((d) => structs[int_pos-1+d])
   zoom_xSkipAxis.tickFormat((d) => (d % 5 === 0 && int_pos + d - 10 > 0 && int_pos + d - 10 < 71) ? int_pos + d - 10 : "");
-  zoom_xNuAxis.tickFormat((d) => Array.from(sequence.slice(int_pos - 6, int_pos + 5))[d + 5]);
+  zoom_xNuAxis.tickFormat((d) => sequence[int_pos-1+d]);
 
   zoom_gxIncl.transition().duration(800).call(zoom_xAxis);
   zoom_gxSkip.transition().duration(800).call(zoom_xSkipAxis);
@@ -1402,8 +1414,14 @@ function nucleotideZoom(sequence, structs, pos, margin, zoom_width, height, svg_
   right_border.raise().transition().duration(1000).attr("opacity", 1);
 
   // Data
-  const incl_data = flatten_nested_json(d3.selectAll(`.obj.incl.${pos}`).datum());
-  const skip_data = flatten_nested_json(d3.selectAll(`.obj.skip.${pos}`).datum());
+  if(d3.selectAll(`.obj.incl.${pos}`).size() == 0){ var incl_data = []; } 
+  else {
+    var incl_data = flatten_nested_json(d3.selectAll(`.obj.incl.${pos}`).datum());
+  }
+  if(d3.selectAll(`.obj.skip.${pos}`).size() == 0){ var skip_data = []; } 
+  else {
+    var skip_data = flatten_nested_json(d3.selectAll(`.obj.skip.${pos}`).datum());
+  }
   const max_incl = d3.max(incl_data.map((d) => d.strength));
   const max_skip = d3.max(skip_data.map((d) => d.strength));
   max_strength = d3.max([max_incl, max_skip]);
