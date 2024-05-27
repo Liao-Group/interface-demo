@@ -67,7 +67,7 @@ window.addEventListener('resize',function(){
   hierarchicalBarChart(Data, Data.feature_activations)
   nucleotideView(Data.sequence, Data.structs, Data.nucleotide_activations)
   hierarchicalBarChart2(featuresParent, featuresChildren)
-  hierarchicalBarChart3(positionsChildren,positionsParent)
+  hierarchicalBarChart3(positionsParent,positionsChildren )
 });
 
 document.addEventListener("DOMContentLoaded", async function() {

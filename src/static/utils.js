@@ -33,6 +33,60 @@ function flatten_nested_json(data) {
   return result;
 }
 
+function getFillColor(input){
+  if (typeof input === "number") {
+    return input === 1 ? skipping_color : inclusion_color;
+  } else if (typeof input === "object" && input !== null) {
+    if (input.data && typeof input.data === "object") {
+      if (input.data.name === "skip" || input.data.name.split("_")[0] === "skip") {
+        return skipping_color;
+      } else {
+        return inclusion_color;
+      }
+    } else if (input.name) {
+      if (input.name === "skip" || input.name.split("_")[0] === "skip") {
+        return skipping_color;
+      } else {
+        return inclusion_color;
+      }
+    }
+  } else if (typeof input === "string") {
+    if (input === "skip" || input.split("_")[0] === "skip") {
+      return skipping_color;
+    } else {
+      return inclusion_color;
+    }
+  }
+  return inclusion_color; // Default color if input format is not recognized
+};
+
+function getHighlightColor(input){
+  if (typeof input === "number") {
+    return input === 1 ? skipping_highlight_color : inclusion_highlight_color;
+  } else if (typeof input === "object" && input !== null) {
+    if (input.data && typeof input.data === "object") {
+      if (input.data.name === "skip" || input.data.name.split("_")[0] === "skip") {
+        return skipping_highlight_color;
+      } else {
+        return inclusion_highlight_color;
+      }
+    } else if (input.name) {
+      if (input.name === "skip" || input.name.split("_")[0] === "skip") {
+        return skipping_highlight_color;
+      } else {
+        return inclusion_highlight_color;
+      }
+    }
+  } else if (typeof input === "string") {
+    if (input === "skip" || input.split("_")[0] === "skip") {
+      return skipping_highlight_color;
+    } else {
+      return inclusion_highlight_color;
+    }
+  }
+  return inclusion_highlight_color; // Default highlight color if input format is not recognized
+};
+
 let selected = null
 let selectedClass = null
 let previousClassColor = null
