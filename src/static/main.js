@@ -170,7 +170,7 @@ function PSIview(data) {
   }
   // to adjust the width of the bar in the graph we make the 
   // graph rectangle fixed and the make the margins dynamic. 
-  const barWidth = 25;
+  const barWidth = 25*widthRatio;
 
   const bar = chartGroup.append('rect')
     .attr('x', (chartWidth / 2) - (barWidth / 2))
@@ -260,7 +260,7 @@ function hierarchicalBarChart(parent, data) {
     .attr("class", "y-axis")
     .call(yAxis);
 
-  const barWidth = 25;
+  const barWidth = 25*widthRatio;
   let selectedBar = null;
 
   const bars = chart.selectAll(".bar")
@@ -276,6 +276,7 @@ function hierarchicalBarChart(parent, data) {
     .attr("stroke-width", 1);
 
   bars.on("click", function (event, d) {
+    console.log(this)
     if (selectedBar === this) {
       selectedBar = null;
       d3.select(this).attr("fill", d => getFillColor(d));
@@ -298,6 +299,7 @@ function hierarchicalBarChart(parent, data) {
   });
 
   bars.on("mouseover", function (event, d) {
+    console.log(selectedBar)
     if (selectedBar !== this) {
       d3.select(this).transition()
         .duration(100)
@@ -306,6 +308,8 @@ function hierarchicalBarChart(parent, data) {
   });
 
   bars.on("mouseout", function (event, d) {
+    console.log(selectedBar)
+
     if (selectedBar !== this) {
       d3.select(this).transition()
         .duration(100)
@@ -401,8 +405,8 @@ function hierarchicalBarChart2(parent, data) {
     .attr("text-anchor", "middle")
     .attr("dominant-baseline", "middle");
 
-  const barWidth = 25;
-  const barSpacing = 4;
+  const barWidth = 25*widthRatio;
+  const barSpacing = 4*widthRatio;
 
   topChildren.forEach(ele => {
     if (ele.data.name === selected) {
@@ -560,8 +564,8 @@ function hierarchicalBarChart3(parentName, data) {
     .call(yAxis);
 
   let selectedPosition = null;
-  const barWidth = 25;
-  const barSpacing = 2.5;
+  const barWidth = 25* widthRatio;
+  const barSpacing = 2.5* widthRatio;
 
   const bars = chart.selectAll(".bar")
     .data(topChildren)

@@ -98,7 +98,8 @@ function featureSelection(featureName = null, className = null) {
   const titleDiv = document.querySelector('.feature-legend-title'); // Select the title div
   const widthRatio = width / 491;
   const heightRatio = height / 381;
-  
+  titleDiv.style.fontSize = `${14*widthRatio}px`;
+
   const legendInfo = [
     { title: `Skipping`, name: 'skip', color: skipping_color, highlight: skipping_highlight_color }, 
     { title: `Inclusion`, name: 'incl', color: inclusion_color, highlight: inclusion_highlight_color }];
@@ -190,9 +191,6 @@ legend.append('text')
         if (d.feature === featureName) {
           background.style("fill", colors[0])
         }
-        // else if (d.feature.split('_')[1] === featureName.split('_')[1] && featureName.split('_')[1] == 'struct') {
-        //   background.style("fill", colors[0]);
-        // } 
         else {
           background.style("fill", "none");
         }
