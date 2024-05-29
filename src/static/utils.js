@@ -233,10 +233,16 @@ legend.append('text')
           previous = selected
           selected = d.feature
           previousClass = selectedClass
-          selectedClass = d.feature.split('_')[0]      
-          const childreData = d.feature.split("_")[0] === 'incl' ? Data.feature_activations.children[0] : Data.feature_activations.children[1] 
-    
-          hierarchicalBarChart2(d.feature.split("_")[0],childreData)
+          selectedClass = d.feature.split('_')[0]    
+          const childrenData = d.feature.split("_")[0] === 'incl' ? Data.feature_activations.children[0] : Data.feature_activations.children[1]
+          console.log("data",childrenData)
+
+          if (Data) {
+            hierarchicalBarChart2(Data,childrenData)
+            nucleotideFeatureView(Data, Data.feature_activations, d.feature);
+          }  
+
+          // hierarchicalBarChart2(Data.feature_activations,childrenData)
           if(selectedClass === 'skip'){
             d3.select("svg.feature-view-1")
             .selectAll(`.bar-incl` )
@@ -270,10 +276,6 @@ legend.append('text')
 
           featureSelection(d.feature, d.feature.split("_")[0]);
           // this is causing to reset the feature legend 
-          console.log(Data.feature_activations.children[0])
-          if (Data) {
-            nucleotideFeatureView(Data, Data.feature_activations, d.feature);
-          }
         });
     });
 

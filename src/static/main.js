@@ -447,6 +447,7 @@ function hierarchicalBarChart2(parent, data) {
       featureSelection(featureSelected, className);
       positionsChildren = topChildren[d];
       positionsParent = topChildren[d].data.name;
+      console.log(parent)
       hierarchicalBarChart3(positionsParent, positionsChildren);
       if (topChildren[d].data.name.slice(-4) != "bias") {
         nucleotideFeatureView(parent, parent.feature_activations, topChildren[d].data.name);
@@ -907,15 +908,20 @@ function nucleotideFeatureView(parent, data, feature_name) {
   d3.select("svg.nucleotide-zoom").selectAll("*").remove();
 
   var class_name = feature_name.split("_")[0];
+  console.log(class_name) 
+  console.log("data",data)
+  var flat_data =[]
   if (class_name == "incl") {
-    data = flatten_nested_json(data.children[0]).filter(function (d, i, arr) {
+    flat_data = flatten_nested_json(data.children[0]).filter(function (d, i, arr) {
       return d.name.split(" ")[1] == feature_name;
     });
   } else {
-    data = flatten_nested_json(data.children[1]).filter(function (d, i, arr) {
+    flat_data = flatten_nested_json(data.children[1]).filter(function (d, i, arr) {
       return d.name.split(" ")[1] == feature_name;
     });
   }
+  console.log("data post",flat_data)
+
   /* Change y range to a fix range */
   // var max_strength = d3.max(d3.map(data, function (d) { return d.strength / d.length; }).keys());
   var max_strength = 6;
@@ -943,7 +949,7 @@ function nucleotideFeatureView(parent, data, feature_name) {
     gyIncl.transition().duration(800).call(d3.axisLeft(yIncl).ticks(3));
     svg.selectAll("nucleotide-incl-bar")
       // Filter out nucleotide feature with strength < 0.01
-      .data(data.filter(function (d) { return (d.strength / d.length) > 0.01 }))
+      .data(flat_data.filter(function (d) { return (d.strength / d.length) > 0.01 }))
       .enter()
       .append("rect")
       .datum(function (d) { return d; })
@@ -990,7 +996,7 @@ function nucleotideFeatureView(parent, data, feature_name) {
 
     svg.selectAll("nucleotide-skip-bar")
       // Filter out nucleotide feature with strength < 0.01
-      .data(data.filter(function (d) { return (d.strength / d.length) > 0.01 }))
+      .data(flat_data.filter(function (d) { return (d.strength / d.length) > 0.01 }))
       .enter()
       .append("rect")
       .datum(function (d) { return d; })
