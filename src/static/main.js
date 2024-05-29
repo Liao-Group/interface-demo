@@ -436,6 +436,8 @@ function hierarchicalBarChart2(parent, data) {
 
   bars.on("click", function (event, d) {
     if (topChildren[d].children) {
+      // Turn all bars into default color first
+      chart.selectAll(".bar").attr("fill", color);
       if (selectedFeatureBar === this) {
         selectedFeatureBar = null;
         d3.select(this).attr("fill", color);
@@ -448,6 +450,8 @@ function hierarchicalBarChart2(parent, data) {
       }
       featureSelected = topChildren[d].data.name;
       const className = topChildren[d].data.name.split('_')[0];
+      // Regenerate legend
+      featureSelection(featureSelected, className);
       positionsChildren = topChildren[d];
       positionsParent = topChildren[d].data.name;
       hierarchicalBarChart3(positionsParent, positionsChildren);
@@ -597,7 +601,8 @@ function hierarchicalBarChart3(parentName, data) {
       d3.select(this).transition()
         .duration(100)
         .attr("fill", highlightColor);
-      d3.select("svg.nucleotide-view").selectAll(".obj.bar." + d.data.name)
+      const data = d3.select(this).datum();
+      d3.select("svg.nucleotide-view").selectAll(".obj.bar." + data.data.name)
         .raise()
         .transition()
         .duration(300)
@@ -967,10 +972,19 @@ function nucleotideFeatureView(parent, data, feature_name) {
       .attr("opacity", 0.8)
       .lower()
       .on("mouseover", function (d) {
-        d3.select(this).transition().duration(300).attr("fill", inclusion_highlight_color);
+        const data = d3.select(this).datum();
+        d3.select("svg.feature-view-3").selectAll(".bar." + data.name.split(' ')[2])
+          .transition()
+          .duration(300)
+          .attr("fill", inclusion_highlight_color);
+        d3.select(this).raise().attr("fill", inclusion_highlight_color);
       })
       .on("mouseleave", function (d) {
-        d3.select(this).transition().duration(100).attr("fill", inclusion_color);
+        d3.select(this).attr("fill", inclusion_color);
+        d3.select("svg.feature-view-3").selectAll(".bar")
+          .transition()
+          .duration(300)
+          .attr("fill", inclusion_color);
       })
       .transition()
       .duration(800)
@@ -1005,10 +1019,19 @@ function nucleotideFeatureView(parent, data, feature_name) {
       .attr("opacity", 0.8)
       .lower()
       .on("mouseover", function (d) {
-        d3.select(this).transition().duration(300).attr("fill", skipping_highlight_color);
+        const data = d3.select(this).datum();
+        d3.select("svg.feature-view-3").selectAll(".bar." + data.name.split(' ')[2])
+          .transition()
+          .duration(300)
+          .attr("fill", skipping_highlight_color);
+        d3.select(this).raise().attr("fill", skipping_highlight_color);
       })
       .on("mouseleave", function (d) {
-        d3.select(this).transition().duration(100).attr("fill", skipping_color);
+        d3.select(this).attr("fill", skipping_color);
+        d3.select("svg.feature-view-3").selectAll(".bar")
+          .transition()
+          .duration(300)
+          .attr("fill", skipping_color);
       })
       .transition()
       .duration(800)
