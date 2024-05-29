@@ -99,9 +99,9 @@ function featureSelection(featureName = null, className = null) {
   const widthRatio = width / 491;
   const heightRatio = height / 381;
   
-  // titleDiv.style.fontSize = `${0.875*widthRatio}rem`;
-
-  const legendInfo = [{ title: `Skipping`, color: skipping_color,highlight:skipping_highlight_color }, { title: `Inclusion`, color: inclusion_color }];
+  const legendInfo = [
+    { title: `Skipping`, name: 'skip', color: skipping_color, highlight: skipping_highlight_color }, 
+    { title: `Inclusion`, name: 'incl', color: inclusion_color, highlight: inclusion_highlight_color }];
 
 d3.select('.legend').selectAll("*").remove();
 // Append SVG to the legend div
@@ -130,7 +130,16 @@ legend.append('rect')
   .attr('class', (d)=>'rectangle ' + d.name)
   .attr('width', legendItemSize)
   .attr('height', legendItemSize)
-  .attr('fill', d => d.color);
+  .attr('fill', function(d) { 
+    if (className !== null && className === d.name) { return d.highlight; } 
+    else { return d.color; }
+  })
+  .on('mouseover', function(d) { featureSelection(featureName, d.name); })
+  .on('mouseout', function(d) { 
+    if (featureName !== null) { 
+      featureSelection(featureName, featureName.split('_')[0]); 
+    } else { featureSelection(); }
+  });
 
 if (className ==="skip"){
 
@@ -181,9 +190,10 @@ legend.append('text')
         if (d.feature === featureName) {
           background.style("fill", colors[0])
         }
-        else if (d.feature.split('_')[1] === featureName.split('_')[1] && featureName.split('_')[1] == 'struct') {
-          background.style("fill", colors[0]);
-        } else {
+        // else if (d.feature.split('_')[1] === featureName.split('_')[1] && featureName.split('_')[1] == 'struct') {
+        //   background.style("fill", colors[0]);
+        // } 
+        else {
           background.style("fill", "none");
         }
       } catch (error) {
@@ -214,7 +224,7 @@ legend.append('text')
         svg.select(this).style("border", `3px solid ${colors[1]}`);
       })
         .on("mouseout", (event, data) => {
-          console.log(d.feature ,selected)
+          // console.log(d.feature ,selected)
           if(d.feature !== selected){
             d3.select("svg.feature-view-2")
             .selectAll(".bar." + d.feature)

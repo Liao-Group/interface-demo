@@ -431,6 +431,8 @@ function hierarchicalBarChart2(parent, data) {
     if (topChildren[d].children) {
       // Turn all bars into default color first
       chart.selectAll(".bar").attr("fill", color);
+      // Turn all bars into default color first
+      chart.selectAll(".bar").attr("fill", color);
       if (selectedFeatureBar === this) {
         selectedFeatureBar = null;
         d3.select(this).attr("fill", color);
@@ -791,13 +793,13 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
       })
       .on("mouseleave", function (d) {
         d3.select(this).style("fill", barColor);
-        // console.log(barColor)
-      });
-      // .transition()
-      // .duration(800)
-      // .attr("y", (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle))
-      // .attr("height", function (d) { return ySkip(recursive_total_strength(d)) - (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle); })
-      // .delay(function (d, i) { return (i * 10); });
+        console.log(barColor)
+      })
+      .transition()
+      .duration(800)
+      .attr("y", (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle))
+      .attr("height", function (d) { return ySkip(recursive_total_strength(d)) - (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle); })
+      .delay(function (d, i) { return (i * 10); });
   };
 
   if (classSelected === "incl") {
@@ -971,17 +973,18 @@ function nucleotideFeatureView(parent, data, feature_name) {
         d3.select(this).raise().attr("fill", inclusion_highlight_color);
       })
       .on("mouseleave", function (d) {
+        d3.select(this).transition().duration(100).attr("fill", inclusion_color);
         d3.select(this).attr("fill", inclusion_color);
         d3.select("svg.feature-view-3").selectAll(".bar")
           .transition()
           .duration(300)
           .attr("fill", inclusion_color);
       })
-      // .transition()
-      // .duration(800)
-      // .attr("y", function (d) { return yIncl(d.strength / d.length); })
-      // .attr("height", function (d) { return (margin.top + (height - margin.top - margin.bottom) / 2 - margin.middle) - yIncl(d.strength / d.length); })
-      // .delay(function (d, i) { return (i * 10); });
+      .transition()
+      .duration(800)
+      .attr("y", function (d) { return yIncl(d.strength / d.length); })
+      .attr("height", function (d) { return (margin.top + (height - margin.top - margin.bottom) / 2 - margin.middle) - yIncl(d.strength / d.length); })
+      .delay(function (d, i) { return (i * 10); });
   }
   if (class_name == "skip") {
     svg.selectAll("text.ylabel_inclusion").remove();
@@ -1011,6 +1014,7 @@ function nucleotideFeatureView(parent, data, feature_name) {
       .lower()
       .on("mouseover", function (d) {
         const data = d3.select(this).datum();
+
         d3.select("svg.feature-view-3").selectAll(".bar." + data.name.split(' ')[2])
           .transition()
           .duration(300)
@@ -1024,11 +1028,11 @@ function nucleotideFeatureView(parent, data, feature_name) {
           .duration(300)
           .attr("fill", skipping_color);
       })
-      // .transition()
-      // .duration(800)
-      // .attr("y", (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle))
-      // .attr("height", function (d) { return ySkip(d.strength / d.length) - (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle); })
-      // .delay(function (d, i) { return (i * 10); });
+      .transition()
+      .duration(800)
+      .attr("y", (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle))
+      .attr("height", function (d) { return ySkip(d.strength / d.length) - (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle); })
+      .delay(function (d, i) { return (i * 10); });
   }
 }
 /**
