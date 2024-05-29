@@ -170,13 +170,13 @@ function PSIview(data) {
   }
   // to adjust the width of the bar in the graph we make the 
   // graph rectangle fixed and the make the margins dynamic. 
-  const barWidth = 25;
+  const barWidth = 25*widthRatio;
 
   const bar = chartGroup.append('rect')
     .attr('x', (chartWidth / 2) - (barWidth / 2))
     .attr('width', barWidth)
     .attr('y', plotPSI ? yScale2(0.5) : yScale(0))
-    .attr('height', 0)
+    .attr('height', barHeight)
     .attr('fill', barColor)
     .attr("stroke", "#000")
     .attr("stroke-width", 1)
@@ -189,11 +189,6 @@ function PSIview(data) {
 
     })
 
-
-  bar.transition()
-    .duration(1000)
-    .attr('y', plotPSI ? Math.min(yScale2(0.5), barPosition) : Math.min(yScale(0), barPosition))
-    .attr('height', barHeight);
 };
 /**
  * Feature view 1 
@@ -265,7 +260,7 @@ function hierarchicalBarChart(parent, data) {
     .attr("class", "y-axis")
     .call(yAxis);
 
-  const barWidth = 25;
+  const barWidth = 25*widthRatio;
   let selectedBar = null;
 
   const bars = chart.selectAll(".bar")
@@ -273,13 +268,15 @@ function hierarchicalBarChart(parent, data) {
     .enter().append("rect")
     .attr("class", d => `bar-${d.data.name}`)
     .attr("x", d => xScale(d.data.name))
-    .attr("y", chartHeight)
+    .attr("y", d => yScale(d.value))
+    .attr("height", d => chartHeight - yScale(d.value))
     .attr("width", barWidth)
     .attr("fill", d => getFillColor(d))
     .attr("stroke", "#000")
     .attr("stroke-width", 1);
 
   bars.on("click", function (event, d) {
+    console.log(this)
     if (selectedBar === this) {
       selectedBar = null;
       d3.select(this).attr("fill", d => getFillColor(d));
@@ -302,6 +299,7 @@ function hierarchicalBarChart(parent, data) {
   });
 
   bars.on("mouseover", function (event, d) {
+    console.log(selectedBar)
     if (selectedBar !== this) {
       d3.select(this).transition()
         .duration(100)
@@ -310,6 +308,8 @@ function hierarchicalBarChart(parent, data) {
   });
 
   bars.on("mouseout", function (event, d) {
+    console.log(selectedBar)
+
     if (selectedBar !== this) {
       d3.select(this).transition()
         .duration(100)
@@ -317,10 +317,6 @@ function hierarchicalBarChart(parent, data) {
     }
   });
 
-  bars.transition()
-    .duration(1000)
-    .attr("y", d => yScale(d.value))
-    .attr("height", d => chartHeight - yScale(d.value));
 }
 /**
  * hierarchicalBarChart2
@@ -409,8 +405,8 @@ function hierarchicalBarChart2(parent, data) {
     .attr("text-anchor", "middle")
     .attr("dominant-baseline", "middle");
 
-  const barWidth = 25;
-  const barSpacing = 4;
+  const barWidth = 25*widthRatio;
+  const barSpacing = 4*widthRatio;
 
   topChildren.forEach(ele => {
     if (ele.data.name === selected) {
@@ -428,7 +424,8 @@ function hierarchicalBarChart2(parent, data) {
     .enter().append("rect")
     .attr("class", d => "bar " + d.data.name)
     .attr("x", (d, i) => (i * barSpacing) + xScale(d.data.name))
-    .attr("y", chartHeight)
+    .attr("y", d => yScale(d.value))
+    .attr("height", d => chartHeight - yScale(d.value))
     .attr("width", barWidth)
     .attr("fill", d => color)
     .attr("stroke", "#000")
@@ -436,6 +433,8 @@ function hierarchicalBarChart2(parent, data) {
 
   bars.on("click", function (event, d) {
     if (topChildren[d].children) {
+      // Turn all bars into default color first
+      chart.selectAll(".bar").attr("fill", color);
       // Turn all bars into default color first
       chart.selectAll(".bar").attr("fill", color);
       if (selectedFeatureBar === this) {
@@ -454,6 +453,7 @@ function hierarchicalBarChart2(parent, data) {
       featureSelection(featureSelected, className);
       positionsChildren = topChildren[d];
       positionsParent = topChildren[d].data.name;
+      console.log(parent)
       hierarchicalBarChart3(positionsParent, positionsChildren);
       if (topChildren[d].data.name.slice(-4) != "bias") {
         nucleotideFeatureView(parent, parent.feature_activations, topChildren[d].data.name);
@@ -481,11 +481,6 @@ function hierarchicalBarChart2(parent, data) {
     }
     featureSelected = '';
   });
-
-  bars.transition()
-    .duration(1000)
-    .attr("y", d => yScale(d.value))
-    .attr("height", d => chartHeight - yScale(d.value));
 }
 /**
  * hierarchicalBarChart3
@@ -569,15 +564,16 @@ function hierarchicalBarChart3(parentName, data) {
     .call(yAxis);
 
   let selectedPosition = null;
-  const barWidth = 25;
-  const barSpacing = 2.5;
+  const barWidth = 25* widthRatio;
+  const barSpacing = 2.5* widthRatio;
 
   const bars = chart.selectAll(".bar")
     .data(topChildren)
     .enter().append("rect")
     .attr("class", d => "bar " + d.data.name)
     .attr("x", (d, i) => (i * barSpacing) + xScale(d.data.name))
-    .attr("y", chartHeight)
+    .attr("y", d => yScale(d.value))
+    .attr("height", d => chartHeight - yScale(d.value))
     .attr("width", barWidth)
     .attr("fill", color)
     .attr("stroke", "#000")
@@ -622,10 +618,6 @@ function hierarchicalBarChart3(parentName, data) {
     }
   });
 
-  bars.transition()
-    .duration(1000)
-    .attr("y", d => yScale(d.value))
-    .attr("height", d => chartHeight - yScale(d.value));
 }
 /**
  * nucleotideView 
@@ -753,17 +745,17 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
       .datum(function (d) { return d; })
       .attr("class", function (d) { return "obj incl pos_" + d.name.slice(4); })
       .attr("x", function (d) { return x(parseInt(d.name.slice(4))); })
-      .attr("y", function (d) { return yIncl(0); })
+      .attr("y", function (d) { return yIncl(recursive_total_strength(d)); })
       .attr("width", x.bandwidth())
-      .attr("height", 0)
+      .attr("height", function (d) { return (margin.top + (height - margin.top - margin.bottom) / 2 - margin.middle) - yIncl(recursive_total_strength(d)); })
       .attr("fill", barColor)
       .attr("stroke", line_color)
-      .lower()
-      .transition()
-      .duration(800)
-      .attr("y", function (d) { return yIncl(recursive_total_strength(d)); })
-      .attr("height", function (d) { return (margin.top + (height - margin.top - margin.bottom) / 2 - margin.middle) - yIncl(recursive_total_strength(d)); })
-      .delay(function (d, i) { return (i * 10) });
+      .lower();
+      // .transition()
+      // .duration(800)
+      // .attr("y", function (d) { return yIncl(recursive_total_strength(d)); })
+      // .attr("height", function (d) { return (margin.top + (height - margin.top - margin.bottom) / 2 - margin.middle) - yIncl(recursive_total_strength(d)); })
+      // .delay(function (d, i) { return (i * 10) });
   }
 
   const SkipAxis = (color = false) => {
@@ -795,7 +787,7 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
       .attr("x", function (d) { return x(parseInt(d.name.slice(4))); })
       .attr("y", (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle))
       .attr("width", x.bandwidth())
-      .attr("height", 0)
+      .attr("height",  function (d) { return ySkip(recursive_total_strength(d)) - (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle); })
       .attr("fill", barColor)
       .attr("stroke", line_color)
       .lower()
@@ -805,7 +797,7 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
       })
       .on("mouseleave", function (d) {
         d3.select(this).style("fill", barColor);
-        // console.log(barColor)
+        console.log(barColor)
       })
       .transition()
       .duration(800)
@@ -922,15 +914,20 @@ function nucleotideFeatureView(parent, data, feature_name) {
   d3.select("svg.nucleotide-zoom").selectAll("*").remove();
 
   var class_name = feature_name.split("_")[0];
+  console.log(class_name) 
+  console.log("data",data)
+  var flat_data =[]
   if (class_name == "incl") {
-    data = flatten_nested_json(data.children[0]).filter(function (d, i, arr) {
+    flat_data = flatten_nested_json(data.children[0]).filter(function (d, i, arr) {
       return d.name.split(" ")[1] == feature_name;
     });
   } else {
-    data = flatten_nested_json(data.children[1]).filter(function (d, i, arr) {
+    flat_data = flatten_nested_json(data.children[1]).filter(function (d, i, arr) {
       return d.name.split(" ")[1] == feature_name;
     });
   }
+  console.log("data post",flat_data)
+
   /* Change y range to a fix range */
   // var max_strength = d3.max(d3.map(data, function (d) { return d.strength / d.length; }).keys());
   var max_strength = 6;
@@ -958,15 +955,15 @@ function nucleotideFeatureView(parent, data, feature_name) {
     gyIncl.transition().duration(800).call(d3.axisLeft(yIncl).ticks(3));
     svg.selectAll("nucleotide-incl-bar")
       // Filter out nucleotide feature with strength < 0.01
-      .data(data.filter(function (d) { return (d.strength / d.length) > 0.01 }))
+      .data(flat_data.filter(function (d) { return (d.strength / d.length) > 0.01 }))
       .enter()
       .append("rect")
       .datum(function (d) { return d; })
       .attr("class", function (d) { return "obj bar " + d.name.slice(4); })
       .attr("x", function (d) { return x(parseInt(d.name.split(" ")[2].split("_")[1])); })
-      .attr("y", function (d) { return yIncl(0); })
       .attr("width", function (d) { return x.bandwidth() * d.length; })
-      .attr("height", 0)
+      .attr("y", function (d) { return yIncl(d.strength / d.length); })
+      .attr("height", function (d) { return (margin.top + (height - margin.top - margin.bottom) / 2 - margin.middle) - yIncl(d.strength / d.length); })
       .attr("fill", inclusion_color)
       .attr("stroke", line_color)
       .attr("opacity", 0.8)
@@ -980,6 +977,7 @@ function nucleotideFeatureView(parent, data, feature_name) {
         d3.select(this).raise().attr("fill", inclusion_highlight_color);
       })
       .on("mouseleave", function (d) {
+        d3.select(this).transition().duration(100).attr("fill", inclusion_color);
         d3.select(this).attr("fill", inclusion_color);
         d3.select("svg.feature-view-3").selectAll(".bar")
           .transition()
@@ -1005,21 +1003,22 @@ function nucleotideFeatureView(parent, data, feature_name) {
 
     svg.selectAll("nucleotide-skip-bar")
       // Filter out nucleotide feature with strength < 0.01
-      .data(data.filter(function (d) { return (d.strength / d.length) > 0.01 }))
+      .data(flat_data.filter(function (d) { return (d.strength / d.length) > 0.01 }))
       .enter()
       .append("rect")
       .datum(function (d) { return d; })
       .attr("class", function (d) { return "obj bar " + d.name.slice(4); })
       .attr("x", function (d) { return x(parseInt(d.name.split(" ")[2].split("_")[1])); })
-      .attr("y", (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle))
       .attr("width", function (d) { return x.bandwidth() * d.length; })
-      .attr("height", 0)
+      .attr("y", (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle))
+      .attr("height", function (d) { return ySkip(d.strength / d.length) - (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle); })
       .attr("fill", skipping_color)
       .attr("stroke", line_color)
       .attr("opacity", 0.8)
       .lower()
       .on("mouseover", function (d) {
         const data = d3.select(this).datum();
+
         d3.select("svg.feature-view-3").selectAll(".bar." + data.name.split(' ')[2])
           .transition()
           .duration(300)
@@ -1060,12 +1059,7 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom, colors) 
     .attr("x", width / 2)
     .attr("y", margin.top / 2 + 5)
     .attr("text-anchor", "middle")
-
-    // .style("font-size", "14px")
     .style('font-size', `${14 * widthRatio}px`)
-    // =======
-    //     .style("font-size", `${14 * widthRatio}px`)
-    // >>>>>>> main
     .text("Nucleotide View");
 
   // Data preparation
@@ -1077,10 +1071,7 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom, colors) 
   else {
     var skipData = flatten_nested_json(d3.selectAll(`.obj.skip.${pos}`).datum());
   }
-  /* Change y range to a fix range */
-  // const maxIncl = d3.max(inclData.map(d => d.strength));
-  // const maxSkip = d3.max(skipData.map(d => d.strength));
-  // const maxStrength = d3.max([maxIncl, maxSkip]);
+
   const maxStrength = 6;
 
   const filterData = [

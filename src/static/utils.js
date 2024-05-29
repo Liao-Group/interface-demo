@@ -98,9 +98,7 @@ function featureSelection(featureName = null, className = null) {
   const titleDiv = document.querySelector('.feature-legend-title'); // Select the title div
   const widthRatio = width / 491;
   const heightRatio = height / 381;
-  // console.log(widthRatio,heightRatio)
-  
-  titleDiv.style.fontSize = `${0.875*widthRatio}rem`;
+  titleDiv.style.fontSize = `${14*widthRatio}px`;
 
   const legendInfo = [
     { title: `Skipping`, name: 'skip', color: skipping_color, highlight: skipping_highlight_color }, 
@@ -193,9 +191,6 @@ legend.append('text')
         if (d.feature === featureName) {
           background.style("fill", colors[0])
         }
-        // else if (d.feature.split('_')[1] === featureName.split('_')[1] && featureName.split('_')[1] == 'struct') {
-        //   background.style("fill", colors[0]);
-        // } 
         else {
           background.style("fill", "none");
         }
@@ -221,7 +216,6 @@ legend.append('text')
 
           d3.select("svg.feature-view-2")
             .selectAll(".bar." + d.feature)
-            // .transition(300)
             .attr("fill", colors[1]);
        
         background.transition(300).style("fill", colors[0]);
@@ -232,7 +226,6 @@ legend.append('text')
           if(d.feature !== selected){
             d3.select("svg.feature-view-2")
             .selectAll(".bar." + d.feature)
-            // .transition(300)
             .attr("fill", colors[0]);
           }
           
@@ -245,10 +238,13 @@ legend.append('text')
           previous = selected
           selected = d.feature
           previousClass = selectedClass
-          selectedClass = d.feature.split('_')[0]      
-          const childreData = d.feature.split("_")[0] === 'incl' ? Data.feature_activations.children[0] : Data.feature_activations.children[1] 
-    
-          hierarchicalBarChart2(d.feature.split("_")[0],childreData)
+          selectedClass = d.feature.split('_')[0]    
+          const childrenData = d.feature.split("_")[0] === 'incl' ? Data.feature_activations.children[0] : Data.feature_activations.children[1]
+
+          if (Data) {
+            hierarchicalBarChart2(Data,childrenData)
+            nucleotideFeatureView(Data, Data.feature_activations, d.feature);
+          }  
           if(selectedClass === 'skip'){
             d3.select("svg.feature-view-1")
             .selectAll(`.bar-incl` )
@@ -282,10 +278,6 @@ legend.append('text')
 
           featureSelection(d.feature, d.feature.split("_")[0]);
           // this is causing to reset the feature legend 
-          // console.log(Data.feature_activations.children[0])
-          if (Data) {
-            nucleotideFeatureView(Data, Data.feature_activations, d.feature);
-          }
         });
     });
 
