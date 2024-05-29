@@ -182,9 +182,10 @@ legend.append('text')
         if (d.feature === featureName) {
           background.style("fill", colors[0])
         }
-        else if (d.feature.split('_')[1] === featureName.split('_')[1] && featureName.split('_')[1] == 'struct') {
-          background.style("fill", colors[0]);
-        } else {
+        // else if (d.feature.split('_')[1] === featureName.split('_')[1] && featureName.split('_')[1] == 'struct') {
+        //   background.style("fill", colors[0]);
+        // } 
+        else {
           background.style("fill", "none");
         }
       } catch (error) {
