@@ -98,9 +98,8 @@ function featureSelection(featureName = null, className = null) {
   const titleDiv = document.querySelector('.feature-legend-title'); // Select the title div
   const widthRatio = width / 491;
   const heightRatio = height / 381;
-  console.log(widthRatio,heightRatio)
   
-  titleDiv.style.fontSize = `${0.875*widthRatio}rem`;
+  // titleDiv.style.fontSize = `${0.875*widthRatio}rem`;
 
   const legendInfo = [{ title: `Skipping`, color: skipping_color,highlight:skipping_highlight_color }, { title: `Inclusion`, color: inclusion_color }];
 
@@ -209,7 +208,6 @@ legend.append('text')
 
           d3.select("svg.feature-view-2")
             .selectAll(".bar." + d.feature)
-            // .transition(300)
             .attr("fill", colors[1]);
        
         background.transition(300).style("fill", colors[0]);
@@ -220,7 +218,6 @@ legend.append('text')
           if(d.feature !== selected){
             d3.select("svg.feature-view-2")
             .selectAll(".bar." + d.feature)
-            // .transition(300)
             .attr("fill", colors[0]);
           }
           
@@ -235,14 +232,11 @@ legend.append('text')
           previousClass = selectedClass
           selectedClass = d.feature.split('_')[0]    
           const childrenData = d.feature.split("_")[0] === 'incl' ? Data.feature_activations.children[0] : Data.feature_activations.children[1]
-          console.log("data",childrenData)
 
           if (Data) {
             hierarchicalBarChart2(Data,childrenData)
             nucleotideFeatureView(Data, Data.feature_activations, d.feature);
           }  
-
-          // hierarchicalBarChart2(Data.feature_activations,childrenData)
           if(selectedClass === 'skip'){
             d3.select("svg.feature-view-1")
             .selectAll(`.bar-incl` )
