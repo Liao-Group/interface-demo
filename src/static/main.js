@@ -1081,8 +1081,8 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom, colors) 
     .domain(topSkipData.map(d => d.name))
     .padding(0.2);
 
-  const sortXInclAxis = d3.axisBottom(sortXIncl).tickSize(2);
-  const sortXSkipAxis = d3.axisTop(sortXSkip).tickSize(2);
+  const sortXInclAxis = d3.axisBottom(sortXIncl).tickSize(0);
+  const sortXSkipAxis = d3.axisTop(sortXSkip).tickSize(0);
 
   const sortGxIncl = svg_sort.append("g")
     .attr("class", "x axis")
