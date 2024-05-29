@@ -276,7 +276,6 @@ function hierarchicalBarChart(parent, data) {
     .attr("stroke-width", 1);
 
   bars.on("click", function (event, d) {
-    console.log(this)
     if (selectedBar === this) {
       selectedBar = null;
       d3.select(this).attr("fill", d => getFillColor(d));
