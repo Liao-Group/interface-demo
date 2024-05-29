@@ -248,20 +248,16 @@ legend.append('text')
           if(selectedClass === 'skip'){
             d3.select("svg.feature-view-1")
             .selectAll(`.bar-incl` )
-            // .transition(300)
             .attr("fill", inclusion_color);
             d3.select("svg.feature-view-1")
             .selectAll(`.bar-skip` )
-            // .transition(300)
             .attr("fill", skipping_highlight_color);
           }else if (selectedClass === 'incl'){
             d3.select("svg.feature-view-1")
             .selectAll(`.bar-skip` )
-            // .transition(300)
             .attr("fill", skipping_color);
             d3.select("svg.feature-view-1")
             .selectAll(`.bar-incl` )
-            // .transition(300)
             .attr("fill", inclusion_highlight_color);
           }
          
