@@ -99,12 +99,10 @@ html {
   }
   
   .feature-legend-title {
-    /* margin-top: 0.3rem; */
     margin-top: 10px;
     margin-bottom: 0.625rem;
     text-align: center;
-    /* font-size: 0.875rem; */
-    font-size: 0.7254vw;
+    font-size: 0.875rem;
     font-weight: 50;
   }
   
