@@ -636,7 +636,7 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
   const heightRatio = height / 622;
   const widthRatio = width / 1290;
 
-  console.log(width, height)
+  // console.log(width, height)
   // console.log("nucleotideView", sequence, structs, data);
   var margin = { top: 30, right: 10, bottom: 20, left: 50, middle: 22 };
   var svg_nucl = d3.select("svg.nucleotide-view");
@@ -796,11 +796,11 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
       .lower()
       .on("mouseover", function (d) {
         d3.select(this).style("fill", barHighlightColor);
-        console.log(barHighlightColor)
+        // console.log(barHighlightColor)
       })
       .on("mouseleave", function (d) {
         d3.select(this).style("fill", barColor);
-        console.log(barColor)
+        // console.log(barColor)
       })
       .transition()
       .duration(800)
@@ -826,7 +826,7 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
     clicking()
   }
   function hovering(color = null) {
-    console.log(color)
+    // console.log(color)
     const skipBarColor = color == 'skip' ? lightOther : skipping_color;
     const skipBarHighlightColor = color == 'skip' ? darkBackground : skipping_highlight_color;
     const inclBarColor = color == 'incl' ? lightOther : inclusion_color;

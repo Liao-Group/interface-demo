@@ -98,11 +98,13 @@ function featureSelection(featureName = null, className = null) {
   const titleDiv = document.querySelector('.feature-legend-title'); // Select the title div
   const widthRatio = width / 491;
   const heightRatio = height / 381;
-  console.log(widthRatio,heightRatio)
+  // console.log(widthRatio,heightRatio)
   
   titleDiv.style.fontSize = `${0.875*widthRatio}rem`;
 
-  const legendInfo = [{ title: `Skipping`, color: skipping_color,highlight:skipping_highlight_color }, { title: `Inclusion`, color: inclusion_color }];
+  const legendInfo = [
+    { title: `Skipping`, name: 'skip', color: skipping_color, highlight: skipping_highlight_color }, 
+    { title: `Inclusion`, name: 'incl', color: inclusion_color, highlight: inclusion_highlight_color }];
 
 d3.select('.legend').selectAll("*").remove();
 // Append SVG to the legend div
@@ -131,7 +133,16 @@ legend.append('rect')
   .attr('class', (d)=>'rectangle ' + d.name)
   .attr('width', legendItemSize)
   .attr('height', legendItemSize)
-  .attr('fill', d => d.color);
+  .attr('fill', function(d) { 
+    if (className !== null && className === d.name) { return d.highlight; } 
+    else { return d.color; }
+  })
+  .on('mouseover', function(d) { featureSelection(featureName, d.name); })
+  .on('mouseout', function(d) { 
+    if (featureName !== null) { 
+      featureSelection(featureName, featureName.split('_')[0]); 
+    } else { featureSelection(); }
+  });
 
 if (className ==="skip"){
 
@@ -217,7 +228,7 @@ legend.append('text')
         svg.select(this).style("border", `3px solid ${colors[1]}`);
       })
         .on("mouseout", (event, data) => {
-          console.log(d.feature ,selected)
+          // console.log(d.feature ,selected)
           if(d.feature !== selected){
             d3.select("svg.feature-view-2")
             .selectAll(".bar." + d.feature)
@@ -271,7 +282,7 @@ legend.append('text')
 
           featureSelection(d.feature, d.feature.split("_")[0]);
           // this is causing to reset the feature legend 
-          console.log(Data.feature_activations.children[0])
+          // console.log(Data.feature_activations.children[0])
           if (Data) {
             nucleotideFeatureView(Data, Data.feature_activations, d.feature);
           }
