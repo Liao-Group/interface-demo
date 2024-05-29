@@ -176,7 +176,7 @@ function PSIview(data) {
     .attr('x', (chartWidth / 2) - (barWidth / 2))
     .attr('width', barWidth)
     .attr('y', plotPSI ? yScale2(0.5) : yScale(0))
-    .attr('height', 0)
+    .attr('height', barHeight)
     .attr('fill', barColor)
     .attr("stroke", "#000")
     .attr("stroke-width", 1)
@@ -189,11 +189,6 @@ function PSIview(data) {
 
     })
 
-
-  bar.transition()
-    .duration(1000)
-    .attr('y', plotPSI ? Math.min(yScale2(0.5), barPosition) : Math.min(yScale(0), barPosition))
-    .attr('height', barHeight);
 };
 /**
  * Feature view 1 
@@ -273,7 +268,8 @@ function hierarchicalBarChart(parent, data) {
     .enter().append("rect")
     .attr("class", d => `bar-${d.data.name}`)
     .attr("x", d => xScale(d.data.name))
-    .attr("y", chartHeight)
+    .attr("y", d => yScale(d.value))
+    .attr("height", d => chartHeight - yScale(d.value))
     .attr("width", barWidth)
     .attr("fill", d => getFillColor(d))
     .attr("stroke", "#000")
@@ -317,10 +313,6 @@ function hierarchicalBarChart(parent, data) {
     }
   });
 
-  bars.transition()
-    .duration(1000)
-    .attr("y", d => yScale(d.value))
-    .attr("height", d => chartHeight - yScale(d.value));
 }
 /**
  * hierarchicalBarChart2
@@ -428,7 +420,8 @@ function hierarchicalBarChart2(parent, data) {
     .enter().append("rect")
     .attr("class", d => "bar " + d.data.name)
     .attr("x", (d, i) => (i * barSpacing) + xScale(d.data.name))
-    .attr("y", chartHeight)
+    .attr("y", d => yScale(d.value))
+    .attr("height", d => chartHeight - yScale(d.value))
     .attr("width", barWidth)
     .attr("fill", d => color)
     .attr("stroke", "#000")
@@ -436,6 +429,8 @@ function hierarchicalBarChart2(parent, data) {
 
   bars.on("click", function (event, d) {
     if (topChildren[d].children) {
+      // Turn all bars into default color first
+      chart.selectAll(".bar").attr("fill", color);
       if (selectedFeatureBar === this) {
         selectedFeatureBar = null;
         d3.select(this).attr("fill", color);
@@ -448,6 +443,8 @@ function hierarchicalBarChart2(parent, data) {
       }
       featureSelected = topChildren[d].data.name;
       const className = topChildren[d].data.name.split('_')[0];
+      // Regenerate legend
+      featureSelection(featureSelected, className);
       positionsChildren = topChildren[d];
       positionsParent = topChildren[d].data.name;
       hierarchicalBarChart3(positionsParent, positionsChildren);
@@ -477,11 +474,6 @@ function hierarchicalBarChart2(parent, data) {
     }
     featureSelected = '';
   });
-
-  bars.transition()
-    .duration(1000)
-    .attr("y", d => yScale(d.value))
-    .attr("height", d => chartHeight - yScale(d.value));
 }
 /**
  * hierarchicalBarChart3
@@ -573,7 +565,8 @@ function hierarchicalBarChart3(parentName, data) {
     .enter().append("rect")
     .attr("class", d => "bar " + d.data.name)
     .attr("x", (d, i) => (i * barSpacing) + xScale(d.data.name))
-    .attr("y", chartHeight)
+    .attr("y", d => yScale(d.value))
+    .attr("height", d => chartHeight - yScale(d.value))
     .attr("width", barWidth)
     .attr("fill", color)
     .attr("stroke", "#000")
@@ -597,7 +590,8 @@ function hierarchicalBarChart3(parentName, data) {
       d3.select(this).transition()
         .duration(100)
         .attr("fill", highlightColor);
-      d3.select("svg.nucleotide-view").selectAll(".obj.bar." + d.data.name)
+      const data = d3.select(this).datum();
+      d3.select("svg.nucleotide-view").selectAll(".obj.bar." + data.data.name)
         .raise()
         .transition()
         .duration(300)
@@ -617,10 +611,6 @@ function hierarchicalBarChart3(parentName, data) {
     }
   });
 
-  bars.transition()
-    .duration(1000)
-    .attr("y", d => yScale(d.value))
-    .attr("height", d => chartHeight - yScale(d.value));
 }
 /**
  * nucleotideView 
@@ -636,7 +626,7 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
   const heightRatio = height / 622;
   const widthRatio = width / 1290;
 
-  console.log(width, height)
+  // console.log(width, height)
   // console.log("nucleotideView", sequence, structs, data);
   var margin = { top: 30, right: 10, bottom: 20, left: 50, middle: 22 };
   var svg_nucl = d3.select("svg.nucleotide-view");
@@ -748,17 +738,17 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
       .datum(function (d) { return d; })
       .attr("class", function (d) { return "obj incl pos_" + d.name.slice(4); })
       .attr("x", function (d) { return x(parseInt(d.name.slice(4))); })
-      .attr("y", function (d) { return yIncl(0); })
+      .attr("y", function (d) { return yIncl(recursive_total_strength(d)); })
       .attr("width", x.bandwidth())
-      .attr("height", 0)
+      .attr("height", function (d) { return (margin.top + (height - margin.top - margin.bottom) / 2 - margin.middle) - yIncl(recursive_total_strength(d)); })
       .attr("fill", barColor)
       .attr("stroke", line_color)
-      .lower()
-      .transition()
-      .duration(800)
-      .attr("y", function (d) { return yIncl(recursive_total_strength(d)); })
-      .attr("height", function (d) { return (margin.top + (height - margin.top - margin.bottom) / 2 - margin.middle) - yIncl(recursive_total_strength(d)); })
-      .delay(function (d, i) { return (i * 10) });
+      .lower();
+      // .transition()
+      // .duration(800)
+      // .attr("y", function (d) { return yIncl(recursive_total_strength(d)); })
+      // .attr("height", function (d) { return (margin.top + (height - margin.top - margin.bottom) / 2 - margin.middle) - yIncl(recursive_total_strength(d)); })
+      // .delay(function (d, i) { return (i * 10) });
   }
 
   const SkipAxis = (color = false) => {
@@ -790,23 +780,23 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
       .attr("x", function (d) { return x(parseInt(d.name.slice(4))); })
       .attr("y", (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle))
       .attr("width", x.bandwidth())
-      .attr("height", 0)
+      .attr("height",  function (d) { return ySkip(recursive_total_strength(d)) - (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle); })
       .attr("fill", barColor)
       .attr("stroke", line_color)
       .lower()
       .on("mouseover", function (d) {
         d3.select(this).style("fill", barHighlightColor);
-        console.log(barHighlightColor)
+        // console.log(barHighlightColor)
       })
       .on("mouseleave", function (d) {
         d3.select(this).style("fill", barColor);
-        console.log(barColor)
-      })
-      .transition()
-      .duration(800)
-      .attr("y", (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle))
-      .attr("height", function (d) { return ySkip(recursive_total_strength(d)) - (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle); })
-      .delay(function (d, i) { return (i * 10); });
+        // console.log(barColor)
+      });
+      // .transition()
+      // .duration(800)
+      // .attr("y", (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle))
+      // .attr("height", function (d) { return ySkip(recursive_total_strength(d)) - (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle); })
+      // .delay(function (d, i) { return (i * 10); });
   };
 
   if (classSelected === "incl") {
@@ -826,7 +816,7 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
     clicking()
   }
   function hovering(color = null) {
-    console.log(color)
+    // console.log(color)
     const skipBarColor = color == 'skip' ? lightOther : skipping_color;
     const skipBarHighlightColor = color == 'skip' ? darkBackground : skipping_highlight_color;
     const inclBarColor = color == 'incl' ? lightOther : inclusion_color;
@@ -959,24 +949,33 @@ function nucleotideFeatureView(parent, data, feature_name) {
       .datum(function (d) { return d; })
       .attr("class", function (d) { return "obj bar " + d.name.slice(4); })
       .attr("x", function (d) { return x(parseInt(d.name.split(" ")[2].split("_")[1])); })
-      .attr("y", function (d) { return yIncl(0); })
       .attr("width", function (d) { return x.bandwidth() * d.length; })
-      .attr("height", 0)
+      .attr("y", function (d) { return yIncl(d.strength / d.length); })
+      .attr("height", function (d) { return (margin.top + (height - margin.top - margin.bottom) / 2 - margin.middle) - yIncl(d.strength / d.length); })
       .attr("fill", inclusion_color)
       .attr("stroke", line_color)
       .attr("opacity", 0.8)
       .lower()
       .on("mouseover", function (d) {
-        d3.select(this).transition().duration(300).attr("fill", inclusion_highlight_color);
+        const data = d3.select(this).datum();
+        d3.select("svg.feature-view-3").selectAll(".bar." + data.name.split(' ')[2])
+          .transition()
+          .duration(300)
+          .attr("fill", inclusion_highlight_color);
+        d3.select(this).raise().attr("fill", inclusion_highlight_color);
       })
       .on("mouseleave", function (d) {
-        d3.select(this).transition().duration(100).attr("fill", inclusion_color);
+        d3.select(this).attr("fill", inclusion_color);
+        d3.select("svg.feature-view-3").selectAll(".bar")
+          .transition()
+          .duration(300)
+          .attr("fill", inclusion_color);
       })
-      .transition()
-      .duration(800)
-      .attr("y", function (d) { return yIncl(d.strength / d.length); })
-      .attr("height", function (d) { return (margin.top + (height - margin.top - margin.bottom) / 2 - margin.middle) - yIncl(d.strength / d.length); })
-      .delay(function (d, i) { return (i * 10); });
+      // .transition()
+      // .duration(800)
+      // .attr("y", function (d) { return yIncl(d.strength / d.length); })
+      // .attr("height", function (d) { return (margin.top + (height - margin.top - margin.bottom) / 2 - margin.middle) - yIncl(d.strength / d.length); })
+      // .delay(function (d, i) { return (i * 10); });
   }
   if (class_name == "skip") {
     svg.selectAll("text.ylabel_inclusion").remove();
@@ -997,24 +996,33 @@ function nucleotideFeatureView(parent, data, feature_name) {
       .datum(function (d) { return d; })
       .attr("class", function (d) { return "obj bar " + d.name.slice(4); })
       .attr("x", function (d) { return x(parseInt(d.name.split(" ")[2].split("_")[1])); })
-      .attr("y", (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle))
       .attr("width", function (d) { return x.bandwidth() * d.length; })
-      .attr("height", 0)
+      .attr("y", (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle))
+      .attr("height", function (d) { return ySkip(d.strength / d.length) - (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle); })
       .attr("fill", skipping_color)
       .attr("stroke", line_color)
       .attr("opacity", 0.8)
       .lower()
       .on("mouseover", function (d) {
-        d3.select(this).transition().duration(300).attr("fill", skipping_highlight_color);
+        const data = d3.select(this).datum();
+        d3.select("svg.feature-view-3").selectAll(".bar." + data.name.split(' ')[2])
+          .transition()
+          .duration(300)
+          .attr("fill", skipping_highlight_color);
+        d3.select(this).raise().attr("fill", skipping_highlight_color);
       })
       .on("mouseleave", function (d) {
-        d3.select(this).transition().duration(100).attr("fill", skipping_color);
+        d3.select(this).attr("fill", skipping_color);
+        d3.select("svg.feature-view-3").selectAll(".bar")
+          .transition()
+          .duration(300)
+          .attr("fill", skipping_color);
       })
-      .transition()
-      .duration(800)
-      .attr("y", (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle))
-      .attr("height", function (d) { return ySkip(d.strength / d.length) - (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle); })
-      .delay(function (d, i) { return (i * 10); });
+      // .transition()
+      // .duration(800)
+      // .attr("y", (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle))
+      // .attr("height", function (d) { return ySkip(d.strength / d.length) - (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle); })
+      // .delay(function (d, i) { return (i * 10); });
   }
 }
 /**
@@ -1037,12 +1045,7 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom, colors) 
     .attr("x", width / 2)
     .attr("y", margin.top / 2 + 5)
     .attr("text-anchor", "middle")
-
-    // .style("font-size", "14px")
     .style('font-size', `${14 * widthRatio}px`)
-    // =======
-    //     .style("font-size", `${14 * widthRatio}px`)
-    // >>>>>>> main
     .text("Nucleotide View");
 
   // Data preparation
@@ -1054,10 +1057,7 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom, colors) 
   else {
     var skipData = flatten_nested_json(d3.selectAll(`.obj.skip.${pos}`).datum());
   }
-  /* Change y range to a fix range */
-  // const maxIncl = d3.max(inclData.map(d => d.strength));
-  // const maxSkip = d3.max(skipData.map(d => d.strength));
-  // const maxStrength = d3.max([maxIncl, maxSkip]);
+
   const maxStrength = 6;
 
   const filterData = [
@@ -1081,8 +1081,8 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom, colors) 
     .domain(topSkipData.map(d => d.name))
     .padding(0.2);
 
-  const sortXInclAxis = d3.axisBottom(sortXIncl).tickSize(2);
-  const sortXSkipAxis = d3.axisTop(sortXSkip).tickSize(2);
+  const sortXInclAxis = d3.axisBottom(sortXIncl).tickSize(0);
+  const sortXSkipAxis = d3.axisTop(sortXSkip).tickSize(0);
 
   const sortGxIncl = svg_sort.append("g")
     .attr("class", "x axis")
