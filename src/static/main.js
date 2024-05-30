@@ -390,7 +390,7 @@ function hierarchicalBarChart2(parent, data) {
     .attr("dominant-baseline", "middle");
 
   const barWidth = 25*widthRatio;
-  const barSpacing = 4*widthRatio;
+  // const barSpacing = 4*widthRatio;
 
   topChildren.forEach(ele => {
     if (ele.data.name === selected) {
@@ -407,7 +407,8 @@ function hierarchicalBarChart2(parent, data) {
     .data(topChildren)
     .enter().append("rect")
     .attr("class", d => "bar " + d.data.name)
-    .attr("x", (d, i) => (i * barSpacing) + xScale(d.data.name))
+    // .attr("x", (d, i) => (i * barSpacing) + xScale(d.data.name))
+    .attr("x", (d, i) => xScale(d.data.name))
     .attr("y", d => yScale(d.value))
     .attr("height", d => chartHeight - yScale(d.value))
     .attr("width", barWidth)
@@ -487,7 +488,7 @@ function hierarchicalBarChart3(parentName, data) {
   const topChildren = children
     .sort((a, b) => b.value - a.value)
     .concat(fillerData)
-    .slice(0, 8);
+    .slice(0, 10);
 
   const xScale = d3.scaleBand()
     .domain(topChildren.map(d => d.data.name))
@@ -540,13 +541,14 @@ function hierarchicalBarChart3(parentName, data) {
     .call(yAxis);
 
   const barWidth = 25* widthRatio;
-  const barSpacing = 2.5* widthRatio;
+  // const barSpacing = 2.5* widthRatio;
 
   const bars = chart.selectAll(".bar")
     .data(topChildren)
     .enter().append("rect")
     .attr("class", d => "bar " + d.data.name)
-    .attr("x", (d, i) => (i * barSpacing) + xScale(d.data.name))
+    // .attr("x", (d, i) => (i * barSpacing) + xScale(d.data.name))
+    .attr("x", (d, i) => xScale(d.data.name))
     .attr("y", d => yScale(d.value))
     .attr("height", d => chartHeight - yScale(d.value))
     .attr("width", barWidth)
