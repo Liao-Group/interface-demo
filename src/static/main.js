@@ -122,7 +122,6 @@ function PSIview(data) {
   const psi = chartGroup.append('text')
     .attr('transform', `translate(${chartWidth + 60}, ${chartHeight / 2}) rotate(-90)`)
     .attr("font-size", `${12 * heightRatio}px`)
-    // .attr("x", -chartWidth / 2)
     .attr("y", -23)
     .style('text-anchor', 'middle')
     .text('Predicted PSI')
@@ -144,7 +143,6 @@ function PSIview(data) {
     .attr('x', -chartHeight / 2)
     .attr("y", -25)
     .attr("font-size", `${12 * heightRatio}px`)
-    // .attr('dy', '-1.50em')
     .style('text-anchor', 'middle')
     .text('Δ Strength (a.u.)')
     .on("mouseover", function (event, d) {
@@ -276,15 +274,19 @@ function hierarchicalBarChart(parent, data) {
     .attr("stroke-width", 1);
 
   bars.on("click", function (event, d) {
-    if (selectedBar === this) {
-      selectedBar = null;
-      d3.select(this).attr("fill", d => getFillColor(d));
-    } else {
-      if (selectedBar) {
-        d3.select(selectedBar).attr("fill", d => getFillColor(d));
-      }
-      selectedBar = this;
-      d3.select(selectedBar).attr("fill", getHighlightColor(d));
+    previvous = selectedClass
+    selectedClass = data.children[d].name
+    selectedBar = this
+    if (data.children[d].name === "skip"){
+      d3.select("svg.feature-view-1")
+            .selectAll(`.bar-skip` ).attr("fill", d => getHighlightColor(d));
+      d3.select("svg.feature-view-1")
+            .selectAll(`.bar-incl` ).attr("fill", d => getFillColor(d));
+    }else if (data.children[d].name === "incl") {
+      d3.select("svg.feature-view-1")
+            .selectAll(`.bar-skip` ).attr("fill", d => getFillColor(d));
+      d3.select("svg.feature-view-1")
+            .selectAll(`.bar-incl` ).attr("fill", d => getHighlightColor(d));
     }
     if (data.children[d].children) {
       const className = data.children[d].name;
@@ -298,8 +300,7 @@ function hierarchicalBarChart(parent, data) {
   });
 
   bars.on("mouseover", function (event, d) {
-    console.log(selectedBar)
-    if (selectedBar !== this) {
+    if (selectedBar !== this || data.children[d].name !== selectedClass) {
       d3.select(this).transition()
         .duration(100)
         .attr("fill", getHighlightColor(d));
@@ -307,9 +308,8 @@ function hierarchicalBarChart(parent, data) {
   });
 
   bars.on("mouseout", function (event, d) {
-    console.log(selectedBar)
-
-    if (selectedBar !== this) {
+    console.log("out",selectedClass)
+    if (selectedBar !== this || data.children[d].name !== selectedClass) {
       d3.select(this).transition()
         .duration(100)
         .attr("fill", getFillColor(d));
@@ -632,8 +632,6 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
   const heightRatio = height / 622;
   const widthRatio = width / 1290;
 
-  // console.log(width, height)
-  // console.log("nucleotideView", sequence, structs, data);
   var margin = { top: 30, right: 10, bottom: 20, left: 50, middle: 22 };
   var svg_nucl = d3.select("svg.nucleotide-view");
 
@@ -913,8 +911,7 @@ function nucleotideFeatureView(parent, data, feature_name) {
   d3.select("svg.nucleotide-zoom").selectAll("*").remove();
 
   var class_name = feature_name.split("_")[0];
-  console.log(class_name) 
-  console.log("data",data)
+
   var flat_data =[]
   if (class_name == "incl") {
     flat_data = flatten_nested_json(data.children[0]).filter(function (d, i, arr) {
@@ -925,7 +922,6 @@ function nucleotideFeatureView(parent, data, feature_name) {
       return d.name.split(" ")[1] == feature_name;
     });
   }
-  console.log("data post",flat_data)
 
   /* Change y range to a fix range */
   // var max_strength = d3.max(d3.map(data, function (d) { return d.strength / d.length; }).keys());

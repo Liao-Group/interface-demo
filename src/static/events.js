@@ -75,7 +75,6 @@ document.addEventListener("DOMContentLoaded", async function() {
   const selectElement = document.getElementById("option");
 
   let selectedOption = localStorage.getItem("selectedOption");
-  console.log("Selected option from storage:", selectedOption);
 
   if (!selectedOption) {
       selectedOption = 'teaser_18'; // Default to 'teaser' if nothing in storage
@@ -88,7 +87,6 @@ document.addEventListener("DOMContentLoaded", async function() {
   selectElement.addEventListener("change", async function() {
       const selectedValue = selectElement.value;
       localStorage.setItem("selectedOption", selectedValue);
-      console.log("New selection saved:", selectedValue);
       await fetchData(selectedValue);
   });
 });
@@ -101,7 +99,6 @@ async function fetchData(option) {
           console.error("Error fetching data:", data.error);
           // Optionally, inform the user visually
       } else {
-          console.log("Using new grouping:");
           window.Data = data;
           // Render data
           featureSelection(null, data);

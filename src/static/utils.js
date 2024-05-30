@@ -142,10 +142,10 @@ legend.append('rect')
     } else { featureSelection(); }
   });
 
-if (className ==="skip"){
+// if (className ==="skip"){
 
 
-}
+// }
 
 
 // Create legend labels
@@ -264,7 +264,6 @@ legend.append('text')
           if(previous!== selected){
              d3.select("svg.feature-view-2")
               .selectAll(".bar." + d.feature)
-              // .transition(300)
               .attr("fill", colors[1]);
             d3.select("svg.feature-view-2")
               .selectAll(".bar." + previous)
