@@ -87,6 +87,55 @@ function getHighlightColor(input){
   return inclusion_highlight_color; // Default highlight color if input format is not recognized
 };
 
+function resetHighlight() {
+  // Reset
+  d3.select('div.feature-legend-container')
+    .selectAll('rect.rectangle')
+    .attr('fill', (d) => d.color);
+  d3.select('div.feature-legend-container')
+    .selectAll('.background')
+    .style("fill", "none");
+  d3.select('div.feature-legend-container')
+    .selectAll('svg.feature-svg')
+    .style("border", `2px solid ${lightOther}`)
+    .style("box-shadow", "none");
+  d3.select('div.feature-legend-container')
+    .selectAll('svg.feature-long-svg')
+    .style("border", `2px solid ${lightOther}`)
+    .style("box-shadow", "none");
+  d3.select('svg.feature-view-1')
+    .selectAll(".bar").attr("fill", d => getFillColor(d));
+  
+  if (selectedBar !== null) {
+    var color = null;
+    var highlightColor = null;
+    const className = d3.select(selectedBar).attr('class').split(' ')[1];
+    d3.select('div.feature-legend-container')
+      .select('rect.rectangle.' + className)
+      .attr('fill', function(d) {
+        color = d.color;
+        highlightColor = d.highlight;
+        return highlightColor;
+    });
+    d3.select('div.feature-legend-container')
+      .selectAll('svg.feature-svg.' + className)
+      .style("border", `2px solid ${highlightColor}`);
+    d3.select('div.feature-legend-container')
+      .selectAll('svg.feature-long-svg.' + className)
+      .style("border", `2px solid ${highlightColor}`);
+    d3.select(selectedBar).attr('fill', highlightColor);
+    d3.select('svg.feature-view-2')
+      .selectAll('.bar').attr('fill', color)
+    if (selectedFeatureBar !== null) {
+      const featureName = d3.select(selectedFeatureBar).attr('class').split(' ')[1];
+      d3.select('div.feature-legend-container')
+        .select('.background.' + featureName)
+        .style("fill", color);
+      d3.select(selectedFeatureBar).attr('fill', highlightColor);
+    }
+  }
+}
+
 let selected = null
 let selectedClass = null
 let previousClassColor = null
@@ -142,10 +191,10 @@ legend.append('rect')
     } else { featureSelection(); }
   });
 
-// if (className ==="skip"){
+if (className ==="skip"){
 
 
-// }
+}
 
 
 // Create legend labels
@@ -163,9 +212,9 @@ legend.append('text')
 
       const svgEnter = svgContainer.enter()
       .append("svg")
-      .attr("class", d => `${svgSelector.slice(1)} ${d.feature}`);
+      .attr("class", d => `${svgSelector.slice(1)} ${d.feature} ${d.feature.split('_')[0]}`);
 
-    svgEnter.append("rect").attr("class", "background");
+    svgEnter.append("rect").attr("class", (d) => "background " + d.feature );
     svgEnter.append("image");
 
     const svgMerged = svgEnter.merge(svgContainer);
@@ -185,7 +234,6 @@ legend.append('text')
         .attr("width", "100%")
         .attr("height", "100%")
         .style("fill", "none");
-
 
       try {
         if (d.feature === featureName) {
@@ -218,27 +266,15 @@ legend.append('text')
             .selectAll(".bar." + d.feature)
             .attr("fill", colors[1]);
        
-        background.transition(300).style("fill", colors[0]);
-        svg.select(this).style("border", `3px solid ${colors[1]}`);
+        background.style("fill", colors[0]);
+        // svg.select(this).style("border", `3px solid ${colors[1]}`);
       })
-        .on("mouseout", (event, data) => {
-          // console.log(d.feature ,selected)
-          if(d.feature !== selected){
-            d3.select("svg.feature-view-2")
-            .selectAll(".bar." + d.feature)
-            .attr("fill", colors[0]);
-          }
-          
-          if (d.feature !== featureName) {
-            background.transition(300).style("fill", "none");
-            svg.select(this).style("border", "none").style("box-shadow", "none");
-          }
-        })
+        .on("mouseleave", (event, data) => { resetHighlight(); })
         .on("click", (event, info) => {
-          previous = selected
+          // previous = selected
           selected = d.feature
-          previousClass = selectedClass
-          selectedClass = d.feature.split('_')[0]    
+          // previousClass = selectedClass
+          selectedClass = d.feature.split('_')[0]   
           const childrenData = d.feature.split("_")[0] === 'incl' ? Data.feature_activations.children[0] : Data.feature_activations.children[1]
 
           if (Data) {
@@ -264,6 +300,7 @@ legend.append('text')
           if(previous!== selected){
              d3.select("svg.feature-view-2")
               .selectAll(".bar." + d.feature)
+              // .transition(300)
               .attr("fill", colors[1]);
             d3.select("svg.feature-view-2")
               .selectAll(".bar." + previous)
@@ -273,6 +310,10 @@ legend.append('text')
 
           featureSelection(d.feature, d.feature.split("_")[0]);
           // this is causing to reset the feature legend 
+
+          selectedBar = d3.select('svg.feature-view-1').select('.bar.' + selectedClass)._groups[0][0];
+          selectedFeatureBar = d3.select('svg.feature-view-2').select('.bar.' + selected)._groups[0][0];
+          resetHighlight();
         });
     });
 
