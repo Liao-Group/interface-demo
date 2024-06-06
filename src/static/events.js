@@ -108,17 +108,6 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 });
 
-function toggleOtherInput() {
-  var selector = document.getElementById("option");
-  var otherInput = document.getElementById("otherExon");
-  if (selector.value === "other") {
-    otherInput.classList.remove("hidden");
-  } else {
-    otherInput.classList.add("hidden");
-    otherInput.value = ''; // Clear the input when not visible.
-  }
-}
-
 async function fetchData(option) {
   try {
       const response = await fetch(`./get-data?option=${option}`);
