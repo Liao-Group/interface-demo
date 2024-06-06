@@ -91,6 +91,34 @@ document.addEventListener("DOMContentLoaded", async function() {
   });
 });
 
+document.addEventListener("DOMContentLoaded", function() {
+  // Get the form element
+  var form = document.getElementById('exonForm');
+
+  // Add submit event listener to the form
+  form.addEventListener('submit', function(event) {
+    // Prevent the default form submission behavior
+    event.preventDefault();
+
+    // Access the value of the input
+    var exonValue = document.getElementById('exon').value;
+    console.log(exonValue);
+    fetchData(exonValue)
+
+  });
+});
+
+function toggleOtherInput() {
+  var selector = document.getElementById("option");
+  var otherInput = document.getElementById("otherExon");
+  if (selector.value === "other") {
+    otherInput.classList.remove("hidden");
+  } else {
+    otherInput.classList.add("hidden");
+    otherInput.value = ''; // Clear the input when not visible.
+  }
+}
+
 async function fetchData(option) {
   try {
       const response = await fetch(`./get-data?option=${option}`);
