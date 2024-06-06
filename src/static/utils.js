@@ -184,17 +184,25 @@ legend.append('rect')
     if (className !== null && className === d.name) { return d.highlight; } 
     else { return d.color; }
   })
-  .on('mouseover', function(d) { featureSelection(featureName, d.name); })
-  .on('mouseout', function(d) { 
-    if (featureName !== null) { 
-      featureSelection(featureName, featureName.split('_')[0]); 
-    } else { featureSelection(); }
-  });
-
-if (className ==="skip"){
-
-
-}
+  .on('mouseover', function(d) { 
+    legend.selectAll('.rectangle').attr('fill', (d) => d.color);
+    d3.select(this).attr('fill', (d) => d.highlight);
+    d3.select('div.feature-legend-container')
+      .selectAll('svg.feature-svg')
+      .style("border", `2px solid ${lightOther}`)
+      .style("box-shadow", "none");
+    d3.select('div.feature-legend-container')
+      .selectAll('svg.feature-long-svg')
+      .style("border", `2px solid ${lightOther}`)
+      .style("box-shadow", "none");
+    d3.select('div.feature-legend-container')
+      .selectAll('svg.feature-svg.' + d.name)
+      .style("border", `2px solid ${d.highlight}`);
+    d3.select('div.feature-legend-container')
+      .selectAll('svg.feature-long-svg.' + d.name)
+      .style("border", `2px solid ${d.highlight}`);
+  })
+  .on('mouseout', function(d) { resetHighlight() });
 
 
 // Create legend labels
@@ -297,17 +305,13 @@ legend.append('text')
             .attr("fill", inclusion_highlight_color);
           }
          
-          if(previous!== selected){
-             d3.select("svg.feature-view-2")
-              .selectAll(".bar." + d.feature)
-              // .transition(300)
-              .attr("fill", colors[1]);
-            d3.select("svg.feature-view-2")
-              .selectAll(".bar." + previous)
-              // .transition(300)
-              .attr("fill", colors[0]);
-          }
-
+          d3.select("svg.feature-view-2")
+            .selectAll('.bar')
+            .attr('fill', colors[0]);
+          d3.select("svg.feature-view-2")
+            .select(".bar." + d.feature)
+            .attr("fill", colors[1]);
+          
           featureSelection(d.feature, d.feature.split("_")[0]);
           // this is causing to reset the feature legend 
 

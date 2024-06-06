@@ -123,6 +123,7 @@ function PSIview(data) {
   const psi = chartGroup.append('text')
     .attr('transform', `translate(${chartWidth + 60}, ${chartHeight / 2}) rotate(-90)`)
     .attr("font-size", `${12 * heightRatio}px`)
+    // .attr("x", -chartWidth / 2)
     .attr("y", -23)
     .style('text-anchor', 'middle')
     .text('Predicted PSI')
@@ -140,6 +141,7 @@ function PSIview(data) {
     .attr('x', -chartHeight / 2)
     .attr("y", -25)
     .attr("font-size", `${12 * heightRatio}px`)
+    // .attr('dy', '-1.50em')
     .style('text-anchor', 'middle')
     .text('Δ Strength (a.u.)')
     /* Hover over Difference-to-Prediction strength axis */
@@ -269,16 +271,11 @@ function hierarchicalBarChart(parent, data) {
     .attr("stroke-width", 1);
 
   bars.on("click", function (event, d) {
-    if (selectedBar === this) {
-      selectedBar = null;
-      d3.select(this).attr("fill", d => getFillColor(d));
-    } else {
-      if (selectedBar) {
-        d3.select(selectedBar).attr("fill", d => getFillColor(d));
-      }
-      selectedBar = this;
-      d3.select(selectedBar).attr("fill", getHighlightColor(d));
-    }
+    // Turn all bars into default color first
+    chart.selectAll(".bar").attr("fill", d => getFillColor(d));
+    selectedBar = this;
+    selectedFeatureBar = null;
+    d3.select(selectedBar).attr("fill", getHighlightColor(d));
     if (data.children[d].children) {
       const className = data.children[d].name;
       featuresParent = parent;
@@ -293,23 +290,10 @@ function hierarchicalBarChart(parent, data) {
 
   /* Hover over Class strength */
   bars.on("mouseover", function (event, d) {
-    console.log(selectedBar)
-    if (selectedBar !== this) {
-      d3.select(this).transition()
-        .duration(100)
-        .attr("fill", getHighlightColor(d));
-    }
+    d3.select(this).attr("fill", getHighlightColor(d));
   });
 
-  bars.on("mouseout", function (event, d) {
-    console.log(selectedBar)
-
-    if (selectedBar !== this) {
-      d3.select(this).transition()
-        .duration(100)
-        .attr("fill", getFillColor(d));
-    }
-  });
+  bars.on("mouseout", function (event, d) { resetHighlight(); });
 
 }
 /**
@@ -365,7 +349,7 @@ function hierarchicalBarChart2(parent, data) {
     .attr("y", -margin.top / 2)
     .attr("text-anchor", "middle")
     .style('font-size', `${14 * widthRatio}px`)
-    .text(' Features');
+    .text((data.name == "incl" ? "Inclusion" : "Skipping") + ' Features');
 
   chart.append("text")
     .attr("class", "x-axis-label")
@@ -862,8 +846,6 @@ function nucleotideFeatureView(parent, data, feature_name) {
   d3.select("svg.nucleotide-zoom").selectAll("*").remove();
 
   var class_name = feature_name.split("_")[0];
-  console.log(class_name) 
-  console.log("data",data)
   var flat_data =[]
   if (class_name == "incl") {
     flat_data = flatten_nested_json(data.children[0]).filter(function (d, i, arr) {
