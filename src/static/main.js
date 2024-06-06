@@ -349,7 +349,7 @@ function hierarchicalBarChart2(parent, data) {
     .attr("y", -margin.top / 2)
     .attr("text-anchor", "middle")
     .style('font-size', `${14 * widthRatio}px`)
-    .text(' Features');
+    .text((data.name == "incl" ? "Inclusion" : "Skipping") + ' Features');
 
   chart.append("text")
     .attr("class", "x-axis-label")

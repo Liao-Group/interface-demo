@@ -75,10 +75,9 @@ document.addEventListener("DOMContentLoaded", async function() {
   const selectElement = document.getElementById("option");
 
   let selectedOption = localStorage.getItem("selectedOption");
-  console.log("Selected option from storage:", selectedOption);
 
   if (!selectedOption) {
-      selectedOption = 'teaser_18'; // Default to 'teaser' if nothing in storage
+      selectedOption = 'teaser'; // Default to 'teaser' if nothing in storage
       localStorage.setItem("selectedOption", selectedOption);
   }
 
@@ -88,8 +87,24 @@ document.addEventListener("DOMContentLoaded", async function() {
   selectElement.addEventListener("change", async function() {
       const selectedValue = selectElement.value;
       localStorage.setItem("selectedOption", selectedValue);
-      console.log("New selection saved:", selectedValue);
       await fetchData(selectedValue);
+  });
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+  // Get the form element
+  var form = document.getElementById('exonForm');
+
+  // Add submit event listener to the form
+  form.addEventListener('submit', function(event) {
+    // Prevent the default form submission behavior
+    event.preventDefault();
+
+    // Access the value of the input
+    var exonValue = document.getElementById('exon').value;
+    console.log(exonValue);
+    fetchData(exonValue)
+
   });
 });
 
@@ -101,7 +116,6 @@ async function fetchData(option) {
           console.error("Error fetching data:", data.error);
           // Optionally, inform the user visually
       } else {
-          console.log("Using new grouping:");
           window.Data = data;
           // Render data
           featureSelection(null, data);
