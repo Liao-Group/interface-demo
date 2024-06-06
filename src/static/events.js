@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", async function() {
   let selectedOption = localStorage.getItem("selectedOption");
 
   if (!selectedOption) {
-      selectedOption = 'teaser_18'; // Default to 'teaser' if nothing in storage
+      selectedOption = 'teaser'; // Default to 'teaser' if nothing in storage
       localStorage.setItem("selectedOption", selectedOption);
   }
 
