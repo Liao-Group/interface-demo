@@ -365,7 +365,7 @@ function hierarchicalBarChart2(parent, data) {
     .attr("y", -margin.top / 2)
     .attr("text-anchor", "middle")
     .style('font-size', `${14 * widthRatio}px`)
-    .text((data.name == "incl" ? "Inclusion" : "Skipping") + ' Features');
+    .text(' Features');
 
   chart.append("text")
     .attr("class", "x-axis-label")
@@ -899,8 +899,7 @@ function nucleotideFeatureView(parent, data, feature_name) {
       .attr("transform", "translate(" + margin.left + ",0)");
     gyIncl.call(d3.axisLeft(yIncl).ticks(3));
     svg.selectAll("nucleotide-incl-bar")
-      // Filter out nucleotide feature with strength < 0.01
-      .data(flat_data.filter(function (d) { return (d.strength / d.length) > 0.01 }))
+      .data(flat_data)
       .enter()
       .append("rect")
       .datum(function (d) { return d; })
@@ -942,8 +941,7 @@ function nucleotideFeatureView(parent, data, feature_name) {
 
 
     svg.selectAll("nucleotide-skip-bar")
-      // Filter out nucleotide feature with strength < 0.01
-      .data(flat_data.filter(function (d) { return (d.strength / d.length) > 0.01 }))
+      .data(flat_data)
       .enter()
       .append("rect")
       .datum(function (d) { return d; })
