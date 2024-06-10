@@ -4,6 +4,7 @@ let defaultSetting = "off";
 // also thinking on separating this 
 // check for toggle state before refreshing
 
+
 document.addEventListener('DOMContentLoaded', function () {
   const toggleButton = document.getElementById('toggleButton');
 
@@ -44,9 +45,6 @@ document.addEventListener('DOMContentLoaded', function () {
   location.reload();
 });
 });
-
-
-
 
 // setting dropdown
 function toggleDropdown() {
@@ -129,3 +127,22 @@ async function fetchData(option) {
       console.error("Failed to fetch or parse data:", error);
   }
 }
+
+
+document.addEventListener("DOMContentLoaded", function() {
+document.getElementById("rewindButton1").addEventListener('click', function() {
+  resetGraph();
+});
+})
+
+document.addEventListener("DOMContentLoaded", function() {
+  document.getElementById("rewindButton2").addEventListener('click', function() {
+    resetGraph();
+  });
+  })
+
+
+document.addEventListener("DOMContentLoaded", function() {
+document.querySelector('.svg-select button').addEventListener('click', downloadSelectedSVGs);
+
+})

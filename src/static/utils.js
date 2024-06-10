@@ -334,3 +334,77 @@ legend.append('text')
   updateSVGs("div.svg-grid-long-skipping", ".feature-long-svg", newImagesData.longSkipping, [skipping_color, skipping_highlight_color]);
 
 }
+
+
+function downloadSVGAsPNG(svgElement, filename) {
+  var serializer = new XMLSerializer();
+  var svgStr = serializer.serializeToString(svgElement);
+
+  // Create a new Blob URL for the image
+  var img = new Image();
+  var svgBlob = new Blob([svgStr], {type: "image/svg+xml;charset=utf-8"});
+  var url = URL.createObjectURL(svgBlob);
+  img.onload = function() {
+      // Scale factor to improve image quality
+      var scaleFactor = 2; // Increase this factor for higher quality
+
+      // Create a canvas
+      var canvas = document.createElement("canvas");
+      canvas.width = svgElement.clientWidth * scaleFactor;
+      canvas.height = svgElement.clientHeight * scaleFactor;
+      var ctx = canvas.getContext("2d");
+
+      // Set background to white
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Ensure the drawing scales correctly
+      ctx.scale(scaleFactor, scaleFactor);
+
+      // Draw the image onto the canvas
+      ctx.drawImage(img, 0, 0);
+
+      // Convert canvas to a PNG URL
+      var pngUrl = canvas.toDataURL("image/png");
+
+      // Create a link to download the PNG
+      var link = document.createElement("a");
+      link.href = pngUrl;
+      link.download = filename + ".png";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Clean up the blob URL
+      URL.revokeObjectURL(url);
+  };
+
+  img.src = url;
+}
+
+
+function downloadSelectedSVGs() {
+  console.log('here')
+  var checkboxes = document.querySelectorAll('.svg-checkbox:checked');
+  checkboxes.forEach(function(checkbox) {
+      var svgElement = document.querySelector("svg."+checkbox.value);
+      console.log(svgElement)
+      if (svgElement) {
+          downloadSVGAsPNG(svgElement, checkbox.value);
+      }
+      svgElement = ''
+  });
+}
+
+
+function resetGraph() {
+  console.log('Graph has been reset to initial state.');
+  nucleotideView(Data.sequence, Data.structs, Data.nucleotide_activations);
+  hierarchicalBarChart(Data, Data.feature_activations);
+  featureSelection(null, Data);
+  d3.select("svg.feature-view-2").selectAll("*").remove();
+  d3.select("svg.feature-view-3").selectAll("*").remove();
+  selectedBar = null;
+  selectedFeatureBar = null;
+  resetHighlight();
+}
