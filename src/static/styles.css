@@ -229,6 +229,7 @@ html {
   padding: 0.75rem 1rem;
   text-decoration: none;
   display: block;
+  font-size: 12;
   }
   .divider {
   border: none;
@@ -238,3 +239,83 @@ html {
   width: 80%;
   }
 
+
+  .nucleotide-view {
+    position: relative; 
+}
+
+.feature-legend-container {
+  position: relative; 
+}
+
+.psi-view {
+  position: relative; 
+}
+.rewindButton {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    padding: 8px 12px;
+    font-size: 14px; /* Adjust the size of the arrow */
+    color: #333; /* Arrow color */
+    background-color: #f8f9fa;
+    border: 1px solid #ccc;
+    border-radius: 33%; /* Makes the button circular */
+    cursor: pointer;
+    z-index: 10; /* Ensures the button is above the SVG */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 25px; /* Fixed width */
+    height: 25px; /* Fixed height */
+    text-align: center;
+}
+
+#btn {
+  position: absolute;
+  bottom: 6px;
+  right: 8px;
+  padding: 8px 12px;
+  font-size: 16px; /* Adjust the size of the arrow */ 
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 33%;  /* Fully rounded borders to form a circle */
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: flex;
+  width: 20px; /* Fixed width */
+  height: 20px; /* Fixed height */
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;  /* Removes underline if used within <a> tags */
+  outline: none;  /* Removes focus outline for a cleaner look */
+}
+
+#downloadButton:hover {
+  background-color: #0056b3;
+}
+
+
+.svg-select {
+  padding: 10px;
+}
+
+.svg-select label {
+  display: block;
+  margin: 5px 0;
+}
+
+.svg-select button {
+  margin-top: 10px;
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.svg-select button:hover {
+  background-color: #0056b3;
+}
