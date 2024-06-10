@@ -335,64 +335,67 @@ legend.append('text')
 
 }
 
+function downloadSvg(svgElement, filename) {
+  // Create a temporary SVG element
+  const tempSvg = svgElement.cloneNode(true);
+  document.body.appendChild(tempSvg);
 
-function downloadSVGAsPNG(svgElement, filename) {
-  var serializer = new XMLSerializer();
-  var svgStr = serializer.serializeToString(svgElement);
+  // Get the bounding box of the SVG element
+  const bbox = svgElement.getBBox();
+  tempSvg.setAttribute('width', bbox.width);
+  tempSvg.setAttribute('height', bbox.height);
+  tempSvg.setAttribute('viewBox', `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`);
 
-  // Create a new Blob URL for the image
-  var img = new Image();
-  var svgBlob = new Blob([svgStr], {type: "image/svg+xml;charset=utf-8"});
-  var url = URL.createObjectURL(svgBlob);
-  img.onload = function() {
-      // Scale factor to improve image quality
-      var scaleFactor = 2; // Increase this factor for higher quality
+  const svgString = new XMLSerializer().serializeToString(tempSvg);
+  const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+  const DOMURL = window.URL || window.webkitURL || window;
+  const url = DOMURL.createObjectURL(svgBlob);
+  const image = new Image();
 
-      // Create a canvas
-      var canvas = document.createElement("canvas");
-      canvas.width = svgElement.clientWidth * scaleFactor;
-      canvas.height = svgElement.clientHeight * scaleFactor;
-      var ctx = canvas.getContext("2d");
+  image.onload = function () {
+    const scaleFactor = 2; // Increase this value to improve resolution
+    const canvas = document.createElement('canvas');
+    canvas.width = bbox.width * scaleFactor;
+    canvas.height = bbox.height * scaleFactor;
+    const ctx = canvas.getContext('2d');
 
-      // Set background to white
-      ctx.fillStyle = "#FFFFFF";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // Fill the canvas with white background
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Ensure the drawing scales correctly
-      ctx.scale(scaleFactor, scaleFactor);
+    // Draw the image on the canvas
+    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+    DOMURL.revokeObjectURL(url);
+    const imgURI = canvas.toDataURL('image/png');
+    triggerDownload(imgURI, filename);
 
-      // Draw the image onto the canvas
-      ctx.drawImage(img, 0, 0);
-
-      // Convert canvas to a PNG URL
-      var pngUrl = canvas.toDataURL("image/png");
-
-      // Create a link to download the PNG
-      var link = document.createElement("a");
-      link.href = pngUrl;
-      link.download = filename + ".png";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      // Clean up the blob URL
-      URL.revokeObjectURL(url);
+    // Remove the temporary SVG element
+    document.body.removeChild(tempSvg);
   };
 
-  img.src = url;
+  image.src = url;
+}
+
+function triggerDownload(imgURI, filename) {
+  const a = document.createElement('a');
+  a.href = imgURI;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 }
 
 
+
 function downloadSelectedSVGs() {
-  console.log('here')
-  var checkboxes = document.querySelectorAll('.svg-checkbox:checked');
-  checkboxes.forEach(function(checkbox) {
-      var svgElement = document.querySelector("svg."+checkbox.value);
-      console.log(svgElement)
+  const checkboxes = document.querySelectorAll('.svg-checkbox:checked');
+  checkboxes.forEach((checkbox, index) => {
+    setTimeout(() => {
+      const svgElement = document.querySelector("svg." + checkbox.value);
       if (svgElement) {
-          downloadSVGAsPNG(svgElement, checkbox.value);
+        downloadSvg(svgElement, checkbox.value);
       }
-      svgElement = ''
+    }, 500 * index);  // Delay each download by 500ms incrementally
   });
 }
 
@@ -407,4 +410,27 @@ function resetGraph() {
   selectedBar = null;
   selectedFeatureBar = null;
   resetHighlight();
+}
+
+
+async function fetchData(option) {
+  try {
+      const response = await fetch(`./get-data?option=${option}`);
+      const data = await response.json();
+      if (data.error) {
+          console.error("Error fetching data:", data.error);
+          // Optionally, inform the user visually
+      } else {
+          window.Data = data;
+          // Render data
+          featureSelection(null, data);
+          nucleotideView(data.sequence, data.structs, data.nucleotide_activations);
+          PSIview(data);
+          hierarchicalBarChart(data, data.feature_activations);
+          d3.select("svg.feature-view-2").selectAll("*").remove();
+          d3.select("svg.feature-view-3").selectAll("*").remove();
+      }
+  } catch (error) {
+      console.error("Failed to fetch or parse data:", error);
+  }
 }

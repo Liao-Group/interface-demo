@@ -1,10 +1,8 @@
 // variable for turning the button on and off. 
 let defaultSetting = "off";
 // toggle outline
-// also thinking on separating this 
+
 // check for toggle state before refreshing
-
-
 document.addEventListener('DOMContentLoaded', function () {
   const toggleButton = document.getElementById('toggleButton');
 
@@ -89,60 +87,32 @@ document.addEventListener("DOMContentLoaded", async function() {
   });
 });
 
-document.addEventListener("DOMContentLoaded", function() {
-  // Get the form element
-  var form = document.getElementById('exonForm');
-
-  // Add submit event listener to the form
-  form.addEventListener('submit', function(event) {
-    // Prevent the default form submission behavior
-    event.preventDefault();
-
-    // Access the value of the input
-    var exonValue = document.getElementById('exon').value;
-    console.log(exonValue);
-    fetchData(exonValue)
-
-  });
-});
-
-async function fetchData(option) {
-  try {
-      const response = await fetch(`./get-data?option=${option}`);
-      const data = await response.json();
-      if (data.error) {
-          console.error("Error fetching data:", data.error);
-          // Optionally, inform the user visually
-      } else {
-          window.Data = data;
-          // Render data
-          featureSelection(null, data);
-          nucleotideView(data.sequence, data.structs, data.nucleotide_activations);
-          PSIview(data);
-          hierarchicalBarChart(data, data.feature_activations);
-          d3.select("svg.feature-view-2").selectAll("*").remove();
-          d3.select("svg.feature-view-3").selectAll("*").remove();
-      }
-  } catch (error) {
-      console.error("Failed to fetch or parse data:", error);
-  }
-}
 
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", async function() {
+
+// listening to event from the rewind button on the feature legend
 document.getElementById("rewindButton1").addEventListener('click', function() {
   resetGraph();
 });
-})
 
-document.addEventListener("DOMContentLoaded", function() {
-  document.getElementById("rewindButton2").addEventListener('click', function() {
-    resetGraph();
-  });
-  })
+// listening to event from the rewind b
+document.getElementById("rewindButton2").addEventListener('click', function() {
+  resetGraph();
+});
 
-
-document.addEventListener("DOMContentLoaded", function() {
+// run download fucntion once selected 
 document.querySelector('.svg-select button').addEventListener('click', downloadSelectedSVGs);
 
+ // Get the form element
+ var form = document.getElementById('exonForm');
+ // Add submit event listener to the form
+ form.addEventListener('submit', function(event) {
+   // Prevent the default form submission behavior
+   event.preventDefault();
+   // Access the value of the input
+   var exonValue = document.getElementById('exon').value;
+   console.log(exonValue);
+   fetchData(exonValue)
+ });
 })
