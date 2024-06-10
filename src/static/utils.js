@@ -411,3 +411,26 @@ function resetGraph() {
   selectedFeatureBar = null;
   resetHighlight();
 }
+
+
+async function fetchData(option) {
+  try {
+      const response = await fetch(`./get-data?option=${option}`);
+      const data = await response.json();
+      if (data.error) {
+          console.error("Error fetching data:", data.error);
+          // Optionally, inform the user visually
+      } else {
+          window.Data = data;
+          // Render data
+          featureSelection(null, data);
+          nucleotideView(data.sequence, data.structs, data.nucleotide_activations);
+          PSIview(data);
+          hierarchicalBarChart(data, data.feature_activations);
+          d3.select("svg.feature-view-2").selectAll("*").remove();
+          d3.select("svg.feature-view-3").selectAll("*").remove();
+      }
+  } catch (error) {
+      console.error("Failed to fetch or parse data:", error);
+  }
+}
