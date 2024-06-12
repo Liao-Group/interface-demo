@@ -151,3 +151,17 @@ document.getElementById('openExonFormButton').addEventListener('click', function
       this.textContent = 'Open Exon Form'; // Change button text to open
   }
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('adjustAxisBtn').addEventListener('click', function() {
+      var sliderContainer = document.querySelector('.slider-container');
+      if (sliderContainer.style.display === 'none' || sliderContainer.style.display === '') {
+          sliderContainer.style.display = 'block'; // Show the container
+          this.textContent = 'Hide Axis'; // Change button text to 'Hide Axis'
+      } else {
+          sliderContainer.style.display = 'none'; // Hide the container
+          this.textContent = 'Adjust Axis'; // Reset button text to 'Adjust Axis'
+      }
+  });
+});
+

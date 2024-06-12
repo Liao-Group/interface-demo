@@ -221,6 +221,19 @@ function hierarchicalBarChart(parent, data) {
     .domain([0, 170]) // Initial domain; this will be updated
     .range([chartHeight, 0]);
 
+    // Add slider interaction
+    d3.select("#yAxisSlider1").on("input", function() {
+      updateChart(+this.value);
+    });
+  
+    function updateChart(maxValue) {
+      yScale.domain([0, maxValue]); // Update yScale's domain
+      d3.select(".y-axis").call(d3.axisLeft(yScale)); // Redraw Y-axis
+  
+      bars.attr("y", d => yScale(d.value)) // Update bars' Y position
+          .attr("height", d => chartHeight - yScale(d.value)); // Update bars' height
+    }
+
   const xAxis = d3.axisBottom(xScale).tickFormat("").tickSize(0);
   const yAxis = d3.axisLeft(yScale);
 
@@ -343,6 +356,7 @@ function hierarchicalBarChart2(parent, data) {
     .domain([0, 75])
     .range([chartHeight, 0]);
 
+
   const xAxis = d3.axisBottom(xScale).tickSize(0).tickFormat("");
   const yAxis = d3.axisLeft(yScale).ticks(5);
 
@@ -427,8 +441,6 @@ function hierarchicalBarChart2(parent, data) {
       featureSelected = topChildren[d].data.name;
       const className = topChildren[d].data.name.split('_')[0];
       selectedBar = d3.select('svg.feature-view-1').select('.bar.' + className)._groups[0][0];
-      // Regenerate legend
-      // featureSelection(featureSelected, className);
       positionsChildren = topChildren[d];
       positionsParent = topChildren[d].data.name;
       hierarchicalBarChart3(positionsParent, positionsChildren);
@@ -450,6 +462,31 @@ function hierarchicalBarChart2(parent, data) {
   bars.on("mouseout", function (event, d) { resetHighlight() });
 
 onGraphRendered('.feature-view-2'); // Notify that the graph has been rendered
+
+// Select the slider element
+const yAxisSlider = d3.select("#yAxisSlider2");
+
+// Update chart function that adjusts the y-axis based on the slider value
+function updateChart(yMax) {
+    yScale.domain([0, yMax]); // Update the y-axis domain
+
+    // Update the Y-axis on the chart
+    svg.select(".y-axis")
+        .transition() // Add a smooth transition
+        .duration(500)
+        .call(d3.axisLeft(yScale));
+
+    // Update bars
+    bars.transition() // Smooth transition for resizing bars
+        .duration(500)
+        .attr("y", d => yScale(d.value))
+        .attr("height", d => chartHeight - yScale(d.value));
+}
+
+// Event listener for the slider change
+yAxisSlider.on("input", function() {
+    updateChart(+this.value);
+});
 
 
 }
@@ -579,6 +616,31 @@ function hierarchicalBarChart3(parentName, data) {
   });
 
   onGraphRendered('.feature-view-3'); // Notify that the graph has been rendered
+// Select the slider element
+const yAxisSlider3 = d3.select("#yAxisSlider3");
+
+// Function to update the chart based on the slider value
+function updateChart3(yMax) {
+    // Update the yScale domain
+    yScale.domain([0, yMax]);
+
+    // Transition the Y-axis to new scale
+    svg.select(".y-axis")
+        .transition()
+        .duration(500)
+        .call(d3.axisLeft(yScale));
+
+    // Transition the bars to new heights based on new scale
+    bars.transition()
+        .duration(500)
+        .attr("y", d => yScale(d.value))
+        .attr("height", d => chartHeight - yScale(d.value));
+}
+
+// Event listener for changes to the slider
+yAxisSlider3.on("input", function() {
+    updateChart3(+this.value);
+});
 
 }
 /**

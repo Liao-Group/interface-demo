@@ -46,7 +46,7 @@
         </div>
       </form>
     </div>
-
+   
     <!--setting dropdown -->
     <div class="dropdown">
       <button class="dropbtn" onclick="toggleDropdown()"><i class="fa fa-cog"></i></button>
@@ -72,9 +72,30 @@
           <label><input type="checkbox" class="svg-checkbox" value="nucleotide-zoom"> nucleotide-zoom</label>
           <button>Download Selected</button>
         </div>
+        <hr class="divider"> <!-- Divider for the new section -->
+
+        <div class="slider-container" >
+          <div class="slider-item">
+              <label for="yAxisSlider1">Y-Axis Max (Chart 1): 170</label>
+              <input type="range" id="yAxisSlider1" min="0" max="170" value="170" step="1">
+          </div>
+          <div class="slider-item">
+              <label for="yAxisSlider2">Y-Axis Max (Chart 2): 75</label>
+              <input type="range" id="yAxisSlider2" min="0" max="75" value="75" step="1">
+          </div>
+          <div class="slider-item">
+              <label for="yAxisSlider3">Y-Axis Max (Chart 3): 18</label>
+              <input type="range" id="yAxisSlider3" min="0" max="18" value="18" step="1">
+          </div>
+      </div>
       </div>
     </div>
+
   </div>
+
+  <!-- <input type="range" id="yAxisSlider1" min="0" max="170" value="170" step="1">
+  <input type="range" id="yAxisSlider2" min="0" max="75" value="75" step="1">
+  <input type="range" id="yAxisSlider3" min="0" max="18" value="18" step="1"> -->
 
 
   <div class="grid-container">
