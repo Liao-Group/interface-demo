@@ -406,7 +406,10 @@ function resetGraph() {
   hierarchicalBarChart(Data, Data.feature_activations);
   featureSelection(null, Data);
   d3.select("svg.feature-view-2").selectAll("*").remove();
+
   d3.select("svg.feature-view-3").selectAll("*").remove();
+
+
   selectedBar = null;
   selectedFeatureBar = null;
   resetHighlight();
@@ -433,4 +436,12 @@ async function fetchData(option) {
   } catch (error) {
       console.error("Failed to fetch or parse data:", error);
   }
+}
+
+function onGraphRendered(element ) {
+  // Target the container where the graph is rendered
+  const featureView2 = document.querySelector(element);
+  const event = new CustomEvent('graphRendered', { detail: { view: featureView2 } });
+  featureView2.dispatchEvent(event);
+
 }
