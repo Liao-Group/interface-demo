@@ -9,7 +9,7 @@
   </title>
   <!-- Import d3.js -->
   <script type="text/javascript" src="https://d3js.org/d3.v4.js"></script>
-  <!-- CSS style -->    
+  <!-- CSS style -->
   <link rel="stylesheet" href="static/styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
   <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
@@ -20,43 +20,37 @@
 
   <script src="static/constants.js"></script>
   <script src="static/events.js"></script>
-  <script src="static/utils.js"></script> 
+  <script src="static/utils.js"></script>
   <script src="static/main.js"></script>
 
-
-  <!-- Input exon -->
-  <form method="post" id="exonForm">
-    <input
-      type="text" name="exon" id="exon" size="80" 
-      placeholder="Enter a 70-nucleotide exon" 
-      required maxlength="70" pattern="([ATUGCatugc]){70}"
-      oninvalid="this.setCustomValidity('Please enter a 70-nucleotide exon')"
-      oninput="this.setCustomValidity('')""
-    >
-    <input type="submit" value="Submit"> 
-  </form>
-
-  <form id="optionForm" method="post">
-    <div class="select-wrapper">
-      <select name="option" id="option">
-        <option value="teaser">Teaser</option>
-        <option value="exon_s1">Exon S1</option>
-        <option value="exon_s1_comp1">Exon S1 Comparison 1</option>
-        <option value="exon_s1_comp2">Exon S1 Comparison 2</option>
-        <option value="exon_s1_34c>a">Exon S1 Single Mutation</option>
-        <option value="exon_s1_34c>a_46g>u">Exon S1 Double Mutation</option>
-        <option value="exon_d1">Exon D1 G-poor</option>
-
-      </select>
-      <div class="arrow"></div>
+  <div class="header">
+    <div class="forms-container">
+      <form method="post" id="exonForm">
+        <input type="text" name="exon" id="exon" size="80" placeholder="Enter a 70-nucleotide exon" required
+          maxlength="70" pattern="([ATUGCatugc]){70}"
+          oninvalid="this.setCustomValidity('Please enter a 70-nucleotide exon')" oninput="this.setCustomValidity('')">
+        <input type="submit" value="Submit">
+      </form>
+      <form id="optionForm" method="post">
+        <div class="select-wrapper">
+          <select name="option" id="option">
+            <option value="teaser">Teaser</option>
+            <option value="exon_s1">Exon S1</option>
+            <option value="exon_s1_comp1">Exon S1 Comparison 1</option>
+            <option value="exon_s1_comp2">Exon S1 Comparison 2</option>
+            <option value="exon_s1_34c>a">Exon S1 Single Mutation</option>
+            <option value="exon_s1_34c>a_46g>u">Exon S1 Double Mutation</option>
+            <option value="exon_d1">Exon D1 G-poor</option>
+          </select>
+          <div class="arrow"></div>
+        </div>
+      </form>
     </div>
-  </form>
-  
 
-  <!--setting dropdown -->
-  <div class="dropdown">
-    <button class="dropbtn" onclick="toggleDropdown()"><i class="fa fa-cog"></i></button>
-    <div id="myDropdown" class="dropdown-content">
+    <!--setting dropdown -->
+    <div class="dropdown">
+      <button class="dropbtn" onclick="toggleDropdown()"><i class="fa fa-cog"></i></button>
+      <div id="myDropdown" class="dropdown-content">
         <!-- toggle button -->
         <a href="#">Alt-Colors</a>
         <button class="toggleButton" id="toggleButton">
@@ -69,21 +63,22 @@
         </button>
         <hr class="divider"> <!-- Divider for the new section -->
         <div class="svg-select">
-            <label><input type="checkbox" class="svg-checkbox" value="psi-view"> Difference-to-Prediction </label>
-            <label><input type="checkbox" class="svg-checkbox" value="feature-view-1"> Class Strengths</label>
-            <label><input type="checkbox" class="svg-checkbox" value="nucleotide-view"> Exon View</label>
-            <label><input type="checkbox" class="svg-checkbox" value="feature-view-2"> Features</label>
-            <label><input type="checkbox" class="svg-checkbox" value="feature-view-3"> Positions</label>
-            <label><input type="checkbox" class="svg-checkbox" value="nucleotide-sort"> nucleotide-sort</label>
-            <label><input type="checkbox" class="svg-checkbox" value="nucleotide-zoom"> nucleotide-zoom</label>
-            <button>Download Selected</button>
+          <label><input type="checkbox" class="svg-checkbox" value="psi-view"> Difference-to-Prediction </label>
+          <label><input type="checkbox" class="svg-checkbox" value="feature-view-1"> Class Strengths</label>
+          <label><input type="checkbox" class="svg-checkbox" value="nucleotide-view"> Exon View</label>
+          <label><input type="checkbox" class="svg-checkbox" value="feature-view-2"> Features</label>
+          <label><input type="checkbox" class="svg-checkbox" value="feature-view-3"> Positions</label>
+          <label><input type="checkbox" class="svg-checkbox" value="nucleotide-sort"> nucleotide-sort</label>
+          <label><input type="checkbox" class="svg-checkbox" value="nucleotide-zoom"> nucleotide-zoom</label>
+          <button>Download Selected</button>
         </div>
-
+      </div>
     </div>
-</div>
+  </div>
+
 
   <div class="grid-container">
-    <div class="psi-view" id = "psi-view">
+    <div class="psi-view" id="psi-view">
       <!-- <button id="downloadButton">⭳</button> -->
       <svg class="psi-view" preserveAspectRatio="xMidYMid meet"></svg>
     </div>
@@ -91,9 +86,11 @@
       <svg class="feature-view-1" width="100%" height="100%"></svg>
     </div>
     <div class="feature-view-2">
+      <div class="placeholder">Click in the Class Strength chart to load this area. </div>
       <svg class="feature-view-2" width="100%" height="100%"></svg>
     </div>
     <div class="feature-view-3">
+      <div class="placeholder2">Click in the Features chart to load this area.</div>
       <svg class="feature-view-3" width="100%" height="100%"></svg>
     </div>
     <div class="feature-legend-container">
@@ -103,13 +100,11 @@
         <div class="feature-grids-wrapper">
           <div class="svg-grid-inclusion"></div>
           <div class="svg-grid-skipping"></div>
-        </div>  
-        <div class="bottom">
-        <div class="legend"></div>
-        <div class="svg-grid-long-skipping"></div>
-        
         </div>
-
+        <div class="bottom">
+          <div class="legend"></div>
+          <div class="svg-grid-long-skipping"></div>
+        </div>
       </div>
     </div>
     <div class="nucleotide-view">

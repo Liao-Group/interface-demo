@@ -116,3 +116,38 @@ document.querySelector('.svg-select button').addEventListener('click', downloadS
    fetchData(exonValue)
  });
 })
+
+
+document.addEventListener('DOMContentLoaded', function() {
+  const featureView2 = document.querySelector('.feature-view-2');
+  const featureView3 = document.querySelector('.feature-view-3');
+
+  featureView2.addEventListener('graphRendered', function(event) {
+      // This will be triggered once the graph is rendered
+      const placeholder = event.detail.view.querySelector('.placeholder');
+      if (placeholder) {
+          placeholder.style.display = 'none'; // Hide placeholder
+      }
+  });
+
+  featureView3.addEventListener('graphRendered', function(event) {
+    // This will be triggered once the graph is rendered
+    const placeholder2 = event.detail.view.querySelector('.placeholder2');
+    if (placeholder2) {
+        placeholder2.style.display = 'none'; // Hide placeholder
+    }
+});
+});
+
+
+
+document.getElementById('openExonFormButton').addEventListener('click', function() {
+  var form = document.getElementById('exonForm');
+  if (form.style.display === 'none' || form.style.display === '') {
+      form.style.display = 'block'; // Show the form
+      this.textContent = 'Close Exon Form'; // Change button text to close
+  } else {
+      form.style.display = 'none'; // Hide the form
+      this.textContent = 'Open Exon Form'; // Change button text to open
+  }
+});

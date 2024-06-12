@@ -191,6 +191,7 @@ function PSIview(data) {
  * OBS: The legend in this one doesnt adjust well on other screens
  */
 function hierarchicalBarChart(parent, data) {
+  
   const svgContainer = d3.select(".feature-view-1");
   const width = svgContainer.node().clientWidth;
   const height = svgContainer.node().clientHeight;
@@ -216,8 +217,8 @@ function hierarchicalBarChart(parent, data) {
     .range([0, chartWidth])
     .padding(0.2);
 
-  const yScale = d3.scaleLinear()
-    .domain([0, 170])
+    const yScale = d3.scaleLinear()
+    .domain([0, 170]) // Initial domain; this will be updated
     .range([chartHeight, 0]);
 
   const xAxis = d3.axisBottom(xScale).tickFormat("").tickSize(0);
@@ -301,6 +302,7 @@ function hierarchicalBarChart(parent, data) {
  */
 function hierarchicalBarChart2(parent, data) {
   const svgContainer = d3.select(".feature-view-2");
+
   const width = svgContainer.node().clientWidth;
   const height = svgContainer.node().clientHeight;
   const heightRatio = height / 370;
@@ -446,6 +448,10 @@ function hierarchicalBarChart2(parent, data) {
   });
 
   bars.on("mouseout", function (event, d) { resetHighlight() });
+
+onGraphRendered('.feature-view-2'); // Notify that the graph has been rendered
+
+
 }
 /**
  * hierarchicalBarChart3
@@ -453,6 +459,7 @@ function hierarchicalBarChart2(parent, data) {
 function hierarchicalBarChart3(parentName, data) {
 
   const svgContainer = d3.select(".feature-view-3");
+
   const width = svgContainer.node().clientWidth;
   const height = svgContainer.node().clientHeight;
   const heightRatio = height / 370;
@@ -570,6 +577,9 @@ function hierarchicalBarChart3(parentName, data) {
     d3.select(this).attr("fill", color);
     d3.select("svg.nucleotide-view").selectAll(".obj.bar").attr("fill", color);
   });
+
+  onGraphRendered('.feature-view-3'); // Notify that the graph has been rendered
+
 }
 /**
  * nucleotideView 
