@@ -193,7 +193,7 @@ input[type="submit"] {
   .feature-long-svg {
     border: 1px solid black;
     width: 11.225vw;
-    height: 2.4vw;
+    height: 2.5vw;
     box-sizing: border-box;
     border-radius: 0.3125rem;
     object-fit: fill;
@@ -203,7 +203,7 @@ input[type="submit"] {
   .feature-svg {
     border: 2px solid black;
     width: 5.5vw;
-    height: 2.4vw;
+    height: 2.5vw;
     box-sizing: border-box;
     border-radius: 0.3125rem;
     object-fit: fill;
