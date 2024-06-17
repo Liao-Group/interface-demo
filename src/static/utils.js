@@ -389,6 +389,7 @@ function triggerDownload(imgURI, filename) {
 
 function downloadSelectedSVGs() {
   const checkboxes = document.querySelectorAll('.svg-checkbox:checked');
+  console.log("here")
   checkboxes.forEach((checkbox, index) => {
     setTimeout(() => {
       const svgElement = document.querySelector("svg." + checkbox.value);

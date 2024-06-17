@@ -34,7 +34,7 @@ def fetch_prediction_from_server(exon):
     """Attempt to fetch the prediction from the server, handle errors gracefully."""
     try:
         # change the http address once the ec2 server is up. 
-        response = requests.post('http://18.116.35.59:5000/prediction', data={'exon': exon}, timeout=10)
+        response = requests.post('http://18.117.144.86:5000/prediction', data={'exon': exon}, timeout=3)
         response.raise_for_status()  # This will raise an HTTPError for bad responses (4XX, 5XX)
         return response.json()
     except requests.exceptions.RequestException as e:
@@ -63,9 +63,10 @@ def homepage():
 # if prediction is not available. it will fetch data from local files. 
 @app.route("/get-data", methods=["GET"])
 def get_data():
-    option = request.args.get('option', 'teaser_18')
+    option = request.args.get('option', 'teaser')
 
     # Main logic to decide whether to use server or local file
+    print(option)
     if option in default_options: 
         return read_local_data(option)
     exon = get_default_exon(option)
@@ -76,4 +77,4 @@ def get_data():
     return jsonify(json_response)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port='4000')

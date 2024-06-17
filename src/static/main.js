@@ -226,13 +226,21 @@ function hierarchicalBarChart(parent, data) {
       updateChart(+this.value);
     });
   
-    function updateChart(maxValue) {
-      yScale.domain([0, maxValue]); // Update yScale's domain
-      d3.select(".y-axis").call(d3.axisLeft(yScale)); // Redraw Y-axis
+    function updateChart(yMax) {
+      yScale.domain([0, yMax]); // Update the y-axis domain
   
-      bars.attr("y", d => yScale(d.value)) // Update bars' Y position
-          .attr("height", d => chartHeight - yScale(d.value)); // Update bars' height
-    }
+      // Update the Y-axis on the chart
+      svg.select(".y-axis")
+          .transition() // Add a smooth transition
+          .duration(500)
+          .call(d3.axisLeft(yScale));
+  
+      // Update bars
+      bars.transition() // Smooth transition for resizing bars
+          .duration(500)
+          .attr("y", d => yScale(d.value))
+          .attr("height", d => chartHeight - yScale(d.value));
+  }
 
   const xAxis = d3.axisBottom(xScale).tickFormat("").tickSize(0);
   const yAxis = d3.axisLeft(yScale);
@@ -728,6 +736,7 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
   var ySkip = d3.scaleLinear()
     .domain([0, max_strength])
     .range([margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle, height - margin.bottom]);
+
 
   //I think we can revome this declarations and bring to inside the functions.
   // Set up for nucleotide sort
