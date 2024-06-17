@@ -46,7 +46,7 @@ const imagesData = {
   longSkipping: [
     { url: "static/transparent/skip_g_poor.png", feature: "skip_struct_1" },
     { url: "static/transparent/skip_stem_loop.png", feature: "skip_struct_2" },
-    { url: "static/transparent/skip_struct_4.png", feature: "skip_struct_4" }
+    // { url: "static/transparent/skip_struct_4.png", feature: "skip_struct_4" }
   ]
 };
 
@@ -76,6 +76,6 @@ const newImagesData = {
   longSkipping: [
     { url: "static/transparent/skip_g_poor.png", feature: "skip_struct_1" },
     { url: "static/transparent/skip_stem_loop.png", feature: "skip_struct_2" },
-    { url: "static/transparent/skip_struct_4.png", feature: "skip_struct_4" }
+    // { url: "static/transparent/skip_struct_4.png", feature: "skip_struct_4" }
   ]
 };

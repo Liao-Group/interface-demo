@@ -416,7 +416,32 @@ function hierarchicalBarChart2(parent, data) {
     .attr("stroke", "#000")
     .attr("stroke-width", 1);
 
+  // Add textbox for non-clickable features (bias, skip_struct_4)
+  const nolegend_features = ['incl_bias', 'skip_struct_4'];
+  const custom_names = {
+    'incl_bias': 'inclusion bias',
+    'skip_struct_4': 'an uncommon long skipping structure feature'
+  }
+  var textbox = chart.append("rect")
+    .style("opacity", 0)
+    .attr("class", "tooltip")
+    .style("fill", "white")
+    .style("border", "solid")
+    .style("stroke", "#000")
+    .style("stroke-width", "1px")
+    .style("height", "20px")
+    .style("padding", "5px")
+    .style("rx", "5px")
+    .style("ry", "5px")
+    .style("position", "absolute")
+  var text = chart.append("text")
+    .style("opacity", 0)
+    .attr('text-anchor', 'left')
+    .attr('font-size', '12px')
+    .attr('fill', 'black')
+
   bars.on("click", function (event, d) {
+    if (nolegend_features.includes(event.data.name)) { return; }
     if (topChildren[d].children) {
       // Turn all bars into default color first
       chart.selectAll(".bar").attr("fill", color);
@@ -443,9 +468,29 @@ function hierarchicalBarChart2(parent, data) {
     d3.select('div.feature-legend-container')
       .select('.background.' + topChildren[d].data.name)
       .style("fill", color);
+    if (nolegend_features.includes(event.data.name)) {
+      var rect_x = xScale(topChildren[0].data.name);
+      var rect_y = 10;
+      text.text('This is ' + custom_names[event.data.name])
+        .style('opacity', 1)
+        .attr("x", rect_x + 2)
+        .attr("y", rect_y + 14)
+        .raise();
+      console.log(text.node().getComputedTextLength());
+      textbox.style("opacity", 1)
+        .attr("x", rect_x)
+        .attr("y", rect_y)
+        .style("width", text.node().getComputedTextLength() + 5);
+    }
   });
 
-  bars.on("mouseout", function (event, d) { resetHighlight() });
+  bars.on("mouseout", function (event, d) { 
+    resetHighlight();
+    if (nolegend_features.includes(event.data.name)) {
+      textbox.style("opacity", 0);
+      text.style("opacity", 0);
+    }
+  });
 }
 /**
  * hierarchicalBarChart3
