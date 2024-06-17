@@ -1,9 +1,8 @@
 // variable for turning the button on and off. 
 let defaultSetting = "off";
 // toggle outline
-// also thinking on separating this 
-// check for toggle state before refreshing
 
+// check for toggle state before refreshing
 document.addEventListener('DOMContentLoaded', function () {
   const toggleButton = document.getElementById('toggleButton');
 
@@ -45,9 +44,6 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 });
 
-
-
-
 // setting dropdown
 function toggleDropdown() {
   var dropdown = document.getElementById("myDropdown");
@@ -75,10 +71,9 @@ document.addEventListener("DOMContentLoaded", async function() {
   const selectElement = document.getElementById("option");
 
   let selectedOption = localStorage.getItem("selectedOption");
-  console.log("Selected option from storage:", selectedOption);
 
   if (!selectedOption) {
-      selectedOption = 'teaser_18'; // Default to 'teaser' if nothing in storage
+      selectedOption = 'teaser'; // Default to 'teaser' if nothing in storage
       localStorage.setItem("selectedOption", selectedOption);
   }
 
@@ -88,30 +83,85 @@ document.addEventListener("DOMContentLoaded", async function() {
   selectElement.addEventListener("change", async function() {
       const selectedValue = selectElement.value;
       localStorage.setItem("selectedOption", selectedValue);
-      console.log("New selection saved:", selectedValue);
       await fetchData(selectedValue);
   });
 });
 
-async function fetchData(option) {
-  try {
-      const response = await fetch(`./get-data?option=${option}`);
-      const data = await response.json();
-      if (data.error) {
-          console.error("Error fetching data:", data.error);
-          // Optionally, inform the user visually
-      } else {
-          console.log("Using new grouping:");
-          window.Data = data;
-          // Render data
-          featureSelection(null, data);
-          nucleotideView(data.sequence, data.structs, data.nucleotide_activations);
-          PSIview(data);
-          hierarchicalBarChart(data, data.feature_activations);
-          d3.select("svg.feature-view-2").selectAll("*").remove();
-          d3.select("svg.feature-view-3").selectAll("*").remove();
+
+
+document.addEventListener("DOMContentLoaded", async function() {
+
+// listening to event from the rewind button on the feature legend
+document.getElementById("rewindButton1").addEventListener('click', function() {
+  resetGraph();
+});
+
+// listening to event from the rewind b
+document.getElementById("rewindButton2").addEventListener('click', function() {
+  resetGraph();
+});
+
+// run download fucntion once selected 
+document.querySelector('.svg-select button').addEventListener('click', downloadSelectedSVGs);
+
+ // Get the form element
+ var form = document.getElementById('exonForm');
+ // Add submit event listener to the form
+ form.addEventListener('submit', function(event) {
+   // Prevent the default form submission behavior
+   event.preventDefault();
+   // Access the value of the input
+   var exonValue = document.getElementById('exon').value;
+   console.log(exonValue);
+   fetchData(exonValue)
+ });
+})
+
+
+document.addEventListener('DOMContentLoaded', function() {
+  const featureView2 = document.querySelector('.feature-view-2');
+  const featureView3 = document.querySelector('.feature-view-3');
+
+  featureView2.addEventListener('graphRendered', function(event) {
+      // This will be triggered once the graph is rendered
+      const placeholder = event.detail.view.querySelector('.placeholder');
+      if (placeholder) {
+          placeholder.style.display = 'none'; // Hide placeholder
       }
-  } catch (error) {
-      console.error("Failed to fetch or parse data:", error);
+  });
+
+  featureView3.addEventListener('graphRendered', function(event) {
+    // This will be triggered once the graph is rendered
+    const placeholder2 = event.detail.view.querySelector('.placeholder2');
+    if (placeholder2) {
+        placeholder2.style.display = 'none'; // Hide placeholder
+    }
+});
+});
+
+
+
+document.getElementById('openExonFormButton').addEventListener('click', function() {
+  var form = document.getElementById('exonForm');
+  if (form.style.display === 'none' || form.style.display === '') {
+      form.style.display = 'block'; // Show the form
+      this.textContent = 'Close Exon Form'; // Change button text to close
+  } else {
+      form.style.display = 'none'; // Hide the form
+      this.textContent = 'Open Exon Form'; // Change button text to open
   }
-}
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('adjustAxisBtn').addEventListener('click', function() {
+      var sliderContainer = document.querySelector('.slider-container');
+      if (sliderContainer.style.display === 'none' || sliderContainer.style.display === '') {
+          sliderContainer.style.display = 'block'; // Show the container
+          this.textContent = 'Hide Axis'; // Change button text to 'Hide Axis'
+      } else {
+          sliderContainer.style.display = 'none'; // Hide the container
+          this.textContent = 'Adjust Axis'; // Reset button text to 'Adjust Axis'
+      }
+  });
+});
+
