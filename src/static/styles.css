@@ -238,6 +238,7 @@ input[type="submit"] {
     margin-right:auto; 
     display: grid;
     /* width: 150px; */
+    width: auto;
     height:9%;
     bottom: auto;
   }
@@ -246,7 +247,7 @@ input[type="submit"] {
     border: 1px solid black;
     width:50%;
     width: 11.225vw;
-    height: 2.5vw;
+    height: 2.3vw;
     box-sizing: border-box;
     border-radius: 0.3125rem;
     object-fit: fill;
@@ -256,7 +257,7 @@ input[type="submit"] {
   .feature-svg {
     border: 2px solid black;
     width: 5.5vw;
-    height: 2.5vw;
+    height: 2.3vw;
     box-sizing: border-box;
     border-radius: 0.3125rem;
     object-fit: fill;
