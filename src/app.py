@@ -67,11 +67,10 @@ def get_data():
     option = request.args.get('option', 'exon_s1')
 
     # Main logic to decide whether to use server or local file
-    print(option)
     if option in default_options: 
         return read_local_data(option)
-    exon = get_default_exon(option)
-    json_response = fetch_prediction_from_server(exon)
+    # exon = get_default_exon(option)
+    json_response = read_local_data(option)
 
     if json_response is None:  # Server request failed
         json_response = read_local_data(option)
