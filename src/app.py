@@ -63,7 +63,7 @@ def homepage():
 # if prediction is not available. it will fetch data from local files. 
 @app.route("/get-data", methods=["GET"])
 def get_data():
-    option = request.args.get('option', 'teaser')
+    option = request.args.get('option', 'exon_s1')
 
     # Main logic to decide whether to use server or local file
     print(option)
