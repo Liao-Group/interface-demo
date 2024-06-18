@@ -78,4 +78,4 @@ def get_data():
     return jsonify(json_response)
 
 if __name__ == "__main__":
-    app.run(debug=True, port='4000')
+    app.run(debug=True)
