@@ -153,38 +153,48 @@ function PSIview(data) {
     });
 
 
-  const barColor = deltaForce < 0 ? skipping_color : inclusion_color;
-  // Plot by deltaForce
-  var barPosition = yScale(Math.max(0, deltaForce));
-  var barHeight = Math.abs(yScale(deltaForce) - yScale(0));
-  if (plotPSI) {
-    // Plot by predicted PSI
-    barPosition = yScale2(Math.max(0.5, predictedPSI));
-    barHeight = Math.abs((yScale2(predictedPSI) - yScale2(0.5)));
-  }
-  // to adjust the width of the bar in the graph we make the 
-  // graph rectangle fixed and the make the margins dynamic. 
-  const barWidth = 25*widthRatio;
-
-  const bar = chartGroup.append('rect')
-    .attr('x', (chartWidth / 2) - (barWidth / 2))
-    .attr('width', barWidth)
-    .attr('y', plotPSI ? yScale2(0.5) : yScale(0))
-    .attr('height', barHeight)
-    .attr('fill', barColor)
-    .attr("stroke", "#000")
-    .attr("stroke-width", 1)
-    .on("click", function (event, d) {
-      nucleotideView(data.sequence, data.structs, data.nucleotide_activations);
-      // featureSelection()
-      hierarchicalBarChart(data, data.feature_activations);
-      d3.select("svg.feature-view-2").selectAll("*").remove();
-      d3.select("svg.feature-view-3").selectAll("*").remove();
-      selectedBar = null;
-      selectedFeatureBar = null;
-      resetHighlight();
-    })
-
+    const barColor = deltaForce < 0 ? skipping_color : inclusion_color;
+  
+    // Plot by deltaForce
+    var barPosition, barHeight;
+    if (deltaForce >= 0) {
+      barPosition = yScale(deltaForce);
+      barHeight = Math.abs(yScale(deltaForce) - yScale(0));
+    } else {
+      barPosition = yScale(0);
+      barHeight = Math.abs(yScale(deltaForce) - yScale(0));
+    }
+  
+    if (plotPSI) {
+      // Plot by predicted PSI
+      if (predictedPSI >= 0.5) {
+        barPosition = yScale2(predictedPSI);
+        barHeight = Math.abs(yScale2(predictedPSI) - yScale2(0.5));
+      } else {
+        barPosition = yScale2(0.5);
+        barHeight = Math.abs(yScale2(predictedPSI) - yScale2(0.5));
+      }
+    }
+  
+    // graph rectangle fixed and make the margins dynamic.
+    const barWidth = 25 * widthRatio;
+    const bar = chartGroup.append('rect')
+      .attr('x', (chartWidth / 2) - (barWidth / 2))
+      .attr('width', barWidth)
+      .attr('y', barPosition)
+      .attr('height', barHeight)
+      .attr('fill', barColor)
+      .attr("stroke", "#000")
+      .attr("stroke-width", 1)
+      .on("click", function (event, d) {
+        nucleotideView(data.sequence, data.structs, data.nucleotide_activations);
+        hierarchicalBarChart(data, data.feature_activations);
+        d3.select("svg.feature-view-2").selectAll("*").remove();
+        d3.select("svg.feature-view-3").selectAll("*").remove();
+        selectedBar = null;
+        selectedFeatureBar = null;
+        resetHighlight();
+      });
 };
 /**
  * Feature view 1 
