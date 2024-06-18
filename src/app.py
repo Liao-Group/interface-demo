@@ -24,6 +24,7 @@ default_options = {
     'exon_d1':"GACUAUGAGCCCCAACGAACAAGCUCCUAUCUGGGAACUCUUUUCUGCAGACUUUAACCCUACCCCCAGA"
 }
 
+
 def get_default_exon(option):
     """Get the default exon based on the option, converting 'T' to 'U'."""
     if option in default_options:
@@ -34,7 +35,7 @@ def fetch_prediction_from_server(exon):
     """Attempt to fetch the prediction from the server, handle errors gracefully."""
     try:
         # change the http address once the ec2 server is up. 
-        response = requests.post('http://18.116.35.59:5000/prediction', data={'exon': exon}, timeout=10)
+        response = requests.post('http://18.117.144.86:5000/prediction', data={'exon': exon}, timeout=3)
         response.raise_for_status()  # This will raise an HTTPError for bad responses (4XX, 5XX)
         return response.json()
     except requests.exceptions.RequestException as e:
@@ -45,7 +46,7 @@ def fetch_prediction_from_server(exon):
 def read_local_data(option):
     """Read local data file as a fallback."""
     try:
-        with open(f'data/{option}.json', 'r') as file:
+        with open(f'src/data/{option}.json', 'r') as file:
             return json.load(file)
     except FileNotFoundError:
         return {"error": "Data file not found"}
@@ -63,9 +64,10 @@ def homepage():
 # if prediction is not available. it will fetch data from local files. 
 @app.route("/get-data", methods=["GET"])
 def get_data():
-    option = request.args.get('option', 'teaser_18')
+    option = request.args.get('option', 'exon_s1')
 
     # Main logic to decide whether to use server or local file
+    print(option)
     if option in default_options: 
         return read_local_data(option)
     exon = get_default_exon(option)
@@ -76,4 +78,4 @@ def get_data():
     return jsonify(json_response)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port='4000')
