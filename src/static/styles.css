@@ -191,7 +191,7 @@ input[type="submit"] {
   
   .feature-legend-title {
     margin-top: 10px;
-    margin-bottom: 0.625rem;
+    margin-bottom: -0.100rem;
     text-align: center;
     font-size: 14px;
     font-weight: 50;
@@ -247,7 +247,7 @@ input[type="submit"] {
     border: 1px solid black;
     width:50%;
     width: 11.225vw;
-    height: 2.3vw;
+    height: 2.1vw;
     box-sizing: border-box;
     border-radius: 0.3125rem;
     object-fit: fill;
@@ -257,7 +257,7 @@ input[type="submit"] {
   .feature-svg {
     border: 2px solid black;
     width: 5.5vw;
-    height: 2.3vw;
+    height: 2.1vw;
     box-sizing: border-box;
     border-radius: 0.3125rem;
     object-fit: fill;

@@ -170,7 +170,7 @@ const legend = svg.selectAll('.legendItem')
   .append('g')
   .attr('class', 'legendItem')
   .attr('transform', (d, i) => {
-    var x = xOffset + (legendItemSize + legendSpacing + 120) * i; // Adjust x position for each legend item
+    var x = xOffset + (legendItemSize + legendSpacing + 140) * i; // Adjust x position for each legend item
     var y = yOffset;
     return `translate(${x}, ${y})`;
   });
