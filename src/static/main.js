@@ -453,8 +453,8 @@ function hierarchicalBarChart2(parent, data) {
   // Add textbox for non-clickable features (bias, skip_struct_4)
   const nolegend_features = ['incl_bias', 'skip_struct_4'];
   const custom_names = {
-    'incl_bias': 'inclusion bias',
-    'skip_struct_4': 'an uncommon long skipping structure feature'
+    'incl_bias': 'Inclusion bias',
+    'skip_struct_4': 'Uncommon long skipping structure feature'
   }
   var textbox = chart.append("rect")
     .style("opacity", 0)
@@ -503,7 +503,7 @@ function hierarchicalBarChart2(parent, data) {
     if (nolegend_features.includes(event.data.name)) {
       var rect_x = xScale(topChildren[0].data.name);
       var rect_y = 10;
-      text.text('This is ' + custom_names[event.data.name])
+      text.text(custom_names[event.data.name])
         .style('opacity', 1)
         .attr("x", rect_x + 2)
         .attr("y", rect_y + 14)
@@ -512,7 +512,7 @@ function hierarchicalBarChart2(parent, data) {
       textbox.style("opacity", 1)
         .attr("x", rect_x)
         .attr("y", rect_y)
-        .style("width", text.node().getComputedTextLength() + 5);
+        .style("width", text.node().getComputedTextLength()+ 5);
     }
   });
 
