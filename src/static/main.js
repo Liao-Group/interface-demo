@@ -13,6 +13,8 @@ var featuresChildren = []
 var positionsParent = []
 var positionsChildren = []
 var use_new_grouping = false
+var exon_length;
+var flanking_length;
 var widthRatio
 let selectedBar = null;
 let selectedFeatureBar = null;
@@ -27,6 +29,8 @@ function PSIview(data) {
   const deltaForce = data.delta_force;
   const predictedPSI = data.predicted_psi;
   const plotPSI = true; // CHOICE: whether to plot deltaForce or predictedPSI
+  exon_length = data.exon_length;
+  flanking_length = (data.sequence.length - exon_length)/2;
 
   d3.select("svg.psi-view").selectAll("*").remove();;
   const svgContainer = d3.select(".psi-view"); // Ensure you have a container with this class
@@ -727,8 +731,8 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
   var xSkipAxis = d3.axisTop(x)
     .tickSize(2 * widthRatio)
     .tickFormat(function (d) {
-      if ((d % 10 == 0 && d - 10 != 0 && d - 10 != 80) || (d % 10 == 1 && d - 10 === 1)) {
-        return d - 10;
+      if (((d - flanking_length) % 10 == 0 && d > flanking_length && d <= flanking_length + exon_length) || (d - flanking_length === 1) || (d - flanking_length === exon_length)) {
+        return d - flanking_length;
       } else { return "" };
     });
   var xNuAxis = d3.axisBottom(x)
@@ -758,7 +762,7 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
       d3.select(this)
         .select("text")
         .attr("font-size", `${12 * widthRatio}px`)
-        .attr("fill", (d <= 10 || d > 80) ? line_color : nucleotide_color)
+        .attr("fill", (d <= flanking_length || d > flanking_length + exon_length) ? line_color : nucleotide_color)
     });
 
   // Add Y axis
@@ -1355,7 +1359,7 @@ function nucleotideZoom(sequence, structs, pos, margin, zoom_width, height, svg_
     .attr("transform", `translate(0, ${margin.top + (height - margin.top - margin.bottom) / 2 - 5})`);
 
   zoom_xAxis.tickFormat((d) => structs[int_pos - 1 + d])
-  zoom_xSkipAxis.tickFormat((d) => (d % 5 === 0 && int_pos + d - 10 > 0 && int_pos + d - 10 < 71) ? int_pos + d - 10 : "");
+  zoom_xSkipAxis.tickFormat((d) => (d % 5 === 0 && int_pos + d > flanking_length && int_pos + d <= flanking_length + exon_length) ? int_pos + d - flanking_length : "");
   zoom_xNuAxis.tickFormat((d) => sequence[int_pos - 1 + d]);
 
   zoom_gxIncl.call(zoom_xAxis);
