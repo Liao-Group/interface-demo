@@ -29,8 +29,9 @@ function PSIview(data) {
   const deltaForce = data.delta_force;
   const predictedPSI = data.predicted_psi;
   const plotPSI = true; // CHOICE: whether to plot deltaForce or predictedPSI
-  exon_length = data.exon_length;
-  flanking_length = (data.sequence.length - exon_length)/2;
+  exon_length = data.exon.length;
+  flanking_length = data.sequence.search(data.exon);
+  console.log(exon_length, flanking_length);
 
   d3.select("svg.psi-view").selectAll("*").remove();;
   const svgContainer = d3.select(".psi-view"); // Ensure you have a container with this class
