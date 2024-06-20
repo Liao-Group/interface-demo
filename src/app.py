@@ -38,7 +38,7 @@ def homepage():
 def get_data():
     option = request.args.get('option', 'exon_s1')
     try:
-        with open(f'src/data/{option}.json', 'r') as file:
+        with open(f'data/{option}.json', 'r') as file:
             json_data = json.load(file)
     except FileNotFoundError:
         json_data = {"error": "Data file not found"}

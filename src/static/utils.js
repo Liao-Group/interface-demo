@@ -156,7 +156,7 @@ function featureSelection(featureName = null, className = null) {
 d3.select('.legend').selectAll("*").remove();
 // Append SVG to the legend div
 const svg = d3.select('.legend')
-  .append('svg')
+  .append('svg').attr('width', width)
 
 // Initialize legend
 const legendItemSize = 20*widthRatio;
@@ -233,7 +233,7 @@ legend.append('text')
       if (d.feature.split('_')[0] === className) {
         svg.style("border", `2px solid ${colors[1]}`);
       } else {
-        svg.style("border", `2px solid ${lightOther}`).style("box-shadow", "none");
+        svg.style("border", `2px solid ${colors[0]}`).style("box-shadow", "none");
       }
 
       const background = svg.select(".background")
@@ -277,7 +277,46 @@ legend.append('text')
         background.style("fill", colors[0]);
         // svg.select(this).style("border", `3px solid ${colors[1]}`);
       })
-        .on("mouseleave", (event, data) => { resetHighlight(); })
+        .on("mouseleave", (event, data) => {
+          
+          d3.select('div.feature-legend-container')
+          .selectAll('rect.rectangle')
+          .attr('fill', (d) => d.color);
+        d3.select('div.feature-legend-container')
+          .selectAll('.background')
+          .style("fill", "none");
+        d3.select('svg.feature-view-1')
+          .selectAll(".bar").attr("fill", d => getFillColor(d));
+        
+        if (selectedBar !== null) {
+          var color = null;
+          var highlightColor = null;
+          const className = d3.select(selectedBar).attr('class').split(' ')[1];
+          d3.select('div.feature-legend-container')
+            .select('rect.rectangle.' + className)
+            .attr('fill', function(d) {
+              color = d.color;
+              highlightColor = d.highlight;
+              return highlightColor;
+          });
+          d3.select('div.feature-legend-container')
+            .selectAll('svg.feature-svg.' + className)
+            .style("border", `2px solid ${highlightColor}`);
+          d3.select('div.feature-legend-container')
+            .selectAll('svg.feature-long-svg.' + className)
+            .style("border", `2px solid ${highlightColor}`);
+          d3.select(selectedBar).attr('fill', highlightColor);
+          d3.select('svg.feature-view-2')
+            .selectAll('.bar').attr('fill', color)
+          if (selectedFeatureBar !== null) {
+            const featureName = d3.select(selectedFeatureBar).attr('class').split(' ')[1];
+            d3.select('div.feature-legend-container')
+              .select('.background.' + featureName)
+              .style("fill", color);
+            d3.select(selectedFeatureBar).attr('fill', highlightColor);
+          }
+        }
+        })
         .on("click", (event, info) => {
           // previous = selected
           selected = d.feature
