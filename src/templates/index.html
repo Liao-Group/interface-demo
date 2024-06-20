@@ -26,9 +26,8 @@
   <div class="header">
     <div class="forms-container">
       <form method="post" id="exonForm">
-        <input type="text" name="exon" id="exon" size="80" placeholder="Enter a 70-nucleotide exon" required
-          maxlength="70" pattern="([ATUGCatugc]){70}"
-          oninvalid="this.setCustomValidity('Please enter a 70-nucleotide exon')" oninput="this.setCustomValidity('')">
+        <input type="text" name="exon" id="exon" size="80" placeholder="Enter an exon" pattern="([ATUGCatugc])*"
+          oninvalid="this.setCustomValidity('Please enter a valid exon')" oninput="this.setCustomValidity('')">
         <input type="submit" value="Submit">
       </form>
       <form id="optionForm" method="post">
