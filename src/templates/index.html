@@ -26,11 +26,11 @@
 
   <div class="header">
     <div class="forms-container">
-      <!-- <form method="post" id="exonForm">
-        <input type="text" name="exon" id="exon" size="80" placeholder="Enter a 70-nucleotide exon" required
-          maxlength="70" pattern="([ATUGCatugc]){70}"
-          oninvalid="this.setCustomValidity('Please enter a 70-nucleotide exon. Only Enter ATUGC')"
-          oninput="this.setCustomValidity('')">
+
+      <form method="post" id="exonForm">
+        <input type="text" name="exon" id="exon" size="80" placeholder="Enter an exon" pattern="([ATUGCatugc])*"
+          oninvalid="this.setCustomValidity('Please enter a valid exon')" oninput="this.setCustomValidity('')">
+
         <input type="submit" value="Submit">
       </form> -->
       <form id="optionForm" method="post">
@@ -40,10 +40,18 @@
             <option value="exon_s1">Exon S1</option>
             <option value="exon_s1_34c>a">Exon S1 Single Mutation</option>
             <option value="exon_s1_34c>a_46g>u">Exon S1 Double Mutation</option>
+
+            <option value="exon_d1">Exon D1 G-poor</option>
+            <option value="different_length_exon_length_20">Random exon with length 20</option>
+            <option value="different_length_exon_length_83">Random exon with length 83</option>
+            <option value="different_length_exon_length_140">Random exon with length 140</option>
+            <option value="other_datasets_wt1_exon">WT1 exon 5 dataset</option>
+            <option value="other_datasets_fas_exon">FAS exon 6 dataset</option>
+            <option value="other_datasets_smn2_exon">SMN2 exon 7 dataset</option>
+            <option value="other_datasets_brca2_exon">BRCA2 exon 7 dataset</option>
+            <option value="other_datasets_cftr_exon">CFTR exon 13 dataset</option>
             <option value="exon_s1_comp1">Exon S1 Comparison 1</option>
             <option value="exon_s1_comp2">Exon S1 Comparison 2</option>
-
-            <!-- <option value="exon_d1">Exon D1 G-poor</option> -->
           </select>
           <div class="arrow"></div>
         </div>
