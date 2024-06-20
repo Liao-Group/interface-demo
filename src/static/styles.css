@@ -54,6 +54,7 @@ html {
     "nv nv nv nv nv nv nv nv nv nv nv nv nv nz nz nz ns ns ns"
   ;
   gap: 0.5rem;
+
   background-color: whitesmoke;
   padding: 0.5rem;
   grid-auto-columns: minmax(0, 1fr);
