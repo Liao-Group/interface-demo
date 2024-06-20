@@ -153,44 +153,55 @@ function PSIview(data) {
     });
 
 
-  const barColor = deltaForce < 0 ? skipping_color : inclusion_color;
-  // Plot by deltaForce
-  var barPosition = yScale(Math.max(0, deltaForce));
-  var barHeight = Math.abs(yScale(deltaForce) - yScale(0));
-  if (plotPSI) {
-    // Plot by predicted PSI
-    barPosition = yScale2(Math.max(0.5, predictedPSI));
-    barHeight = Math.abs((yScale2(predictedPSI) - yScale2(0.5)));
-  }
-  // to adjust the width of the bar in the graph we make the 
-  // graph rectangle fixed and the make the margins dynamic. 
-  const barWidth = 25*widthRatio;
-
-  const bar = chartGroup.append('rect')
-    .attr('x', (chartWidth / 2) - (barWidth / 2))
-    .attr('width', barWidth)
-    .attr('y', plotPSI ? yScale2(0.5) : yScale(0))
-    .attr('height', barHeight)
-    .attr('fill', barColor)
-    .attr("stroke", "#000")
-    .attr("stroke-width", 1)
-    .on("click", function (event, d) {
-      nucleotideView(data.sequence, data.structs, data.nucleotide_activations);
-      // featureSelection()
-      hierarchicalBarChart(data, data.feature_activations);
-      d3.select("svg.feature-view-2").selectAll("*").remove();
-      d3.select("svg.feature-view-3").selectAll("*").remove();
-      selectedBar = null;
-      selectedFeatureBar = null;
-      resetHighlight();
-    })
-
+    const barColor = deltaForce < 0 ? skipping_color : inclusion_color;
+  
+    // Plot by deltaForce
+    var barPosition, barHeight;
+    if (deltaForce >= 0) {
+      barPosition = yScale(deltaForce);
+      barHeight = Math.abs(yScale(deltaForce) - yScale(0));
+    } else {
+      barPosition = yScale(0);
+      barHeight = Math.abs(yScale(deltaForce) - yScale(0));
+    }
+  
+    if (plotPSI) {
+      // Plot by predicted PSI
+      if (predictedPSI >= 0.5) {
+        barPosition = yScale2(predictedPSI);
+        barHeight = Math.abs(yScale2(predictedPSI) - yScale2(0.5));
+      } else {
+        barPosition = yScale2(0.5);
+        barHeight = Math.abs(yScale2(predictedPSI) - yScale2(0.5));
+      }
+    }
+  
+    // graph rectangle fixed and make the margins dynamic.
+    const barWidth = 25 * widthRatio;
+    const bar = chartGroup.append('rect')
+      .attr('x', (chartWidth / 2) - (barWidth / 2))
+      .attr('width', barWidth)
+      .attr('y', barPosition)
+      .attr('height', barHeight)
+      .attr('fill', barColor)
+      .attr("stroke", "#000")
+      .attr("stroke-width", 1)
+      .on("click", function (event, d) {
+        nucleotideView(data.sequence, data.structs, data.nucleotide_activations);
+        hierarchicalBarChart(data, data.feature_activations);
+        d3.select("svg.feature-view-2").selectAll("*").remove();
+        d3.select("svg.feature-view-3").selectAll("*").remove();
+        selectedBar = null;
+        selectedFeatureBar = null;
+        resetHighlight();
+      });
 };
 /**
  * Feature view 1 
  * OBS: The legend in this one doesnt adjust well on other screens
  */
 function hierarchicalBarChart(parent, data) {
+  
   const svgContainer = d3.select(".feature-view-1");
   const width = svgContainer.node().clientWidth;
   const height = svgContainer.node().clientHeight;
@@ -217,9 +228,30 @@ function hierarchicalBarChart(parent, data) {
     .paddingInner(0.4)
     .paddingOuter(0.5);
 
-  const yScale = d3.scaleLinear()
-    .domain([0, 170])
+    const yScale = d3.scaleLinear()
+    .domain([0, 170]) // Initial domain; this will be updated
     .range([chartHeight, 0]);
+
+    // Add slider interaction
+    d3.select("#yAxisSlider1").on("input", function() {
+      updateChart(+this.value);
+    });
+  
+    function updateChart(yMax) {
+      yScale.domain([0, yMax]); // Update the y-axis domain
+  
+      // Update the Y-axis on the chart
+      svg.select(".y-axis")
+          .transition() // Add a smooth transition
+          .duration(500)
+          .call(d3.axisLeft(yScale));
+  
+      // Update bars
+      bars.transition() // Smooth transition for resizing bars
+          .duration(500)
+          .attr("y", d => yScale(d.value))
+          .attr("height", d => chartHeight - yScale(d.value));
+  }
 
   const xAxis = d3.axisBottom(xScale).tickFormat("").tickSize(0);
   const yAxis = d3.axisLeft(yScale);
@@ -302,6 +334,7 @@ function hierarchicalBarChart(parent, data) {
  */
 function hierarchicalBarChart2(parent, data) {
   const svgContainer = d3.select(".feature-view-2");
+
   const width = svgContainer.node().clientWidth;
   const height = svgContainer.node().clientHeight;
   const heightRatio = height / 370;
@@ -342,6 +375,7 @@ function hierarchicalBarChart2(parent, data) {
   const yScale = d3.scaleLinear()
     .domain([0, 75])
     .range([chartHeight, 0]);
+
 
   const xAxis = d3.axisBottom(xScale).tickSize(0).tickFormat("");
   const yAxis = d3.axisLeft(yScale).ticks(5);
@@ -418,7 +452,32 @@ function hierarchicalBarChart2(parent, data) {
     .attr("stroke", "#000")
     .attr("stroke-width", 1);
 
+  // Add textbox for non-clickable features (bias, skip_struct_4)
+  const nolegend_features = ['incl_bias', 'skip_struct_4'];
+  const custom_names = {
+    'incl_bias': 'Inclusion bias',
+    'skip_struct_4': 'Uncommon long skipping structure feature'
+  }
+  var textbox = chart.append("rect")
+    .style("opacity", 0)
+    .attr("class", "tooltip")
+    .style("fill", "white")
+    .style("border", "solid")
+    .style("stroke", "#000")
+    .style("stroke-width", "1px")
+    .style("height", "20px")
+    .style("padding", "5px")
+    .style("rx", "5px")
+    .style("ry", "5px")
+    .style("position", "absolute")
+  var text = chart.append("text")
+    .style("opacity", 0)
+    .attr('text-anchor', 'left')
+    .attr('font-size', '12px')
+    .attr('fill', 'black')
+
   bars.on("click", function (event, d) {
+    if (nolegend_features.includes(event.data.name)) { return; }
     if (topChildren[d].children) {
       // Turn all bars into default color first
       chart.selectAll(".bar").attr("fill", color);
@@ -427,8 +486,6 @@ function hierarchicalBarChart2(parent, data) {
       featureSelected = topChildren[d].data.name;
       const className = topChildren[d].data.name.split('_')[0];
       selectedBar = d3.select('svg.feature-view-1').select('.bar.' + className)._groups[0][0];
-      // Regenerate legend
-      // featureSelection(featureSelected, className);
       positionsChildren = topChildren[d];
       positionsParent = topChildren[d].data.name;
       hierarchicalBarChart3(positionsParent, positionsChildren);
@@ -445,9 +502,58 @@ function hierarchicalBarChart2(parent, data) {
     d3.select('div.feature-legend-container')
       .select('.background.' + topChildren[d].data.name)
       .style("fill", color);
+    if (nolegend_features.includes(event.data.name)) {
+      var rect_x = xScale(topChildren[0].data.name);
+      var rect_y = 10;
+      text.text(custom_names[event.data.name])
+        .style('opacity', 1)
+        .attr("x", rect_x + 2)
+        .attr("y", rect_y + 14)
+        .raise();
+      console.log(text.node().getComputedTextLength());
+      textbox.style("opacity", 1)
+        .attr("x", rect_x)
+        .attr("y", rect_y)
+        .style("width", text.node().getComputedTextLength()+ 5);
+    }
   });
 
-  bars.on("mouseout", function (event, d) { resetHighlight() });
+  bars.on("mouseout", function (event, d) { 
+    resetHighlight();
+    if (nolegend_features.includes(event.data.name)) {
+      textbox.style("opacity", 0);
+      text.style("opacity", 0);
+    }
+  });
+
+onGraphRendered('.feature-view-2'); // Notify that the graph has been rendered
+
+// Select the slider element
+const yAxisSlider = d3.select("#yAxisSlider2");
+
+// Update chart function that adjusts the y-axis based on the slider value
+function updateChart(yMax) {
+    yScale.domain([0, yMax]); // Update the y-axis domain
+
+    // Update the Y-axis on the chart
+    svg.select(".y-axis")
+        .transition() // Add a smooth transition
+        .duration(500)
+        .call(d3.axisLeft(yScale));
+
+    // Update bars
+    bars.transition() // Smooth transition for resizing bars
+        .duration(500)
+        .attr("y", d => yScale(d.value))
+        .attr("height", d => chartHeight - yScale(d.value));
+}
+
+// Event listener for the slider change
+yAxisSlider.on("input", function() {
+    updateChart(+this.value);
+});
+
+
 }
 /**
  * hierarchicalBarChart3
@@ -455,6 +561,7 @@ function hierarchicalBarChart2(parent, data) {
 function hierarchicalBarChart3(parentName, data) {
 
   const svgContainer = d3.select(".feature-view-3");
+
   const width = svgContainer.node().clientWidth;
   const height = svgContainer.node().clientHeight;
   const heightRatio = height / 370;
@@ -573,6 +680,34 @@ function hierarchicalBarChart3(parentName, data) {
     d3.select(this).attr("fill", color);
     d3.select("svg.nucleotide-view").selectAll(".obj.bar").attr("fill", color);
   });
+
+  onGraphRendered('.feature-view-3'); // Notify that the graph has been rendered
+// Select the slider element
+const yAxisSlider3 = d3.select("#yAxisSlider3");
+
+// Function to update the chart based on the slider value
+function updateChart3(yMax) {
+    // Update the yScale domain
+    yScale.domain([0, yMax]);
+
+    // Transition the Y-axis to new scale
+    svg.select(".y-axis")
+        .transition()
+        .duration(500)
+        .call(d3.axisLeft(yScale));
+
+    // Transition the bars to new heights based on new scale
+    bars.transition()
+        .duration(500)
+        .attr("y", d => yScale(d.value))
+        .attr("height", d => chartHeight - yScale(d.value));
+}
+
+// Event listener for changes to the slider
+yAxisSlider3.on("input", function() {
+    updateChart3(+this.value);
+});
+
 }
 /**
  * nucleotideView 
@@ -660,6 +795,7 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
   var ySkip = d3.scaleLinear()
     .domain([0, max_strength])
     .range([margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle, height - margin.bottom]);
+
 
   //I think we can revome this declarations and bring to inside the functions.
   // Set up for nucleotide sort

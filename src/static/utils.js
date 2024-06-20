@@ -149,9 +149,9 @@ function featureSelection(featureName = null, className = null) {
   const heightRatio = height / 381;
   titleDiv.style.fontSize = `${14*widthRatio}px`;
 
-  const legendInfo = [
-    { title: `Skipping`, name: 'skip', color: skipping_color, highlight: skipping_highlight_color }, 
-    { title: `Inclusion`, name: 'incl', color: inclusion_color, highlight: inclusion_highlight_color }];
+  const legendInfo = [    { title: `Inclusion`, name: 'incl', color: inclusion_color, highlight: inclusion_highlight_color },
+    { title: `Skipping`, name: 'skip', color: skipping_color, highlight: skipping_highlight_color } 
+];
 
 d3.select('.legend').selectAll("*").remove();
 // Append SVG to the legend div
@@ -170,8 +170,8 @@ const legend = svg.selectAll('.legendItem')
   .append('g')
   .attr('class', 'legendItem')
   .attr('transform', (d, i) => {
-    var x = xOffset;
-    var y = yOffset + (legendItemSize + legendSpacing) * i;
+    var x = xOffset + (legendItemSize + legendSpacing + 140) * i; // Adjust x position for each legend item
+    var y = yOffset;
     return `translate(${x}, ${y})`;
   });
 
@@ -210,7 +210,7 @@ legend.append('text')
   .attr('x', legendItemSize + 5)
   .attr('y', legendItemSize / 2)
   .attr('dy', '0.35em')
-  .style('font-size', `${20*widthRatio}px`)  // Adjust font size here
+  .style('font-size', `${14*widthRatio}px`)  // Adjust font size here
   .text(d => d.title);
   // Function to update SVGs with new data and highlight the selected feature
   const updateSVGs = (containerSelector, svgSelector, imagesArray, colors) => {
@@ -332,5 +332,116 @@ legend.append('text')
 
   // Update SVGs for long skipping images
   updateSVGs("div.svg-grid-long-skipping", ".feature-long-svg", newImagesData.longSkipping, [skipping_color, skipping_highlight_color]);
+}
+
+function downloadSvg(svgElement, filename) {
+  // Create a temporary SVG element
+  const tempSvg = svgElement.cloneNode(true);
+  document.body.appendChild(tempSvg);
+
+  // Get the bounding box of the SVG element
+  const bbox = svgElement.getBBox();
+  tempSvg.setAttribute('width', bbox.width);
+  tempSvg.setAttribute('height', bbox.height);
+  tempSvg.setAttribute('viewBox', `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`);
+
+  const svgString = new XMLSerializer().serializeToString(tempSvg);
+  const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+  const DOMURL = window.URL || window.webkitURL || window;
+  const url = DOMURL.createObjectURL(svgBlob);
+  const image = new Image();
+
+  image.onload = function () {
+    const scaleFactor = 2; // Increase this value to improve resolution
+    const canvas = document.createElement('canvas');
+    canvas.width = bbox.width * scaleFactor;
+    canvas.height = bbox.height * scaleFactor;
+    const ctx = canvas.getContext('2d');
+
+    // Fill the canvas with white background
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw the image on the canvas
+    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+    DOMURL.revokeObjectURL(url);
+    const imgURI = canvas.toDataURL('image/png');
+    triggerDownload(imgURI, filename);
+
+    // Remove the temporary SVG element
+    document.body.removeChild(tempSvg);
+  };
+
+  image.src = url;
+}
+
+function triggerDownload(imgURI, filename) {
+  const a = document.createElement('a');
+  a.href = imgURI;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+
+
+function downloadSelectedSVGs() {
+  const checkboxes = document.querySelectorAll('.svg-checkbox:checked');
+  console.log("here")
+  checkboxes.forEach((checkbox, index) => {
+    setTimeout(() => {
+      const svgElement = document.querySelector("svg." + checkbox.value);
+      if (svgElement) {
+        downloadSvg(svgElement, checkbox.value);
+      }
+    }, 500 * index);  // Delay each download by 500ms incrementally
+  });
+}
+
+
+function resetGraph() {
+  console.log('Graph has been reset to initial state.');
+  nucleotideView(Data.sequence, Data.structs, Data.nucleotide_activations);
+  hierarchicalBarChart(Data, Data.feature_activations);
+  featureSelection(null, Data);
+  d3.select("svg.feature-view-2").selectAll("*").remove();
+
+  d3.select("svg.feature-view-3").selectAll("*").remove();
+
+
+  selectedBar = null;
+  selectedFeatureBar = null;
+  resetHighlight();
+}
+
+
+async function fetchData(option) {
+  try {
+      const response = await fetch(`./get-data?option=${option}`);
+      const data = await response.json();
+      if (data.error) {
+          console.error("Error fetching data:", data.error);
+          // Optionally, inform the user visually
+      } else {
+          window.Data = data;
+          // Render data
+          featureSelection(null, data);
+          nucleotideView(data.sequence, data.structs, data.nucleotide_activations);
+          PSIview(data);
+          hierarchicalBarChart(data, data.feature_activations);
+          d3.select("svg.feature-view-2").selectAll("*").remove();
+          d3.select("svg.feature-view-3").selectAll("*").remove();
+      }
+  } catch (error) {
+      console.error("Failed to fetch or parse data:", error);
+  }
+}
+
+function onGraphRendered(element ) {
+  // Target the container where the graph is rendered
+  const featureView2 = document.querySelector(element);
+  const event = new CustomEvent('graphRendered', { detail: { view: featureView2 } });
+  featureView2.dispatchEvent(event);
 
 }
