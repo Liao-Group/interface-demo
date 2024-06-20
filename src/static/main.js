@@ -214,7 +214,8 @@ function hierarchicalBarChart(parent, data) {
   const xScale = d3.scaleBand()
     .domain(root.children ? root.children.map(d => d.data.name) : [])
     .range([0, chartWidth])
-    .padding(0.2);
+    .paddingInner(0.4)
+    .paddingOuter(0.5);
 
   const yScale = d3.scaleLinear()
     .domain([0, 170])
@@ -335,7 +336,8 @@ function hierarchicalBarChart2(parent, data) {
   const xScale = d3.scaleBand()
     .domain(topChildren.map(d => d.data.name))
     .range([0, chartWidth])
-    .padding(0.2);
+    .paddingInner(0.2)
+    .paddingOuter(0.3);
 
   const yScale = d3.scaleLinear()
     .domain([0, 75])
@@ -493,7 +495,8 @@ function hierarchicalBarChart3(parentName, data) {
   const xScale = d3.scaleBand()
     .domain(topChildren.map(d => d.data.name))
     .range([0, charWidth])
-    .padding(0.1);
+    .paddingInner(0.1)
+    .paddingOuter(0.4);
 
   const yScale = d3.scaleLinear()
     .domain([0, 18])
@@ -601,7 +604,8 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
   var x = d3.scaleBand()
     .range([margin.left, (width - margin.right)])
     .domain(positions)
-    .padding(0.2);
+    .paddingInner(0.2)
+    .paddingOuter(0.25);
   var xInclAxis = d3.axisBottom(x)
     .tickSize(2 * widthRatio)
     .tickFormat(function (d) {
@@ -1003,7 +1007,8 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom, colors) 
   const sortXIncl = d3.scaleBand()
     .range([margin.left, width - margin.right])
     .domain(topInclData.map(d => d.name))
-    .padding(0.2);
+    .paddingInner(0.2)
+    .paddingOuter(0.25);
 
   const sortXSkip = d3.scaleBand()
     .range([margin.left, width - margin.right])

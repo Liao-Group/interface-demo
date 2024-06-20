@@ -25,7 +25,7 @@ html {
   ;
   gap: 0.5rem;
   background-color: white;
-  padding: 0.5rem;
+  /* padding: 0.5rem; */
   grid-auto-columns: minmax(0, 1fr);
   grid-auto-rows: minmax(0, 1fr);
   }
