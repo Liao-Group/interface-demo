@@ -158,38 +158,48 @@ function PSIview(data) {
     });
 
 
-  const barColor = deltaForce < 0 ? skipping_color : inclusion_color;
-  // Plot by deltaForce
-  var barPosition = yScale(Math.max(0, deltaForce));
-  var barHeight = Math.abs(yScale(deltaForce) - yScale(0));
-  if (plotPSI) {
-    // Plot by predicted PSI
-    barPosition = yScale2(Math.max(0.5, predictedPSI));
-    barHeight = Math.abs((yScale2(predictedPSI) - yScale2(0.5)));
-  }
-  // to adjust the width of the bar in the graph we make the 
-  // graph rectangle fixed and the make the margins dynamic. 
-  const barWidth = 25*widthRatio;
-
-  const bar = chartGroup.append('rect')
-    .attr('x', (chartWidth / 2) - (barWidth / 2))
-    .attr('width', barWidth)
-    .attr('y', plotPSI ? yScale2(0.5) : yScale(0))
-    .attr('height', barHeight)
-    .attr('fill', barColor)
-    .attr("stroke", "#000")
-    .attr("stroke-width", 1)
-    .on("click", function (event, d) {
-      nucleotideView(data.sequence, data.structs, data.nucleotide_activations);
-      // featureSelection()
-      hierarchicalBarChart(data, data.feature_activations);
-      d3.select("svg.feature-view-2").selectAll("*").remove();
-      d3.select("svg.feature-view-3").selectAll("*").remove();
-      selectedBar = null;
-      selectedFeatureBar = null;
-      resetHighlight();
-    })
-
+    const barColor = deltaForce < 0 ? skipping_color : inclusion_color;
+  
+    // Plot by deltaForce
+    var barPosition, barHeight;
+    if (deltaForce >= 0) {
+      barPosition = yScale(deltaForce);
+      barHeight = Math.abs(yScale(deltaForce) - yScale(0));
+    } else {
+      barPosition = yScale(0);
+      barHeight = Math.abs(yScale(deltaForce) - yScale(0));
+    }
+  
+    if (plotPSI) {
+      // Plot by predicted PSI
+      if (predictedPSI >= 0.5) {
+        barPosition = yScale2(predictedPSI);
+        barHeight = Math.abs(yScale2(predictedPSI) - yScale2(0.5));
+      } else {
+        barPosition = yScale2(0.5);
+        barHeight = Math.abs(yScale2(predictedPSI) - yScale2(0.5));
+      }
+    }
+  
+    // graph rectangle fixed and make the margins dynamic.
+    const barWidth = 25 * widthRatio;
+    const bar = chartGroup.append('rect')
+      .attr('x', (chartWidth / 2) - (barWidth / 2))
+      .attr('width', barWidth)
+      .attr('y', barPosition)
+      .attr('height', barHeight)
+      .attr('fill', barColor)
+      .attr("stroke", "#000")
+      .attr("stroke-width", 1)
+      .on("click", function (event, d) {
+        nucleotideView(data.sequence, data.structs, data.nucleotide_activations);
+        hierarchicalBarChart(data, data.feature_activations);
+        d3.select("svg.feature-view-2").selectAll("*").remove();
+        d3.select("svg.feature-view-3").selectAll("*").remove();
+        selectedBar = null;
+        selectedFeatureBar = null;
+        resetHighlight();
+      });
 };
 /**
  * Feature view 1 
@@ -220,7 +230,8 @@ function hierarchicalBarChart(parent, data) {
   const xScale = d3.scaleBand()
     .domain(root.children ? root.children.map(d => d.data.name) : [])
     .range([0, chartWidth])
-    .padding(0.2);
+    .paddingInner(0.4)
+    .paddingOuter(0.5);
 
     const yScale = d3.scaleLinear()
     .domain([0, 170]) // Initial domain; this will be updated
@@ -231,13 +242,21 @@ function hierarchicalBarChart(parent, data) {
       updateChart(+this.value);
     });
   
-    function updateChart(maxValue) {
-      yScale.domain([0, maxValue]); // Update yScale's domain
-      d3.select(".y-axis").call(d3.axisLeft(yScale)); // Redraw Y-axis
+    function updateChart(yMax) {
+      yScale.domain([0, yMax]); // Update the y-axis domain
   
-      bars.attr("y", d => yScale(d.value)) // Update bars' Y position
-          .attr("height", d => chartHeight - yScale(d.value)); // Update bars' height
-    }
+      // Update the Y-axis on the chart
+      svg.select(".y-axis")
+          .transition() // Add a smooth transition
+          .duration(500)
+          .call(d3.axisLeft(yScale));
+  
+      // Update bars
+      bars.transition() // Smooth transition for resizing bars
+          .duration(500)
+          .attr("y", d => yScale(d.value))
+          .attr("height", d => chartHeight - yScale(d.value));
+  }
 
   const xAxis = d3.axisBottom(xScale).tickFormat("").tickSize(0);
   const yAxis = d3.axisLeft(yScale);
@@ -355,7 +374,8 @@ function hierarchicalBarChart2(parent, data) {
   const xScale = d3.scaleBand()
     .domain(topChildren.map(d => d.data.name))
     .range([0, chartWidth])
-    .padding(0.2);
+    .paddingInner(0.2)
+    .paddingOuter(0.3);
 
   const yScale = d3.scaleLinear()
     .domain([0, 75])
@@ -440,8 +460,8 @@ function hierarchicalBarChart2(parent, data) {
   // Add textbox for non-clickable features (bias, skip_struct_4)
   const nolegend_features = ['incl_bias', 'skip_struct_4'];
   const custom_names = {
-    'incl_bias': 'inclusion bias',
-    'skip_struct_4': 'an uncommon long skipping structure feature'
+    'incl_bias': 'Inclusion bias',
+    'skip_struct_4': 'Uncommon long skipping structure feature'
   }
   var textbox = chart.append("rect")
     .style("opacity", 0)
@@ -490,7 +510,7 @@ function hierarchicalBarChart2(parent, data) {
     if (nolegend_features.includes(event.data.name)) {
       var rect_x = xScale(topChildren[0].data.name);
       var rect_y = 10;
-      text.text('This is ' + custom_names[event.data.name])
+      text.text(custom_names[event.data.name])
         .style('opacity', 1)
         .attr("x", rect_x + 2)
         .attr("y", rect_y + 14)
@@ -499,7 +519,7 @@ function hierarchicalBarChart2(parent, data) {
       textbox.style("opacity", 1)
         .attr("x", rect_x)
         .attr("y", rect_y)
-        .style("width", text.node().getComputedTextLength() + 5);
+        .style("width", text.node().getComputedTextLength()+ 5);
     }
   });
 
@@ -587,7 +607,8 @@ function hierarchicalBarChart3(parentName, data) {
   const xScale = d3.scaleBand()
     .domain(topChildren.map(d => d.data.name))
     .range([0, charWidth])
-    .padding(0.1);
+    .paddingInner(0.1)
+    .paddingOuter(0.4);
 
   const yScale = d3.scaleLinear()
     .domain([0, 18])
@@ -723,7 +744,8 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
   var x = d3.scaleBand()
     .range([margin.left, (width - margin.right)])
     .domain(positions)
-    .padding(0.2);
+    .paddingInner(0.2)
+    .paddingOuter(0.25);
   var xInclAxis = d3.axisBottom(x)
     .tickSize(2 * widthRatio)
     .tickFormat(function (d) {
@@ -778,6 +800,7 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
   var ySkip = d3.scaleLinear()
     .domain([0, max_strength])
     .range([margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle, height - margin.bottom]);
+
 
   //I think we can revome this declarations and bring to inside the functions.
   // Set up for nucleotide sort
@@ -1125,7 +1148,8 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom, colors) 
   const sortXIncl = d3.scaleBand()
     .range([margin.left, width - margin.right])
     .domain(topInclData.map(d => d.name))
-    .padding(0.2);
+    .paddingInner(0.2)
+    .paddingOuter(0.25);
 
   const sortXSkip = d3.scaleBand()
     .range([margin.left, width - margin.right])

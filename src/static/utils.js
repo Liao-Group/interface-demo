@@ -149,9 +149,9 @@ function featureSelection(featureName = null, className = null) {
   const heightRatio = height / 381;
   titleDiv.style.fontSize = `${14*widthRatio}px`;
 
-  const legendInfo = [
-    { title: `Skipping`, name: 'skip', color: skipping_color, highlight: skipping_highlight_color }, 
-    { title: `Inclusion`, name: 'incl', color: inclusion_color, highlight: inclusion_highlight_color }];
+  const legendInfo = [    { title: `Inclusion`, name: 'incl', color: inclusion_color, highlight: inclusion_highlight_color },
+    { title: `Skipping`, name: 'skip', color: skipping_color, highlight: skipping_highlight_color } 
+];
 
 d3.select('.legend').selectAll("*").remove();
 // Append SVG to the legend div
@@ -170,8 +170,8 @@ const legend = svg.selectAll('.legendItem')
   .append('g')
   .attr('class', 'legendItem')
   .attr('transform', (d, i) => {
-    var x = xOffset;
-    var y = yOffset + (legendItemSize + legendSpacing) * i;
+    var x = xOffset + (legendItemSize + legendSpacing + 140) * i; // Adjust x position for each legend item
+    var y = yOffset;
     return `translate(${x}, ${y})`;
   });
 
@@ -210,7 +210,7 @@ legend.append('text')
   .attr('x', legendItemSize + 5)
   .attr('y', legendItemSize / 2)
   .attr('dy', '0.35em')
-  .style('font-size', `${20*widthRatio}px`)  // Adjust font size here
+  .style('font-size', `${14*widthRatio}px`)  // Adjust font size here
   .text(d => d.title);
   // Function to update SVGs with new data and highlight the selected feature
   const updateSVGs = (containerSelector, svgSelector, imagesArray, colors) => {
@@ -332,7 +332,6 @@ legend.append('text')
 
   // Update SVGs for long skipping images
   updateSVGs("div.svg-grid-long-skipping", ".feature-long-svg", newImagesData.longSkipping, [skipping_color, skipping_highlight_color]);
-
 }
 
 function downloadSvg(svgElement, filename) {
@@ -389,6 +388,7 @@ function triggerDownload(imgURI, filename) {
 
 function downloadSelectedSVGs() {
   const checkboxes = document.querySelectorAll('.svg-checkbox:checked');
+  console.log("here")
   checkboxes.forEach((checkbox, index) => {
     setTimeout(() => {
       const svgElement = document.querySelector("svg." + checkbox.value);
