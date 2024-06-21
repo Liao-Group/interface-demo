@@ -474,8 +474,8 @@ async function fetchData(option) {
           window.Data = data;
           // Render data
           featureSelection(null, data);
-          nucleotideView(data.sequence, data.structs, data.nucleotide_activations);
           PSIview(data);
+          nucleotideView(data.sequence, data.structs, data.nucleotide_activations);
           hierarchicalBarChart(data, data.feature_activations);
           d3.select("svg.feature-view-2").selectAll("*").remove();
           d3.select("svg.feature-view-3").selectAll("*").remove();
