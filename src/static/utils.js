@@ -156,13 +156,14 @@ function featureSelection(featureName = null, className = null) {
 d3.select('.legend').selectAll("*").remove();
 // Append SVG to the legend div
 const svg = d3.select('.legend')
-  .append('svg')
+  .append('svg').attr('width', width)
 
 // Initialize legend
-const legendItemSize = 20*widthRatio;
-const legendSpacing = 4;
-const xOffset = width - 400*widthRatio; // Adjust the x-offset to position the legend within visible range
-const yOffset = 20;  // Start drawing from top with a small margin
+const legendItemWidth = 120 * widthRatio;
+const legendItemHeight = 25 * widthRatio;
+const legendSpacing = 85;
+const xOffset = ( (width - widthRatio) - (2 * legendItemWidth + legendSpacing) ) / 2; // Adjust the x-offset to position the legend within visible range
+const yOffset = 13; // Start drawing from top with a small margin
 
 const legend = svg.selectAll('.legendItem')
   .data(legendInfo)
@@ -170,48 +171,55 @@ const legend = svg.selectAll('.legendItem')
   .append('g')
   .attr('class', 'legendItem')
   .attr('transform', (d, i) => {
-    var x = xOffset + (legendItemSize + legendSpacing + 140) * i; // Adjust x position for each legend item
+    var x = xOffset + (legendItemWidth + legendSpacing) * i; // Adjust x position for each legend item
     var y = yOffset;
     return `translate(${x}, ${y})`;
   });
 
-// Create legend color squares
+// Create legend color rectangles
 legend.append('rect')
-  .attr('class', (d)=>'rectangle ' + d.name)
-  .attr('width', legendItemSize)
-  .attr('height', legendItemSize)
-  .attr('fill', function(d) { 
-    if (className !== null && className === d.name) { return d.highlight; } 
+  .attr('class', (d) => 'rectangle ' + d.name)
+  .attr('width', legendItemWidth)
+  .attr('height', legendItemHeight)
+  .attr('rx', 4)
+  .attr('ry', 4)
+  .attr('fill', function (d) {
+    if (className !== null && className === d.name) { return d.highlight; }
     else { return d.color; }
   })
-  .on('mouseover', function(d) { 
+  .on('mouseover', function (d) {
     legend.selectAll('.rectangle').attr('fill', (d) => d.color);
     d3.select(this).attr('fill', (d) => d.highlight);
     d3.select('div.feature-legend-container')
-      .selectAll('svg.feature-svg')
-      .style("border", `2px solid ${lightOther}`)
-      .style("box-shadow", "none");
-    d3.select('div.feature-legend-container')
-      .selectAll('svg.feature-long-svg')
-      .style("border", `2px solid ${lightOther}`)
-      .style("box-shadow", "none");
-    d3.select('div.feature-legend-container')
       .selectAll('svg.feature-svg.' + d.name)
-      .style("border", `2px solid ${d.highlight}`);
+      .style("border", `2px solid ${d.highlight}`)
     d3.select('div.feature-legend-container')
       .selectAll('svg.feature-long-svg.' + d.name)
-      .style("border", `2px solid ${d.highlight}`);
+      .style("border", `2px solid ${d.highlight}`)
   })
-  .on('mouseout', function(d) { resetHighlight() });
-
+  .on('mouseout', function (d) {
+    legend.selectAll('.rectangle').attr('fill', (d) => d.color);
+    d3.select('div.feature-legend-container')
+      .selectAll('svg.feature-svg.' + d.name)
+      .style("border", `2px solid ${d.color}`)
+    d3.select('div.feature-legend-container')
+      .selectAll('svg.feature-long-svg.' + d.name)
+      .style("border", `2px solid ${d.color}`)
+  });
 
 // Create legend labels
 legend.append('text')
-  .attr('x', legendItemSize + 5)
-  .attr('y', legendItemSize / 2)
-  .attr('dy', '0.35em')
-  .style('font-size', `${14*widthRatio}px`)  // Adjust font size here
+  .attr('x', legendItemWidth / 2)
+  .attr('y', legendItemHeight / 2)
+  .attr('dy', '0.15em')
+  .attr('text-anchor', 'middle') 
+  .attr('dominant-baseline', 'middle')
+  .style('font-size', `${13 * widthRatio}px`)
   .text(d => d.title);
+
+
+
+  
   // Function to update SVGs with new data and highlight the selected feature
   const updateSVGs = (containerSelector, svgSelector, imagesArray, colors) => {
     const svgContainer = d3.select(containerSelector)
@@ -233,7 +241,7 @@ legend.append('text')
       if (d.feature.split('_')[0] === className) {
         svg.style("border", `2px solid ${colors[1]}`);
       } else {
-        svg.style("border", `2px solid ${lightOther}`).style("box-shadow", "none");
+        svg.style("border", `2px solid ${colors[0]}`).style("box-shadow", "none");
       }
 
       const background = svg.select(".background")
@@ -277,7 +285,46 @@ legend.append('text')
         background.style("fill", colors[0]);
         // svg.select(this).style("border", `3px solid ${colors[1]}`);
       })
-        .on("mouseleave", (event, data) => { resetHighlight(); })
+        .on("mouseleave", (event, data) => {
+          
+          d3.select('div.feature-legend-container')
+          .selectAll('rect.rectangle')
+          .attr('fill', (d) => d.color);
+        d3.select('div.feature-legend-container')
+          .selectAll('.background')
+          .style("fill", "none");
+        d3.select('svg.feature-view-1')
+          .selectAll(".bar").attr("fill", d => getFillColor(d));
+        
+        if (selectedBar !== null) {
+          var color = null;
+          var highlightColor = null;
+          const className = d3.select(selectedBar).attr('class').split(' ')[1];
+          d3.select('div.feature-legend-container')
+            .select('rect.rectangle.' + className)
+            .attr('fill', function(d) {
+              color = d.color;
+              highlightColor = d.highlight;
+              return highlightColor;
+          });
+          d3.select('div.feature-legend-container')
+            .selectAll('svg.feature-svg.' + className)
+            .style("border", `2px solid ${highlightColor}`);
+          d3.select('div.feature-legend-container')
+            .selectAll('svg.feature-long-svg.' + className)
+            .style("border", `2px solid ${highlightColor}`);
+          d3.select(selectedBar).attr('fill', highlightColor);
+          d3.select('svg.feature-view-2')
+            .selectAll('.bar').attr('fill', color)
+          if (selectedFeatureBar !== null) {
+            const featureName = d3.select(selectedFeatureBar).attr('class').split(' ')[1];
+            d3.select('div.feature-legend-container')
+              .select('.background.' + featureName)
+              .style("fill", color);
+            d3.select(selectedFeatureBar).attr('fill', highlightColor);
+          }
+        }
+        })
         .on("click", (event, info) => {
           // previous = selected
           selected = d.feature
@@ -292,7 +339,7 @@ legend.append('text')
           if(selectedClass === 'skip'){
             d3.select("svg.feature-view-1")
             .selectAll(`.bar-incl` )
-            .attr("fill", inclusion_color);
+            .attr("fill", inclusion_color)
             d3.select("svg.feature-view-1")
             .selectAll(`.bar-skip` )
             .attr("fill", skipping_highlight_color);
