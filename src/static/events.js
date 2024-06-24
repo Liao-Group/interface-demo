@@ -87,6 +87,7 @@ window.addEventListener('resize', function () {
 
 document.addEventListener("DOMContentLoaded", async function () {
   const selectElement = document.getElementById("option");
+  const dateset = document.getElementById('dataset').value;
 
   let selectedOption = localStorage.getItem("selectedOption");
 
@@ -94,7 +95,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     selectedOption = 'exon_s1'; // Default to 'teaser' if nothing in storage
     localStorage.setItem("selectedOption", selectedOption);
   }
-  var dateset = document.getElementById('dataset').value;
 
   selectElement.value = selectedOption;
   await fetchData(selectedOption,dateset); // Fetch data immediately on load
@@ -137,8 +137,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     event.preventDefault();
     // Access the value of the input
     var exonValue = document.getElementById('exon').value;
-    console.log(exonValue);
-    console.log(dataset)
     fetchData(exonValue,dataset)
   });
 })
@@ -190,4 +188,3 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 });
-

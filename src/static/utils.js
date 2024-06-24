@@ -466,7 +466,8 @@ function resetGraph() {
 async function fetchData(option, dataset) {
   try {
     console.log(option,dataset)
-    const response = await fetch(`./get-data?option=${option}&dataset=${dataset}`); const data = await response.json();
+    const response = await fetch(`./get-data?option=${option}&dataset=${dataset}`); 
+    const data = await response.json();
     if (data.error) {
       console.error("Error fetching data:", data.error);
       // Optionally, inform the user visually

@@ -65,7 +65,7 @@ def homepage():
 def get_data():
     option = request.args.get('option', 'exon_s1')
     dataset = request.args.get('dataset', 'ES7')
-
+    print(option,dataset)
     # Main logic to decide whether to use server or local file
     if option in default_options: 
         return read_local_data(option)
