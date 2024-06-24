@@ -32,7 +32,7 @@
           oninvalid="this.setCustomValidity('Please enter a valid exon')" oninput="this.setCustomValidity('')">
 
         <input type="submit" value="Submit">
-      </form> -->
+      </form>
       <form id="optionForm" method="post">
         <div class="select-wrapper">
           <select name="option" id="option">
@@ -56,7 +56,23 @@
           <div class="arrow"></div>
         </div>
       </form>
+
+      <form id="datasetForm" method="post">
+        <div class="select-wrapper-dataset">
+          <select name="dataset" id="dataset">
+            <!-- <option value="teaser">Teaser</option> -->
+            <option value="ES7">ES7</option>
+            <option value="WT1_exon_5">WT1_exon_5</option>
+            <option value="FAS_exon_6">FAS_exon_6</option>
+            <option value="SMN2_exon_7">SMN2_exon_7</option>
+            <option value="BRCA2_exon_7">BRCA2_exon_7</option>
+            <option value="CFTR_exon_13">CFTR_exon_13</option>
+          </select>
+          <div class="arrow"></div>
+        </div>
+      </form>
     </div>
+
     <!-- <button id="rewindButton1" class="rewindButton">&#9198;</button> -->
 
     <!-- <div class="dropdown-adjust">
@@ -131,7 +147,7 @@
       <svg class="feature-view-3" width="100%" height="100%"></svg>
     </div>
     <div class="feature-legend-container">
-      <div class="feature-legend-grids">      
+      <div class="feature-legend-grids">
         <div class="feature-legend-title">Feature Legend</div>
 
         <div class="legend"></div>
