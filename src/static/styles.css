@@ -82,7 +82,7 @@ form {
 .select-wrapper {
   position: relative;
   display: inline-block;
-  width: 13rem;
+  width: 2rem;
   margin-right: 0.625rem;
 }
 
@@ -92,7 +92,8 @@ form {
   border: 1px solid #0e6f07;
   border-radius: 0.25rem;
   padding: 0.625rem;
-  color: #0e6f07;
+  color: transparent;
+  /* color: #0e6f07; */
   background-color: #fff;
   width: 100%;
   cursor: pointer;

@@ -26,17 +26,17 @@
 
   <div class="header">
     <div class="forms-container">
-
+      <!--
       <form method="post" id="exonForm">
         <input type="text" name="exon" id="exon" size="80" placeholder="Enter an exon" pattern="([ATUGCatugc])*"
           oninvalid="this.setCustomValidity('Please enter a valid exon')" oninput="this.setCustomValidity('')">
 
         <input type="submit" value="Submit">
-      </form> -->
+      </form> 
       <form id="optionForm" method="post">
         <div class="select-wrapper">
           <select name="option" id="option">
-            <!-- <option value="teaser">Teaser</option> -->
+            <option value="teaser">Teaser</option>
             <option value="exon_s1">Exon S1</option>
             <option value="exon_s1_34c>a">Exon S1 Single Mutation</option>
             <option value="exon_s1_34c>a_46g>u">Exon S1 Double Mutation</option>
@@ -56,6 +56,46 @@
           <div class="arrow"></div>
         </div>
       </form>
+    -->
+    <form method="post" id="exonForm">
+      <input type="text" name="exon" id="exon" size="80" placeholder="Enter an Exon or Choose from Samples" pattern="([ATUGCatugc])*"
+        oninvalid="this.setCustomValidity('Please enter a valid exon')" oninput="this.setCustomValidity('')">
+  
+      <div class="select-wrapper">
+        <select name="option" id="option" onchange="updateExonInput()"> <!-- Added onchange attribute to call the JavaScript function -->
+          <option value="">Select an option</option> <!-- Added a default empty option -->
+          <option value="teaser">Teaser</option>
+          <option value="exon_s1">Exon S1</option>
+          <option value="exon_s1_34c>a">Exon S1 Single Mutation</option>
+          <option value="exon_s1_34c>a_46g>u">Exon S1 Double Mutation</option>
+          <option value="exon_d1">Exon D1 G-poor</option>
+          <option value="different_length_exon_length_20">Random exon with length 20</option>
+          <option value="different_length_exon_length_83">Random exon with length 83</option>
+          <option value="different_length_exon_length_140">Random exon with length 140</option>
+          <option value="other_datasets_wt1_exon">WT1 exon 5 dataset</option>
+          <option value="other_datasets_fas_exon">FAS exon 6 dataset</option>
+          <option value="other_datasets_smn2_exon">SMN2 exon 7 dataset</option>
+          <option value="other_datasets_brca2_exon">BRCA2 exon 7 dataset</option>
+          <option value="other_datasets_cftr_exon">CFTR exon 13 dataset</option>
+          <option value="exon_s1_comp1">Exon S1 Comparison 1</option>
+          <option value="exon_s1_comp2">Exon S1 Comparison 2</option>
+        </select>
+        <div class="arrow"></div>
+      </div>
+  
+      <input type="submit" value="Submit">
+    </form>
+  
+    <script>
+      function updateExonInput() { 
+        const selectElement = document.getElementById('option');
+        const inputElement = document.getElementById('exon');
+        const selectedOptionText = selectElement.options[selectElement.selectedIndex].text;
+        inputElement.value = selectedOptionText;
+      }
+    </script>
+    
+
     </div>
     <!-- <button id="rewindButton1" class="rewindButton">&#9198;</button> -->
 
