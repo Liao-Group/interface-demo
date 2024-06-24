@@ -86,8 +86,8 @@ window.addEventListener('resize', function () {
 });
 
 document.addEventListener("DOMContentLoaded", async function () {
-  const form = document.getElementById("exonForm");
   const selectElement = document.getElementById("option");
+  const dateset = document.getElementById('dataset').value;
 
   let selectedOption = localStorage.getItem("selectedOption");
 
@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   }
 
   selectElement.value = selectedOption;
-  await fetchData(selectedOption); // Fetch data immediately on load
+  await fetchData(selectedOption,dateset); // Fetch data immediately on load
 
   selectElement.addEventListener("change", async function () {
     const selectedValue = selectElement.value;
@@ -108,12 +108,15 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 
 
+
+
+
 document.addEventListener("DOMContentLoaded", async function () {
 
-  // listening to event from the rewind button on the feature legend
-  document.getElementById("rewindButton1").addEventListener('click', function () {
-    resetGraph();
-  });
+  // // listening to event from the rewind button on the feature legend
+  // document.getElementById("rewindButton1").addEventListener('click', function () {
+  //   resetGraph();
+  // });
 
   // // listening to event from the rewind b
   // document.getElementById("rewindButton2").addEventListener('click', function () {
@@ -123,16 +126,18 @@ document.addEventListener("DOMContentLoaded", async function () {
   // run download fucntion once selected 
   document.querySelector('.svg-select button').addEventListener('click', downloadSelectedSVGs);
 
-  // Get the form element
+  // Get the form elemen. This form is the one with user input. 
   var form = document.getElementById('exonForm');
+
   // Add submit event listener to the form
   form.addEventListener('submit', function (event) {
     // Prevent the default form submission behavior
+    var dataset = document.getElementById('dataset').value;
+
     event.preventDefault();
     // Access the value of the input
     var exonValue = document.getElementById('exon').value;
-    console.log(exonValue);
-    fetchData(exonValue)
+    fetchData(exonValue,dataset)
   });
 })
 
@@ -183,4 +188,3 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 });
-

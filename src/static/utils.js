@@ -33,7 +33,7 @@ function flatten_nested_json(data) {
   return result;
 }
 
-function getFillColor(input){
+function getFillColor(input) {
   if (typeof input === "number") {
     return input === 1 ? skipping_color : inclusion_color;
   } else if (typeof input === "object" && input !== null) {
@@ -60,7 +60,7 @@ function getFillColor(input){
   return inclusion_color; // Default color if input format is not recognized
 };
 
-function getHighlightColor(input){
+function getHighlightColor(input) {
   if (typeof input === "number") {
     return input === 1 ? skipping_highlight_color : inclusion_highlight_color;
   } else if (typeof input === "object" && input !== null) {
@@ -105,18 +105,18 @@ function resetHighlight() {
     .style("box-shadow", "none");
   d3.select('svg.feature-view-1')
     .selectAll(".bar").attr("fill", d => getFillColor(d));
-  
+
   if (selectedBar !== null) {
     var color = null;
     var highlightColor = null;
     const className = d3.select(selectedBar).attr('class').split(' ')[1];
     d3.select('div.feature-legend-container')
       .select('rect.rectangle.' + className)
-      .attr('fill', function(d) {
+      .attr('fill', function (d) {
         color = d.color;
         highlightColor = d.highlight;
         return highlightColor;
-    });
+      });
     d3.select('div.feature-legend-container')
       .selectAll('svg.feature-svg.' + className)
       .style("border", `2px solid ${highlightColor}`);
@@ -147,90 +147,90 @@ function featureSelection(featureName = null, className = null) {
   const titleDiv = document.querySelector('.feature-legend-title'); // Select the title div
   const widthRatio = width / 491;
   const heightRatio = height / 381;
-  titleDiv.style.fontSize = `${14*widthRatio}px`;
+  titleDiv.style.fontSize = `${14 * widthRatio}px`;
 
-  const legendInfo = [    { title: `Inclusion`, name: 'incl', color: inclusion_color, highlight: inclusion_highlight_color },
-    { title: `Skipping`, name: 'skip', color: skipping_color, highlight: skipping_highlight_color } 
-];
+  const legendInfo = [{ title: `Inclusion`, name: 'incl', color: inclusion_color, highlight: inclusion_highlight_color },
+  { title: `Skipping`, name: 'skip', color: skipping_color, highlight: skipping_highlight_color }
+  ];
 
-d3.select('.legend').selectAll("*").remove();
-// Append SVG to the legend div
-const svg = d3.select('.legend')
-  .append('svg').attr('width', width)
+  d3.select('.legend').selectAll("*").remove();
+  // Append SVG to the legend div
+  const svg = d3.select('.legend')
+    .append('svg').attr('width', width)
 
-// Initialize legend
-const legendItemWidth = 120 * widthRatio;
-const legendItemHeight = 25 * widthRatio;
-const legendSpacing = 85;
-const xOffset = ( (width - widthRatio) - (2 * legendItemWidth + legendSpacing) ) / 2; // Adjust the x-offset to position the legend within visible range
-const yOffset = 13; // Start drawing from top with a small margin
+  // Initialize legend
+  const legendItemWidth = 120 * widthRatio;
+  const legendItemHeight = 25 * widthRatio;
+  const legendSpacing = 85;
+  const xOffset = ((width - widthRatio) - (2 * legendItemWidth + legendSpacing)) / 2; // Adjust the x-offset to position the legend within visible range
+  const yOffset = 13; // Start drawing from top with a small margin
 
-const legend = svg.selectAll('.legendItem')
-  .data(legendInfo)
-  .enter()
-  .append('g')
-  .attr('class', 'legendItem')
-  .attr('transform', (d, i) => {
-    var x = xOffset + (legendItemWidth + legendSpacing) * i; // Adjust x position for each legend item
-    var y = yOffset;
-    return `translate(${x}, ${y})`;
-  });
+  const legend = svg.selectAll('.legendItem')
+    .data(legendInfo)
+    .enter()
+    .append('g')
+    .attr('class', 'legendItem')
+    .attr('transform', (d, i) => {
+      var x = xOffset + (legendItemWidth + legendSpacing) * i; // Adjust x position for each legend item
+      var y = yOffset;
+      return `translate(${x}, ${y})`;
+    });
 
-// Create legend color rectangles
-legend.append('rect')
-  .attr('class', (d) => 'rectangle ' + d.name)
-  .attr('width', legendItemWidth)
-  .attr('height', legendItemHeight)
-  .attr('rx', 4)
-  .attr('ry', 4)
-  .attr('fill', function (d) {
-    if (className !== null && className === d.name) { return d.highlight; }
-    else { return d.color; }
-  })
-  .on('mouseover', function (d) {
-    legend.selectAll('.rectangle').attr('fill', (d) => d.color);
-    d3.select(this).attr('fill', (d) => d.highlight);
-    d3.select('div.feature-legend-container')
-      .selectAll('svg.feature-svg.' + d.name)
-      .style("border", `2px solid ${d.highlight}`)
-    d3.select('div.feature-legend-container')
-      .selectAll('svg.feature-long-svg.' + d.name)
-      .style("border", `2px solid ${d.highlight}`)
-  })
-  .on('mouseout', function (d) {
-    legend.selectAll('.rectangle').attr('fill', (d) => d.color);
-    d3.select('div.feature-legend-container')
-      .selectAll('svg.feature-svg.' + d.name)
-      .style("border", `2px solid ${d.color}`)
-    d3.select('div.feature-legend-container')
-      .selectAll('svg.feature-long-svg.' + d.name)
-      .style("border", `2px solid ${d.color}`)
-  });
+  // Create legend color rectangles
+  legend.append('rect')
+    .attr('class', (d) => 'rectangle ' + d.name)
+    .attr('width', legendItemWidth)
+    .attr('height', legendItemHeight)
+    .attr('rx', 4)
+    .attr('ry', 4)
+    .attr('fill', function (d) {
+      if (className !== null && className === d.name) { return d.highlight; }
+      else { return d.color; }
+    })
+    .on('mouseover', function (d) {
+      legend.selectAll('.rectangle').attr('fill', (d) => d.color);
+      d3.select(this).attr('fill', (d) => d.highlight);
+      d3.select('div.feature-legend-container')
+        .selectAll('svg.feature-svg.' + d.name)
+        .style("border", `2px solid ${d.highlight}`)
+      d3.select('div.feature-legend-container')
+        .selectAll('svg.feature-long-svg.' + d.name)
+        .style("border", `2px solid ${d.highlight}`)
+    })
+    .on('mouseout', function (d) {
+      legend.selectAll('.rectangle').attr('fill', (d) => d.color);
+      d3.select('div.feature-legend-container')
+        .selectAll('svg.feature-svg.' + d.name)
+        .style("border", `2px solid ${d.color}`)
+      d3.select('div.feature-legend-container')
+        .selectAll('svg.feature-long-svg.' + d.name)
+        .style("border", `2px solid ${d.color}`)
+    });
 
-// Create legend labels
-legend.append('text')
-  .attr('x', legendItemWidth / 2)
-  .attr('y', legendItemHeight / 2)
-  .attr('dy', '0.15em')
-  .attr('text-anchor', 'middle') 
-  .attr('dominant-baseline', 'middle')
-  .style('font-size', `${13 * widthRatio}px`)
-  .text(d => d.title);
+  // Create legend labels
+  legend.append('text')
+    .attr('x', legendItemWidth / 2)
+    .attr('y', legendItemHeight / 2)
+    .attr('dy', '0.15em')
+    .attr('text-anchor', 'middle')
+    .attr('dominant-baseline', 'middle')
+    .style('font-size', `${13 * widthRatio}px`)
+    .text(d => d.title);
 
 
 
-  
+
   // Function to update SVGs with new data and highlight the selected feature
   const updateSVGs = (containerSelector, svgSelector, imagesArray, colors) => {
     const svgContainer = d3.select(containerSelector)
       .selectAll(svgSelector)
       .data(imagesArray, d => d.feature);
 
-      const svgEnter = svgContainer.enter()
+    const svgEnter = svgContainer.enter()
       .append("svg")
       .attr("class", d => `${svgSelector.slice(1)} ${d.feature} ${d.feature.split('_')[0]}`);
 
-    svgEnter.append("rect").attr("class", (d) => "background " + d.feature );
+    svgEnter.append("rect").attr("class", (d) => "background " + d.feature);
     svgEnter.append("image");
 
     const svgMerged = svgEnter.merge(svgContainer);
@@ -278,87 +278,87 @@ legend.append('text')
 
       svg.on("mouseover", (event, data) => {
 
-          d3.select("svg.feature-view-2")
-            .selectAll(".bar." + d.feature)
-            .attr("fill", colors[1]);
-       
+        d3.select("svg.feature-view-2")
+          .selectAll(".bar." + d.feature)
+          .attr("fill", colors[1]);
+
         background.style("fill", colors[0]);
         // svg.select(this).style("border", `3px solid ${colors[1]}`);
       })
         .on("mouseleave", (event, data) => {
-          
+
           d3.select('div.feature-legend-container')
-          .selectAll('rect.rectangle')
-          .attr('fill', (d) => d.color);
-        d3.select('div.feature-legend-container')
-          .selectAll('.background')
-          .style("fill", "none");
-        d3.select('svg.feature-view-1')
-          .selectAll(".bar").attr("fill", d => getFillColor(d));
-        
-        if (selectedBar !== null) {
-          var color = null;
-          var highlightColor = null;
-          const className = d3.select(selectedBar).attr('class').split(' ')[1];
+            .selectAll('rect.rectangle')
+            .attr('fill', (d) => d.color);
           d3.select('div.feature-legend-container')
-            .select('rect.rectangle.' + className)
-            .attr('fill', function(d) {
-              color = d.color;
-              highlightColor = d.highlight;
-              return highlightColor;
-          });
-          d3.select('div.feature-legend-container')
-            .selectAll('svg.feature-svg.' + className)
-            .style("border", `2px solid ${highlightColor}`);
-          d3.select('div.feature-legend-container')
-            .selectAll('svg.feature-long-svg.' + className)
-            .style("border", `2px solid ${highlightColor}`);
-          d3.select(selectedBar).attr('fill', highlightColor);
-          d3.select('svg.feature-view-2')
-            .selectAll('.bar').attr('fill', color)
-          if (selectedFeatureBar !== null) {
-            const featureName = d3.select(selectedFeatureBar).attr('class').split(' ')[1];
+            .selectAll('.background')
+            .style("fill", "none");
+          d3.select('svg.feature-view-1')
+            .selectAll(".bar").attr("fill", d => getFillColor(d));
+
+          if (selectedBar !== null) {
+            var color = null;
+            var highlightColor = null;
+            const className = d3.select(selectedBar).attr('class').split(' ')[1];
             d3.select('div.feature-legend-container')
-              .select('.background.' + featureName)
-              .style("fill", color);
-            d3.select(selectedFeatureBar).attr('fill', highlightColor);
+              .select('rect.rectangle.' + className)
+              .attr('fill', function (d) {
+                color = d.color;
+                highlightColor = d.highlight;
+                return highlightColor;
+              });
+            d3.select('div.feature-legend-container')
+              .selectAll('svg.feature-svg.' + className)
+              .style("border", `2px solid ${highlightColor}`);
+            d3.select('div.feature-legend-container')
+              .selectAll('svg.feature-long-svg.' + className)
+              .style("border", `2px solid ${highlightColor}`);
+            d3.select(selectedBar).attr('fill', highlightColor);
+            d3.select('svg.feature-view-2')
+              .selectAll('.bar').attr('fill', color)
+            if (selectedFeatureBar !== null) {
+              const featureName = d3.select(selectedFeatureBar).attr('class').split(' ')[1];
+              d3.select('div.feature-legend-container')
+                .select('.background.' + featureName)
+                .style("fill", color);
+              d3.select(selectedFeatureBar).attr('fill', highlightColor);
+            }
           }
-        }
         })
         .on("click", (event, info) => {
           // previous = selected
           selected = d.feature
           // previousClass = selectedClass
-          selectedClass = d.feature.split('_')[0]   
+          selectedClass = d.feature.split('_')[0]
           const childrenData = d.feature.split("_")[0] === 'incl' ? Data.feature_activations.children[0] : Data.feature_activations.children[1]
 
           if (Data) {
-            hierarchicalBarChart2(Data,childrenData)
+            hierarchicalBarChart2(Data, childrenData)
             nucleotideFeatureView(Data, Data.feature_activations, d.feature);
-          }  
-          if(selectedClass === 'skip'){
-            d3.select("svg.feature-view-1")
-            .selectAll(`.bar-incl` )
-            .attr("fill", inclusion_color)
-            d3.select("svg.feature-view-1")
-            .selectAll(`.bar-skip` )
-            .attr("fill", skipping_highlight_color);
-          }else if (selectedClass === 'incl'){
-            d3.select("svg.feature-view-1")
-            .selectAll(`.bar-skip` )
-            .attr("fill", skipping_color);
-            d3.select("svg.feature-view-1")
-            .selectAll(`.bar-incl` )
-            .attr("fill", inclusion_highlight_color);
           }
-         
+          if (selectedClass === 'skip') {
+            d3.select("svg.feature-view-1")
+              .selectAll(`.bar-incl`)
+              .attr("fill", inclusion_color)
+            d3.select("svg.feature-view-1")
+              .selectAll(`.bar-skip`)
+              .attr("fill", skipping_highlight_color);
+          } else if (selectedClass === 'incl') {
+            d3.select("svg.feature-view-1")
+              .selectAll(`.bar-skip`)
+              .attr("fill", skipping_color);
+            d3.select("svg.feature-view-1")
+              .selectAll(`.bar-incl`)
+              .attr("fill", inclusion_highlight_color);
+          }
+
           d3.select("svg.feature-view-2")
             .selectAll('.bar')
             .attr('fill', colors[0]);
           d3.select("svg.feature-view-2")
             .select(".bar." + d.feature)
             .attr("fill", colors[1]);
-          
+
           featureSelection(d.feature, d.feature.split("_")[0]);
           // this is causing to reset the feature legend 
 
@@ -463,29 +463,30 @@ function resetGraph() {
 }
 
 
-async function fetchData(option) {
+async function fetchData(option, dataset) {
   try {
-      const response = await fetch(`./get-data?option=${option}`);
-      const data = await response.json();
-      if (data.error) {
-          console.error("Error fetching data:", data.error);
-          // Optionally, inform the user visually
-      } else {
-          window.Data = data;
-          // Render data
-          featureSelection(null, data);
-          PSIview(data);
-          nucleotideView(data.sequence, data.structs, data.nucleotide_activations);
-          hierarchicalBarChart(data, data.feature_activations);
-          d3.select("svg.feature-view-2").selectAll("*").remove();
-          d3.select("svg.feature-view-3").selectAll("*").remove();
-      }
+    console.log(option,dataset)
+    const response = await fetch(`./get-data?option=${option}&dataset=${dataset}`); 
+    const data = await response.json();
+    if (data.error) {
+      console.error("Error fetching data:", data.error);
+      // Optionally, inform the user visually
+    } else {
+      window.Data = data;
+      // Render data
+      featureSelection(null, data);
+      PSIview(data);
+      nucleotideView(data.sequence, data.structs, data.nucleotide_activations);
+      hierarchicalBarChart(data, data.feature_activations);
+      d3.select("svg.feature-view-2").selectAll("*").remove();
+      d3.select("svg.feature-view-3").selectAll("*").remove();
+    }
   } catch (error) {
-      console.error("Failed to fetch or parse data:", error);
+    console.error("Failed to fetch or parse data:", error);
   }
 }
 
-function onGraphRendered(element ) {
+function onGraphRendered(element) {
   // Target the container where the graph is rendered
   const featureView2 = document.querySelector(element);
   const event = new CustomEvent('graphRendered', { detail: { view: featureView2 } });
