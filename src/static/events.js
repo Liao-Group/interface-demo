@@ -113,15 +113,10 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 document.addEventListener("DOMContentLoaded", async function () {
 
-  // // listening to event from the rewind button on the feature legend
-  // document.getElementById("rewindButton1").addEventListener('click', function () {
-  //   resetGraph();
-  // });
-
-  // // listening to event from the rewind b
-  // document.getElementById("rewindButton2").addEventListener('click', function () {
-  //   resetGraph();
-  // });
+  // listening to event from the rewind button on the feature legend
+  document.getElementById("rewindButton1").addEventListener('click', function () {
+    resetGraph();
+  });
 
   // run download fucntion once selected 
   document.querySelector('.svg-select button').addEventListener('click', downloadSelectedSVGs);

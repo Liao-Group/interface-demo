@@ -95,14 +95,14 @@ function resetHighlight() {
   d3.select('div.feature-legend-container')
     .selectAll('.background')
     .style("fill", "none");
-  d3.select('div.feature-legend-container')
-    .selectAll('svg.feature-svg')
-    .style("border", `2px solid ${lightOther}`)
-    .style("box-shadow", "none");
-  d3.select('div.feature-legend-container')
-    .selectAll('svg.feature-long-svg')
-    .style("border", `2px solid ${lightOther}`)
-    .style("box-shadow", "none");
+  // d3.select('div.feature-legend-container')
+  //   .selectAll('svg.feature-svg')
+  //   .style("border", `2px solid ${lightOther}`)
+  //   .style("box-shadow", "none");
+  // d3.select('div.feature-legend-container')
+  //   .selectAll('svg.feature-long-svg')
+  //   .style("border", `2px solid ${lightOther}`)
+  //   .style("box-shadow", "none");
   d3.select('svg.feature-view-1')
     .selectAll(".bar").attr("fill", d => getFillColor(d));
 
