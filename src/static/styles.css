@@ -327,11 +327,6 @@ input[type="submit"] {
   top: 0.25px;
 }
 
-/* #downloadButton:hover {
-  background-color: #0056b3;
-} */
-
-
 .svg-select {
   display: flex;
   flex-direction: column;
@@ -367,6 +362,35 @@ input[type="submit"] {
 .svg-select button:hover {
   background-color: #0b5805;
 }
+
+/* Custom styles for checkboxes */
+.svg-select label input[type="checkbox"] {
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border: 1px solid #0e6f07;
+  border-radius: 50%;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+}
+
+.svg-select label input[type="checkbox"]:checked {
+  background-color: #0e6f07;
+  border-color: #0e6f07;
+}
+
+/* .svg-select label input[type="checkbox"]:checked::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 3px;
+  height: 3px;
+  background-color: white;
+  border-radius: 50%;
+} */
 
 .placeholder {
   position: relative;
