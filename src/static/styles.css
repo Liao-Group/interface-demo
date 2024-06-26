@@ -313,6 +313,7 @@ input[type="submit"] {
   position: relative;
 }
 
+/* rewind button */
 .rewindButton {
   font-size: 20px;
   background-color: transparent;
@@ -327,11 +328,31 @@ input[type="submit"] {
   top: 0.25px;
 }
 
-/* #downloadButton:hover {
-  background-color: #0056b3;
-} */
+.tooltip {
+  visibility: hidden;
+  background-color: whitesmoke;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  z-index: 1;
+  top: 100%;
+  left: -400%;
+  margin-top: 15px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  white-space: nowrap;
+  text-align: center;
+  font-size: 16px;
+  color: #333333;
+  position: absolute;
+}
 
+.rewindButton:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
 
+/* download select dropdown */
 .svg-select {
   display: flex;
   flex-direction: column;
@@ -367,6 +388,35 @@ input[type="submit"] {
 .svg-select button:hover {
   background-color: #0b5805;
 }
+
+/* Custom styles for checkboxes */
+.svg-select label input[type="checkbox"] {
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid #0e6f07;
+  border-radius: 50%;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+}
+
+.svg-select label input[type="checkbox"]:checked {
+  background-color: #0e6f07;
+  border-color: #0e6f07;
+}
+
+/* .svg-select label input[type="checkbox"]:checked::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 3px;
+  height: 3px;
+  background-color: white;
+  border-radius: 50%;
+} */
 
 .placeholder {
   position: relative;

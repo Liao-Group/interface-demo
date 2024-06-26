@@ -127,7 +127,10 @@
   <div class="top-right-container">
     
     <!-- rewind button -->
-    <button id="rewindButton1" class="rewindButton"><i class="fa fa-backward" aria-hidden="true"></i></button>
+    <button id="rewindButton1" class="rewindButton">
+      <i class="fa fa-backward" aria-hidden="true"></i>
+      <span class="tooltip">Rewind Graphs</span>
+    </button>
 
     <!-- Adjust Button -->
     <div class="unified-dropdown">
@@ -179,11 +182,12 @@
             <label><input type="checkbox" class="svg-checkbox" value="feature-view-3"> Positions Chart</label>
             <label><input type="checkbox" class="svg-checkbox" value="nucleotide-sort"> Nucleotide-Sort Chart</label>
             <label><input type="checkbox" class="svg-checkbox" value="nucleotide-zoom"> Nucleotide-Zoom Chart</label>
+            <button id="selectAllBtn">Select All</button>
           </div>
         </a>
         <a>
           <div class="svg-select">
-            <button>Download Selected</button>
+            <button id="downloadSelectedBtn">Download Selected</button>
           </div>
         </a>
       </div>
@@ -207,14 +211,13 @@
         <a>
           <div class="toggle-container">
             <span>Instruction Mode (TBA)</span>
-            <button class="toggleButton" id="toggleButton">
-              <div class="toggleSwitchCircle" id="toggleSwitchCircle"></div>
+            <button class="toggleButtonDisabled">
+              <div class="toggleSwitchCircleDisabled"></div>
             </button>
           </div>
         </a>
       </div>
     </div>
-
 </div>
 
   </div>

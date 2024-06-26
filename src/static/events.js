@@ -1,4 +1,4 @@
-// variable for turning the button on and off. 
+// variable for turning the button on and off.
 let defaultSetting = "off";
 // toggle outline
 
@@ -6,7 +6,6 @@ let defaultSetting = "off";
 document.addEventListener('DOMContentLoaded', function () {
   const toggleButton = document.getElementById('toggleButton');
 
-  // toggle circle
   const toggleSwitchCircle = document.getElementById('toggleSwitchCircle');
   defaultSetting = localStorage.getItem('defaultSetting') || "off";
   if (defaultSetting === "on") {
@@ -17,8 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
     inclusion_highlight_color = ltr_inclusion_highlight_color;
     skipping_color = ltr_skipping_color;
     skipping_highlight_color = ltr_skipping_highlight_color;
-  }
-  else {
+  } else {
     toggleSwitchCircle.style.transform = 'translateX(0)';
     toggleButton.style.backgroundColor = 'white';
     // Change to org colors
@@ -27,13 +25,13 @@ document.addEventListener('DOMContentLoaded', function () {
     skipping_color = org_skipping_color;
     skipping_highlight_color = org_skipping_highlight_color;
   }
+
   toggleButton.addEventListener('click', function () {
     if (defaultSetting === "off") {
       defaultSetting = "on";
       toggleSwitchCircle.style.transform = 'translateX(20px)';
       toggleButton.style.backgroundColor = '#0e6f07';
-    }
-    else {
+    } else {
       defaultSetting = "off";
       toggleSwitchCircle.style.transform = 'translateX(0)';
       toggleButton.style.backgroundColor = 'white';
@@ -47,33 +45,36 @@ document.addEventListener('DOMContentLoaded', function () {
 // setting dropdown
 function toggleDropdown() {
   const dropdown = document.getElementById("myDropdown");
-  if (dropdown.style.display === "block") {
-    dropdown.style.display = "none";
-  }
-  else {
-    dropdown.style.display = "block";
-  }
+  dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
 }
 
 function toggleDropdownDownload() {
   const dropdownDownload = document.getElementById("dropdownDownload");
-  if (dropdownDownload.style.display === "block") {
-    dropdownDownload.style.display = "none";
-  }
-  else {
-    dropdownDownload.style.display = "block";
-  }
+  dropdownDownload.style.display = (dropdownDownload.style.display === "block") ? "none" : "block";
 }
 
 function toggleDropdownAdjust() {
   const dropdownAdjust = document.getElementById("dropdownAdjust");
-  if (dropdownAdjust.style.display === "block") {
-    dropdownAdjust.style.display = "none";
-  }
-  else {
-    dropdownAdjust.style.display = "block";
-  }
+  dropdownAdjust.style.display = (dropdownAdjust.style.display === "block") ? "none" : "block";
 }
+
+// setting dropdown
+function toggleDropdown() {
+  const dropdown = document.getElementById("myDropdown");
+  dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
+}
+
+function toggleDropdownDownload() {
+  const dropdownDownload = document.getElementById("dropdownDownload");
+  dropdownDownload.style.display = (dropdownDownload.style.display === "block") ? "none" : "block";
+}
+
+function toggleDropdownAdjust() {
+  const dropdownAdjust = document.getElementById("dropdownAdjust");
+  dropdownAdjust.style.display = (dropdownAdjust.style.display === "block") ? "none" : "block";
+}
+
+
 // event for when the screen is resized and we need to re-render the graphs in the page again
 
 window.addEventListener('resize', function () {
@@ -158,7 +159,25 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
+// Select All Button
+document.addEventListener("DOMContentLoaded", function () {
+  document.getElementById('selectAllBtn').addEventListener('click', function () {
+    document.querySelectorAll('.svg-select label input[type="checkbox"]').forEach(checkbox => {
+      checkbox.checked = true;
+    });
+  });
 
+  document.getElementById('downloadSelectedBtn').addEventListener('click', downloadSelectedSVGs);
+});
+
+// Mock function for downloadSelectedSVGs
+function downloadSelectedSVGs() {
+  const selectedCharts = [];
+  document.querySelectorAll('.svg-select label input[type="checkbox"]:checked').forEach(checkbox => {
+    selectedCharts.push(checkbox.value);
+  });
+  console.log('Selected charts for download:', selectedCharts);
+}
 
 document.getElementById('openExonFormButton').addEventListener('click', function () {
   var form = document.getElementById('exonForm');
