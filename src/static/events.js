@@ -159,7 +159,25 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
+// Select All Button
+document.addEventListener("DOMContentLoaded", function () {
+  document.getElementById('selectAllBtn').addEventListener('click', function () {
+    document.querySelectorAll('.svg-select label input[type="checkbox"]').forEach(checkbox => {
+      checkbox.checked = true;
+    });
+  });
 
+  document.getElementById('downloadSelectedBtn').addEventListener('click', downloadSelectedSVGs);
+});
+
+// Mock function for downloadSelectedSVGs
+function downloadSelectedSVGs() {
+  const selectedCharts = [];
+  document.querySelectorAll('.svg-select label input[type="checkbox"]:checked').forEach(checkbox => {
+    selectedCharts.push(checkbox.value);
+  });
+  console.log('Selected charts for download:', selectedCharts);
+}
 
 document.getElementById('openExonFormButton').addEventListener('click', function () {
   var form = document.getElementById('exonForm');

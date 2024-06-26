@@ -368,7 +368,7 @@ input[type="submit"] {
   appearance: none;
   width: 12px;
   height: 12px;
-  border: 1px solid #0e6f07;
+  border: 1.5px solid #0e6f07;
   border-radius: 50%;
   outline: none;
   cursor: pointer;
