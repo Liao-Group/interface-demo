@@ -493,3 +493,36 @@ function onGraphRendered(element) {
   featureView2.dispatchEvent(event);
 
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+  // Add event listener to all dropdown buttons
+  const dropdowns = document.querySelectorAll(".unified-dropdown");
+  dropdowns.forEach(dropdown => {
+    const button = dropdown.querySelector(".unified-dropbtn");
+    const content = dropdown.querySelector(".unified-dropdown-content");
+    
+    button.addEventListener("click", function (event) {
+      event.stopPropagation();
+      // Close all dropdowns except the one clicked
+      closeAllDropdowns();
+      content.style.display = content.style.display === "block" ? "none" : "block";
+    });
+
+    // Prevent closing the dropdown when clicking inside the dropdown content
+    content.addEventListener("click", function (event) {
+      event.stopPropagation();
+    });
+  });
+
+  // Close dropdowns if clicked outside
+  document.addEventListener("click", function () {
+    closeAllDropdowns();
+  });
+
+  function closeAllDropdowns() {
+    const contents = document.querySelectorAll(".unified-dropdown-content");
+    contents.forEach(content => {
+      content.style.display = "none";
+    });
+  }
+});

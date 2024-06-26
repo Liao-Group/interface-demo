@@ -129,59 +129,89 @@
     <!-- rewind button -->
     <button id="rewindButton1" class="rewindButton"><i class="fa fa-backward" aria-hidden="true"></i></button>
 
-    <!-- adjust button -->
-    <div class="dropdown-adjust">
-      <button class="dropbtn-adjust" onclick="toggleDropdownAdjust()"><i class="fa fa-sliders fa-2x"></i></button>
-      <div id="dropdownAdjust" class="dropdown-content-adjust">
-        <div class="slider-container">
-          <div class="slider-item">
-            <label for="yAxisSlider1">Adjust Class Strength Axis</label>
-            <input type="range" id="yAxisSlider1" min="0" max="170" value="170" step="1">
+    <!-- Adjust Button -->
+    <div class="unified-dropdown">
+      <button class="unified-dropbtn" onclick="toggleDropdownAdjust()">
+        <i class="fa fa-sliders fa-2x"></i>
+      </button>
+      <div class="unified-dropdown-content">
+        <b>Adjust Chart Scales</b>
+        <div class="styled-item">
+          <div class="slider-container">
+            <div class="slider-item">
+              <label for="yAxisSlider1">Class Strength Chart Axis</label>
+              <input type="range" id="yAxisSlider1" min="0" max="170" value="170" step="1">
+            </div>
           </div>
-          <div class="slider-item">
-            <label for="yAxisSlider2">Adjust Features Axis</label>
-            <input type="range" id="yAxisSlider2" min="0" max="75" value="75" step="1">
+        </div>
+        <div class="styled-item">
+          <div class="slider-container">
+            <div class="slider-item">
+              <label for="yAxisSlider2">Features Chart Axis</label>
+              <input type="range" id="yAxisSlider2" min="0" max="75" value="75" step="1">
+            </div>
           </div>
-          <div class="slider-item">
-            <label for="yAxisSlider3">Adjust Positions Axis</label>
-            <input type="range" id="yAxisSlider3" min="0" max="18" value="18" step="1">
+        </div>
+        <div class="styled-item">
+          <div class="slider-container">
+            <div class="slider-item">
+              <label for="yAxisSlider3">Positions Chart Axis</label>
+              <input type="range" id="yAxisSlider3" min="0" max="18" value="18" step="1">
+            </div>
           </div>
         </div>
       </div>
     </div>
     
-    <!-- download button -->
-    <div class="dropdown-download">
-      <button class="dropbtn-download" onclick="toggleDropdownDownload()"><i
-          class="fa fa-cloud-download fa-2x"></i></button>
-      <div id="dropdownDownload" class="dropdown-content-download">
-        <div class="svg-select">
-          <label><input type="checkbox" class="svg-checkbox" value="psi-view"> Difference-to-Prediction </label>
-          <label><input type="checkbox" class="svg-checkbox" value="feature-view-1"> Class Strengths</label>
-          <label><input type="checkbox" class="svg-checkbox" value="nucleotide-view"> Exon View</label>
-          <label><input type="checkbox" class="svg-checkbox" value="feature-view-2"> Features</label>
-          <label><input type="checkbox" class="svg-checkbox" value="feature-view-3"> Positions</label>
-          <label><input type="checkbox" class="svg-checkbox" value="nucleotide-sort"> nucleotide-sort</label>
-          <label><input type="checkbox" class="svg-checkbox" value="nucleotide-zoom"> nucleotide-zoom</label>
-          <button>Download Selected</button>
-        </div>
+    <!-- Download Dropdown-->
+    <div class="unified-dropdown">
+      <button class="unified-dropbtn">
+        <i class="fa fa-cloud-download fa-2x"></i>
+      </button>
+      <div class="unified-dropdown-content">
+        <b href="#">Download Charts</b>
+        <a>
+          <div class="svg-select">
+            <label><input type="checkbox" class="svg-checkbox" value="psi-view"> Difference-to-Prediction Chart</label>
+            <label><input type="checkbox" class="svg-checkbox" value="feature-view-1"> Class Strengths Chart</label>
+            <label><input type="checkbox" class="svg-checkbox" value="nucleotide-view"> Exon View Chart</label>
+            <label><input type="checkbox" class="svg-checkbox" value="feature-view-2"> Features Chart</label>
+            <label><input type="checkbox" class="svg-checkbox" value="feature-view-3"> Positions Chart</label>
+            <label><input type="checkbox" class="svg-checkbox" value="nucleotide-sort"> Nucleotide-Sort Chart</label>
+            <label><input type="checkbox" class="svg-checkbox" value="nucleotide-zoom"> Nucleotide-Zoom Chart</label>
+          </div>
+        </a>
+        <a>
+          <div class="svg-select">
+            <button>Download Selected</button>
+          </div>
+        </a>
       </div>
     </div>
 
-    <!--setting dropdown -->
-    <div class="dropdown">
-      <button class="dropbtn" onclick="toggleDropdown()"><i class="fa fa-cog fa-2x"></i></button>
-      <div id="myDropdown" class="dropdown-content">
-        <!-- toggle button -->
-        <a href="#">Alt-Colors</a>
-        <button class="toggleButton" id="toggleButton">
-          <div class="toggleSwitchCircle" id="toggleSwitchCircle"></div>
-        </button>
-        <hr class="divider">
-        <a href="#">Instruction Mode</a>
-        <button class="toggleButton" id="toggleButton">
-          <div class="toggleSwitchCircle" id="toggleSwitchCircle"></div>
-        </button>
+    <!-- Setting Dropdown -->
+    <div class="unified-dropdown">
+      <button class="unified-dropbtn">
+        <i class="fa fa-cog fa-2x"></i>
+      </button>
+      <div class="unified-dropdown-content">
+        <b href="#">Settings</b>
+        <a>
+          <div class="toggle-container">
+            <span>Alternative Colors</span>
+            <button class="toggleButton" id="toggleButton">
+              <div class="toggleSwitchCircle" id="toggleSwitchCircle"></div>
+            </button>
+          </div>
+        </a>
+        <a>
+          <div class="toggle-container">
+            <span>Instruction Mode (TBA)</span>
+            <button class="toggleButton" id="toggleButton">
+              <div class="toggleSwitchCircle" id="toggleSwitchCircle"></div>
+            </button>
+          </div>
+        </a>
       </div>
     </div>
 

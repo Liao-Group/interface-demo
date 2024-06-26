@@ -323,36 +323,49 @@ input[type="submit"] {
   display: flex;
   align-items: center;
   position: relative;
-  left: -2.5px;
+  left: -7px;
   top: 0.25px;
 }
 
-#downloadButton:hover {
+/* #downloadButton:hover {
   background-color: #0056b3;
-}
+} */
 
 
 .svg-select {
-  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  width: 100%;
 }
 
 .svg-select label {
-  display: block;
-  margin: 5px 0;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: 10px;
+  margin: 5px 0px;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.svg-select label input {
+  margin-left: auto;
 }
 
 .svg-select button {
-  margin-top: 10px;
+  margin-top: 5px;
   padding: 5px 10px;
-  background-color: #007bff;
+  background-color: #0e6f07;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  align-self: center;
 }
 
 .svg-select button:hover {
-  background-color: #0056b3;
+  background-color: #0b5805;
 }
 
 .placeholder {

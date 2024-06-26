@@ -8,113 +8,14 @@
   z-index: 1000;
 }
 
-/* Rewind Button */
-/* .rewindButton {
-  font-size: 20px;
-  color: #333;
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  text-align: center;
-  padding: 0.2rem;
-  display: flex;
-  align-items: center;
-} */
-
-/* Download Dropdown */
-.dropdown-download {
+/* Unified Dropdown Styles */
+.unified-dropdown {
   position: relative;
-  padding: 0.2700rem 0.3rem;
+  padding: 0.3rem 0.4rem;
   display: flex;
 }
 
-.dropbtn-download {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 0.65rem;
-  padding: 0.2rem;
-  display: flex;
-  align-items: center; /* Ensure icons are vertically centered */
-}
-
-.dropdown-content-download {
-  display: none;
-  text-align: center;
-  position: absolute;
-  top: 100%;
-  right: 0;
-  background-color: #f9f9f9;
-  min-width: 12.5rem;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
-  z-index: 1;
-  padding: 0.75rem 1rem;
-  border-radius: 0.625rem;
-}
-
-.dropdown-content-download a {
-  color: black;
-  padding: 0.75rem 1rem;
-  text-decoration: none;
-  display: block;
-  font-size: 12px;
-}
-
-/* Settings Dropdown */
-.dropdown {
-  position: relative;
-  padding: 0.2700rem 0.3rem;
-  display: flex;
-}
-
-.dropbtn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 0.65rem;
-  padding: 0.2rem;
-  display: flex;
-  align-items: center; /* Ensure icons are vertically centered */
-}
-
-.dropdown-content {
-  display: none;
-  text-align: center;
-  position: absolute;
-  top: 100%;
-  right: 0;
-  background-color: #f9f9f9;
-  min-width: 12.5rem;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
-  z-index: 1;
-  padding: 0.75rem 1rem;
-  border-radius: 0.625rem;
-}
-
-.dropdown-content a {
-  color: black;
-  padding: 0.75rem 1rem;
-  text-decoration: none;
-  display: block;
-  font-size: 12px;
-}
-
-.divider {
-  border: none;
-  height: 1px;
-  background-color: #ccc;
-  margin: 1.25rem;
-  width: 80%;
-}
-
-/* Adjust Dropdown */
-.dropdown-adjust {
-  position: relative;
-  padding: 0.2700rem 0.3rem;
-  display: flex;
-}
-
-.dropbtn-adjust {
+.unified-dropbtn {
   background: none;
   border: none;
   cursor: pointer;
@@ -124,29 +25,50 @@
   align-items: center;
 }
 
-.dropdown-content-adjust {
+.unified-dropdown-content {
   display: none;
   text-align: center;
   position: absolute;
   top: 100%;
   right: 0;
   background-color: #f9f9f9;
-  min-width: 12.5rem;
+  min-width: 14rem;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
   z-index: 1;
-  padding: 0.75rem 1rem;
-  border-radius: 0.625rem;
+  padding: 1rem 1.25rem;
+  border-radius: 0.75rem;
 }
 
-.dropdown-content-adjust a {
+.unified-dropdown-content a {
   color: black;
   padding: 0.75rem 1rem;
   text-decoration: none;
   display: block;
   font-size: 12px;
+  border-bottom: 1px solid #ccc;
 }
 
-/* Toggle Button */
+.unified-dropdown-content b {
+  color: black;
+  padding: 0.75rem 1rem;
+  text-decoration: none;
+  display: block;
+  font-size: 12px;
+  border-bottom: 1px solid #ccc;
+  font-weight: bold;
+}
+
+.unified-dropdown-content a:last-child {
+  border-bottom: none; 
+}
+
+.toggle-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
 .toggleButton {
   width: 2.625rem;
   height: 1.375rem;
@@ -156,8 +78,7 @@
   background-color: white;
   position: relative;
   overflow: hidden;
-  margin-top: 0.75rem;
-  margin-bottom: 0.75rem;
+  margin: 0; /* Adjust margin to fit inline */
 }
 
 .toggleSwitchCircle {
@@ -169,6 +90,7 @@
   position: absolute;
   left: 0;
   bottom: 0;
+  transition: transform 0.3s;
 }
 
 .toggleSwitchCircle.toggled {
@@ -180,13 +102,21 @@
   background-color: #ccc;
 }
 
-/* Dropdowns and Buttons Styling */
-.dropbtn, .dropbtn-download, .dropbtn-adjust, .rewindButton {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 0.65rem;
-  padding: 0.2rem;
+.styled-item {
+  color: black;
+  padding: 0.75rem 1rem;
+  text-decoration: none;
+  display: block;
+  font-size: 12px;
+  border-bottom: 1px solid #ccc;
+}
+
+.unified-dropdown-content .styled-item:last-child {
+  border-bottom: none; 
+}
+
+.slider-item {
   display: flex;
-  align-items: center; /* Ensure icons are vertically centered */
+  flex-direction: column;
+  gap: 0.75rem; /* Adjusts the spacing between the label and the slider */
 }
