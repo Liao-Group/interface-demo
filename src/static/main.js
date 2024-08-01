@@ -820,8 +820,32 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
     var gyIncl = svg_nucl.append("g")
       .attr("class", "y axis")
       .attr("transform", "translate(" + margin.left + ",0)")
-      .attr("font-size", `${12 * heightRatio}px`)
+      .attr("font-size", `${12 * heightRatio}px`);
     gyIncl.call(d3.axisLeft(yIncl).ticks(4));
+
+    var extendedData = [];
+    Object.entries(data.children[0].children).forEach(function(d, i, arr) {
+      var xValue = parseInt(d[1].name.slice(4));
+      extendedData.push([xValue, recursive_total_strength(d[1])]);
+      if (i < arr.length - 1) {
+        extendedData.push([xValue + 1, recursive_total_strength(arr[i + 1][1])]);
+      }
+    });
+    
+    var line = d3.line()
+      .defined(function(d) { return !isNaN(d[1]); }) // Ignore NaN values
+      .x(function (d) { return x(d[0]); })
+      .y(function (d) { return yIncl(d[1]); })
+      .curve(d3.curveStepAfter);
+    
+    svg_nucl.append("path")
+      .datum(extendedData)
+      .attr("class", "line incl original")
+      .attr("d", line)
+      .attr("fill", "none")
+      .attr("stroke", barHighlightColor)
+      .style("stroke-width", "2px");
+    
 
     svg_nucl.append("text")
       .attr("class", "ylabel_inclusion")
@@ -845,6 +869,8 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
       .attr("height", function (d) { return (margin.top + (height - margin.top - margin.bottom) / 2 - margin.middle) - yIncl(recursive_total_strength(d)); })
       .attr("fill", barColor)
       .attr("stroke", line_color)
+      .attr('opacity', 0.1)
+
       .lower();
   }
 
@@ -858,6 +884,29 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
       .attr("transform", "translate(" + margin.left + ",0)");
     gySkip.call(d3.axisLeft(ySkip).ticks(4));
 
+    var extendedData = [];
+    Object.entries(data.children[1].children).forEach(function(d, i, arr) {
+      var xValue = parseInt(d[1].name.slice(4));
+      extendedData.push([xValue, recursive_total_strength(d[1])]);
+      if (i < arr.length - 1) {
+        extendedData.push([xValue + 1, recursive_total_strength(arr[i + 1][1])]);
+      }
+    });
+    
+    var line = d3.line()
+      .defined(function(d) { return !isNaN(d[1]); }) // Ignore NaN values
+      .x(function (d) { return x(d[0]); })
+      .y(function (d) { return ySkip(d[1]); })
+      .curve(d3.curveStepAfter);
+    
+    svg_nucl.append("path")
+      .datum(extendedData)
+      .attr("class", "line skip original")
+      .attr("d", line)
+      .attr("fill", "none")
+      .attr("stroke", barHighlightColor)
+      .style("stroke-width", "2px");
+    
     svg_nucl.append("text")
       .attr("class", "ylabel_skip")
       .attr("text-anchor", "middle")
@@ -879,6 +928,7 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
       .attr("width", x.bandwidth())
       .attr("height",  function (d) { return ySkip(recursive_total_strength(d)) - (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle); })
       .attr("fill", barColor)
+      .attr('opacity', 0.1)
       .attr("stroke", line_color)
       .lower();
   };
@@ -922,8 +972,12 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
           .attr("class")
           .slice(9, -4);
         d3.select(".obj.incl.free." + pos)
+          .attr('opacity', 1)
+
           .style("fill", inclBarHighlightColor);
         d3.select(".obj.skip.free." + pos)
+        .attr('opacity', 1)
+
           .style("fill", skipBarHighlightColor);
         d3.select(".obj.nt." + pos)
           .style("font-weight", "bold");
@@ -933,8 +987,12 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
           .attr("class")
           .slice(9, -4);
         d3.select(".obj.incl.free." + pos)
+        .attr('opacity', 0.1)
+
           .style("fill", inclBarColor);
         d3.select(".obj.skip.free." + pos)
+        .attr('opacity', 0.1)
+
           .style("fill", skipBarColor);
         d3.select(".obj.nt." + pos)
           .style("font-weight", "normal");
@@ -950,9 +1008,11 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
       .on("click", function (d) {
         d3.selectAll(".obj.incl")
           .style("fill", inclBarColor)
+          .attr('opacity', 0.1)
           .classed("free", true);
         d3.selectAll(".obj.skip")
           .style("fill", skipBarColor)
+          .attr('opacity', 0.1)
           .classed("free", true);
         d3.selectAll(".obj.nt")
           .style("font-weight", "normal")
@@ -963,9 +1023,12 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
           .slice(9, -4);
         d3.select(".obj.incl.free." + pos)
           .style("fill", inclBarHighlightColor)
+          .attr('opacity', 1)
           .classed("free", false);
         d3.select(".obj.skip.free." + pos)
           .style("fill", skipBarHighlightColor)
+          .attr('opacity', 1)
+
           .classed("free", false);
         d3.select(".obj.nt." + pos)
           .style("font-weight", "bold")
