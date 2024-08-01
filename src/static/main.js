@@ -788,6 +788,31 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
         .attr("fill", (d <= flanking_length || d > flanking_length + exon_length) ? line_color : nucleotide_color)
     });
 
+  gxNu.call(xNuAxis)
+  .selectAll('.tick')
+  .style("cursor", "pointer")
+  .on('click', function (event, d) {
+    // Reset all bars to low opacity
+    svg_nucl.selectAll(".obj.incl, .obj.skip").attr("opacity", 0.1);
+
+    // Reset all nucleotides to normal font weight
+    gxNu.selectAll('.tick text').style("font-weight", "normal");
+
+    // Make the clicked nucleotide bold
+    d3.select(this).select('text').style("font-weight", "bold");
+
+    var letter = Array.from(sequence)[d - 1];
+    var position = String(d);
+    var pos = "pos_" + String(d+1);
+
+    // Highlight the clicked bars
+    svg_nucl.select(`.obj.incl.${pos}`)
+      .style("fill", inclusion_highlight_color)
+      .attr("opacity", 1);
+    svg_nucl.select(`.obj.skip.${pos}`)
+      .style("fill", skipping_highlight_color)
+      .attr("opacity", 1);
+  });
   // Add Y axis
   var max_incl = d3.max(d3.map(data.children[0].children, recursive_total_strength).keys());
   var max_skip = d3.max(d3.map(data.children[1].children, recursive_total_strength).keys());
@@ -869,6 +894,7 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
       .attr("height", function (d) { return (margin.top + (height - margin.top - margin.bottom) / 2 - margin.middle) - yIncl(recursive_total_strength(d)); })
       .attr("fill", barColor)
       .attr("stroke", line_color)
+      .style("cursor", "pointer")
       .attr('opacity', 0.1)
 
       .lower();
@@ -930,6 +956,7 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
       .attr("fill", barColor)
       .attr('opacity', 0.1)
       .attr("stroke", line_color)
+      .style("cursor", "pointer")
       .lower();
   };
 
