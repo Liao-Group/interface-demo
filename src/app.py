@@ -45,7 +45,7 @@ def fetch_prediction_from_server(exon,dataset):
 def read_local_data(option):
     """Read local data file as a fallback."""
     try:
-        with open(f'src/data/{option}.json', 'r') as file:
+        with open(f'data/{option}.json', 'r') as file:
             return json.load(file)
     except FileNotFoundError:
         return {"error": "Data file not found"}
@@ -76,4 +76,4 @@ def get_data():
     return jsonify(json_response)
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port = 5000, debug=True)
+    app.run(host='0.0.0.0', port = 50001, debug=True)
