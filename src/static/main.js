@@ -797,7 +797,7 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
     .text("Exon View");
 
   // Add X axis
-  var positions = Array.from(new Array(sequence.length), (x, i) => i + 1);
+  var positions = Array.from(new Array(sequence.length +1), (x, i) => i + 1);
   var x = d3.scaleBand()
     .range([margin.left, (width - margin.right)])
     .domain(positions)
@@ -978,30 +978,40 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
       .attr("font-size", `${12 * heightRatio}px`)
       .attr("transform", "translate(" + margin.left + ",0)");
     gySkip.call(d3.axisLeft(ySkip).ticks(4));
-
+   
     var extendedData = [];
     Object.entries(data.children[1].children).forEach(function(d, i, arr) {
-      var xValue = parseInt(d[1].name.slice(4));
-      extendedData.push([xValue, recursive_total_strength(d[1])]);
-      if (i < arr.length - 1) {
-        extendedData.push([xValue + 1, recursive_total_strength(arr[i + 1][1])]);
-      }
+        var xValue = parseInt(d[1].name.slice(4));
+        var yValue = recursive_total_strength(d[1]);
+        
+        if (!isNaN(xValue) && !isNaN(yValue)) {
+            extendedData.push([xValue, yValue]);
+            
+            if (i < arr.length - 1) {
+                extendedData.push([xValue + 1, yValue]);
+            } else {
+                // Add two extra points to close the path
+                extendedData.push([xValue + 1, yValue]);
+                extendedData.push([xValue + 1, 0]);
+
+                extendedData.push([xValue + 2, 0]); // Extend one more step at y=0
+            }
+        }
     });
     
     var line = d3.line()
-      .defined(function(d) { return !isNaN(d[1]); }) // Ignore NaN values
-      .x(function (d) { return x(d[0]); })
-      .y(function (d) { return ySkip(d[1]); })
-      .curve(d3.curveStepAfter);
+        .x(function (d) { return x(d[0]); })
+        .y(function (d) { return ySkip(d[1]); })
+        .curve(d3.curveStepAfter)
+        .defined(function (d) { return !isNaN(d[0]) && !isNaN(d[1]); });
     
     svg_nucl.append("path")
-      .datum(extendedData)
-      .attr("class", "line skip original")
-      .attr("d", line)
-      .attr("fill", "none")
-      .attr("stroke", barHighlightColor)
-      .style("stroke-width", "2px");
-    
+        .datum(extendedData)
+        .attr("class", "line skip original")
+        .attr("d", line)
+        .attr("fill", "none")
+        .attr("stroke", barHighlightColor)
+        .style("stroke-width", "2px");
     svg_nucl.append("text")
       .attr("class", "ylabel_skip")
       .attr("text-anchor", "middle")
@@ -1149,6 +1159,8 @@ function nucleotideFeatureView(parent, data, feature_name) {
   svg = d3.select("svg.nucleotide-view")
   svg.selectAll("rect").remove();
   svg.selectAll(".y.axis").remove();
+  svg.selectAll(".line.incl.original").remove();
+  svg.selectAll(".line.skip.original").remove();
   d3.select("svg.nucleotide-sort").selectAll("*").remove();
   d3.select("svg.nucleotide-zoom").selectAll("*").remove();
 

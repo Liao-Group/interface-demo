@@ -76,4 +76,4 @@ def get_data():
     return jsonify(json_response)
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port = 5000, debug=True)
+    app.run(host='0.0.0.0', port = 50001, debug=True)
