@@ -19,6 +19,63 @@ var widthRatio
 let selectedBar = null;
 let selectedFeatureBar = null;
 
+function getFeaturesForPosition(pos, data) {
+  console.log("Getting features for position:", pos);
+  console.log("Data received:", data);
+
+  // Helper function to extract features from flattened data
+  function extractFeatures(flattenedData) {
+      return flattenedData.map(item => {
+        console.log(item)
+          const nameParts = item.name.split(' ');
+          console.log(nameParts)
+          return {
+              name: nameParts[1],
+              strength: item.strength,
+              length: item.length
+          };
+      });
+  }
+  if (d3.selectAll(`.obj.incl.${pos}`).size() == 0) { var inclData = []; }
+  else {
+    var inclData = flatten_nested_json(d3.selectAll(`.obj.incl.${pos}`).datum());
+  }
+  if (d3.selectAll(`.obj.skip.${pos}`).size() == 0) { var skipData = []; }
+  else {
+    var skipData = flatten_nested_json(d3.selectAll(`.obj.skip.${pos}`).datum());
+  }
+  // Get inclusion data
+  const inclFeatures = extractFeatures(inclData);
+  console.log("Inclusion features:", inclFeatures);
+
+  // Get skipping data
+  const skipFeatures = extractFeatures(skipData);
+  console.log("Skipping features:", skipFeatures);
+
+  // Extract unique inclusion values
+  const uniqueInclValues = [...new Set(inclFeatures.map(item => {
+      const match = item.name.match(/incl_(\d+)/);
+      return match ? match[0] : null;
+  }))].filter(Boolean);
+
+  // Extract unique skipping values
+  const uniqueSkipValues = [...new Set(skipFeatures.map(item => {
+      const match = item.name.match(/skip(?:_struct)?_\d+/);
+      return match ? match[0] : null;
+  }))].filter(Boolean);
+
+  console.log("Unique inclusion values:", uniqueInclValues);
+  console.log("Unique skipping values:", uniqueSkipValues);
+
+  // Highlight logos (assuming this function exists elsewhere in your code)
+  highlightLogos([...uniqueSkipValues, ...uniqueInclValues]);
+
+  // Return the extracted features if needed
+  return {
+      inclusion: inclFeatures,
+      skipping: skipFeatures
+  };
+}
 /**
  * PSI view function
  * currently working with the reisizing, I will probaly have to figure it out how to have a better ratio and 
@@ -749,15 +806,17 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
   var xInclAxis = d3.axisBottom(x)
     .tickSize(2 * widthRatio)
     .tickFormat(function (d) {
-      return Array.from(structs)[d - 1];
-    });
-  var xSkipAxis = d3.axisTop(x)
-    .tickSize(2 * widthRatio)
-    .tickFormat(function (d) {
       if (((d - flanking_length) % 10 == 0 && d > flanking_length && d <= flanking_length + exon_length) || (d - flanking_length === 1) || (d - flanking_length === exon_length)) {
         return d - flanking_length;
       } else { return "" };
     });
+
+  var xSkipAxis = d3.axisTop(x)
+    .tickSize(2 * widthRatio)
+    .tickFormat(function (d) {
+      return Array.from(structs)[d - 1];
+    });
+
   var xNuAxis = d3.axisBottom(x)
     .tickSize(0)
     .tickFormat(function (d) {
@@ -773,6 +832,8 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
     .attr("font-size", `${12 * heightRatio}px`)
     .attr("transform", "translate(0," + (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle) + ")")
     .call(xSkipAxis);
+    gxSkip.selectAll(".tick line")
+    .style("display", "none");
   var gxNu = svg_nucl.append("g")
     .attr("class", "x axis")
     .attr("font-size", `${12 * heightRatio}px`)
@@ -812,6 +873,10 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
     svg_nucl.select(`.obj.skip.${pos}`)
       .style("fill", skipping_highlight_color)
       .attr("opacity", 1);
+
+    getFeaturesForPosition(pos,data)
+    nucleotideSort(pos, margin, sort_width, sort_height, svg_sort, svg_zoom, [skipping_color, skipping_highlight_color, inclusion_color, inclusion_highlight_color]);
+    nucleotideZoom(sequence, structs, pos, margin, zoom_width, zoom_height, svg_zoom, max_strength, [skipping_color, skipping_highlight_color, inclusion_color, inclusion_highlight_color]);
   });
   // Add Y axis
   var max_incl = d3.max(d3.map(data.children[0].children, recursive_total_strength).keys());
@@ -856,13 +921,17 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
         extendedData.push([xValue + 1, recursive_total_strength(arr[i + 1][1])]);
       }
     });
-    
+
+    // Add an extra data point at the end to close the line silhouette
+    var lastDataPoint = extendedData[extendedData.length - 1];
+    extendedData.push([lastDataPoint[0] + 1, lastDataPoint[1]]);
+
     var line = d3.line()
       .defined(function(d) { return !isNaN(d[1]); }) // Ignore NaN values
       .x(function (d) { return x(d[0]); })
       .y(function (d) { return yIncl(d[1]); })
       .curve(d3.curveStepAfter);
-    
+
     svg_nucl.append("path")
       .datum(extendedData)
       .attr("class", "line incl original")
@@ -1060,6 +1129,9 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
         d3.select(".obj.nt." + pos)
           .style("font-weight", "bold")
           .classed("free", false);
+        var position = d3.select(this).attr("class").split(" ")[2]
+        console.log(d3.select(this).attr("class").split(" ")[2])
+        getFeaturesForPosition(position,data)
         nucleotideSort(pos, margin, sort_width, sort_height, svg_sort, svg_zoom, [skipBarColor, skipBarHighlightColor, inclBarColor, inclBarHighlightColor]);
         nucleotideZoom(sequence, structs, pos, margin, zoom_width, zoom_height, svg_zoom, max_strength, [skipBarColor, skipBarHighlightColor, inclBarColor, inclBarHighlightColor]);
       });
