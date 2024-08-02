@@ -30,17 +30,17 @@ def get_default_exon(option):
         return default_options[option].upper().replace("T", "U")
     return option
 
-def fetch_prediction_from_server(exon,dataset):
-    """Attempt to fetch the prediction from the server, handle errors gracefully."""
-    try:
-        # change the http address once the ec2 server is up. 
-        response = requests.post('http://127.0.0.1:5001/prediction', data={'exon': exon,'dataset':dataset}, timeout=10)
-        response.raise_for_status()  # This will raise an HTTPError for bad responses (4XX, 5XX)
-        return response.json()
-    except requests.exceptions.RequestException as e:
-        # Handle network errors, timeouts, and bad responses
-        print(f"Error contacting server: {e}")
-        return None
+# def fetch_prediction_from_server(exon,dataset):
+#     """Attempt to fetch the prediction from the server, handle errors gracefully."""
+#     try:
+#         # change the http address once the ec2 server is up. 
+#         response = requests.post('http://127.0.0.1:5001/prediction', data={'exon': exon,'dataset':dataset}, timeout=10)
+#         response.raise_for_status()  # This will raise an HTTPError for bad responses (4XX, 5XX)
+#         return response.json()
+#     except requests.exceptions.RequestException as e:
+#         # Handle network errors, timeouts, and bad responses
+#         print(f"Error contacting server: {e}")
+#         return None
 
 def read_local_data(option):
     """Read local data file as a fallback."""
@@ -70,7 +70,7 @@ def get_data():
     if option in default_options: 
         return read_local_data(option)
     exon = get_default_exon(option)
-    json_response = fetch_prediction_from_server(exon,dataset)
+    # json_response = fetch_prediction_from_server(exon,dataset)
     if json_response is None:  # Server request failed
         json_response = read_local_data(option)
     return jsonify(json_response)
