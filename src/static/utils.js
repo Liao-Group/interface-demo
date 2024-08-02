@@ -494,6 +494,22 @@ function onGraphRendered(element) {
 
 }
 
+function highlightLogos(listOfLogos = []) {
+  d3.select('div.feature-legend-container')
+    .selectAll('.background')
+    .style("fill", 'none');
+  listOfLogos.forEach(logo => {
+    console.log(logo);
+    const fillColor = getFillColor(logo);
+    // const highlightColor = getHighlightColor(logo);  // Uncomment if needed
+
+    d3.select('div.feature-legend-container')
+      .select('.background.' + logo)
+      .style("fill", fillColor);
+  });
+}
+
+
 document.addEventListener("DOMContentLoaded", function () {
   // Add event listener to all dropdown buttons
   const dropdowns = document.querySelectorAll(".unified-dropdown");
