@@ -825,6 +825,7 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
     .call(xSkipAxis);
     gxSkip.selectAll(".tick line")
     .style("display", "none");
+
   var gxNu = svg_nucl.append("g")
     .attr("class", "x axis")
     .attr("font-size", `1.2em`)
@@ -1197,7 +1198,6 @@ function nucleotideFeatureView(parent, data, feature_name) {
     .range([margin.left, width - margin.right])
     .domain(positions)
     .padding(0);
-
   // Y Axis
 
   if (class_name == "incl") {
@@ -1560,14 +1560,14 @@ function nucleotideZoom(sequence, structs, pos, margin, zoom_width, height, svg_
     .attr("class", "x axis")
     .attr("transform", `translate(0, ${margin.top + (height - margin.top - margin.bottom) / 2 - 5})`);
 
-    zoom_xAxis.tickFormat((d) => structs[int_pos - 1 + d])
-    zoom_xSkipAxis.tickFormat((d) => (d % 5 === 0 && int_pos + d > flanking_length) ? int_pos + d - flanking_length : "");
-    zoom_xNuAxis.tickFormat((d) => sequence[int_pos - 1 + d]);
-  
-    zoom_gxIncl.call(zoom_xSkipAxis);
-    zoom_gxSkip.call(zoom_xAxis);
-    zoom_gxNu.call(zoom_xNuAxis);
-  
+  zoom_xAxis.tickFormat((d) => structs[int_pos - 1 + d])
+  zoom_xSkipAxis.tickFormat((d) => (d % 5 === 0 && int_pos + d > flanking_length) ? int_pos + d - flanking_length : "");
+  zoom_xNuAxis.tickFormat((d) => sequence[int_pos - 1 + d]);
+
+  zoom_gxIncl.call(zoom_xSkipAxis);
+  zoom_gxSkip.call(zoom_xAxis);
+  zoom_gxNu.call(zoom_xNuAxis);
+
 
   zoom_gxNu.selectAll("path").style("stroke-width", 0);
   zoom_gxSkip.selectAll(".tick")
