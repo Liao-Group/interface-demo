@@ -20,15 +20,12 @@ let selectedBar = null;
 let selectedFeatureBar = null;
 
 function getFeaturesForPosition(pos, data) {
-  console.log("Getting features for position:", pos);
-  console.log("Data received:", data);
+
 
   // Helper function to extract features from flattened data
   function extractFeatures(flattenedData) {
       return flattenedData.map(item => {
-        console.log(item)
           const nameParts = item.name.split(' ');
-          console.log(nameParts)
           return {
               name: nameParts[1],
               strength: item.strength,
@@ -46,11 +43,9 @@ function getFeaturesForPosition(pos, data) {
   }
   // Get inclusion data
   const inclFeatures = extractFeatures(inclData);
-  console.log("Inclusion features:", inclFeatures);
 
   // Get skipping data
   const skipFeatures = extractFeatures(skipData);
-  console.log("Skipping features:", skipFeatures);
 
   // Extract unique inclusion values
   const uniqueInclValues = [...new Set(inclFeatures.map(item => {
@@ -64,8 +59,7 @@ function getFeaturesForPosition(pos, data) {
       return match ? match[0] : null;
   }))].filter(Boolean);
 
-  console.log("Unique inclusion values:", uniqueInclValues);
-  console.log("Unique skipping values:", uniqueSkipValues);
+
 
   // Highlight logos (assuming this function exists elsewhere in your code)
   highlightLogos([...uniqueSkipValues, ...uniqueInclValues]);
@@ -88,7 +82,6 @@ function PSIview(data) {
   const plotPSI = true; // CHOICE: whether to plot deltaForce or predictedPSI
   exon_length = data.exon.length;
   flanking_length = data.sequence.search(data.exon);
-  console.log(exon_length, flanking_length);
 
   d3.select("svg.psi-view").selectAll("*").remove();;
   const svgContainer = d3.select(".psi-view"); // Ensure you have a container with this class
@@ -570,7 +563,6 @@ function hierarchicalBarChart2(parent, data) {
         .attr("x", rect_x + 2)
         .attr("y", rect_y + 14)
         .raise();
-      console.log(text.node().getComputedTextLength());
       textbox.style("opacity", 1)
         .attr("x", rect_x)
         .attr("y", rect_y)
@@ -865,6 +857,22 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
     var position = String(d);
     var pos = "pos_" + String(d+1);
 
+    gxSkip.selectAll(".tick")
+      .each(function (d) {
+        d3.select(this).select("text")
+          .attr("font-size", `${10}px`)
+          .style("font-weight", "normal");
+      });
+    gxSkip.selectAll(".tick")
+      .each(function (d) {
+        var tickPosition = String(d-1) 
+        if (tickPosition === position) {
+          d3.select(this).select("text").style("font-weight", "bold")
+            .attr("font-size", `${11}px`);
+
+        }
+      });
+
     // Highlight the clicked bars
     svg_nucl.select(`.obj.incl.${pos}`)
       .style("fill", inclusion_highlight_color)
@@ -1130,7 +1138,19 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
           .style("font-weight", "bold")
           .classed("free", false);
         var position = d3.select(this).attr("class").split(" ")[2]
-        console.log(d3.select(this).attr("class").split(" ")[2])
+        var number = parseInt(position.split("_")[1])
+        gxSkip.selectAll(".tick")
+          .each(function (d) {
+            d3.select(this).select("text").style("font-weight", "normal");
+          });
+        gxSkip.selectAll(".tick")
+          .each(function (d) {
+            var tickPosition = d
+
+            if (tickPosition === number) {
+              d3.select(this).select("text").style("font-weight", "bold");
+            }
+          });
         getFeaturesForPosition(position,data)
         nucleotideSort(pos, margin, sort_width, sort_height, svg_sort, svg_zoom, [skipBarColor, skipBarHighlightColor, inclBarColor, inclBarHighlightColor]);
         nucleotideZoom(sequence, structs, pos, margin, zoom_width, zoom_height, svg_zoom, max_strength, [skipBarColor, skipBarHighlightColor, inclBarColor, inclBarHighlightColor]);
@@ -1524,8 +1544,8 @@ function nucleotideZoom(sequence, structs, pos, margin, zoom_width, height, svg_
     .text("Nucleotide Features");
 
   // Add X axis
-  const zoom_xAxis = d3.axisBottom(zoom_x).tickSize(2);
-  const zoom_xSkipAxis = d3.axisTop(zoom_x).tickSize(2);
+  const zoom_xAxis = d3.axisTop(zoom_x).tickSize(2);
+  const zoom_xSkipAxis = d3.axisBottom(zoom_x).tickSize(2);
   const zoom_xNuAxis = d3.axisBottom(zoom_x).tickSize(0);
 
   const zoom_gxIncl = svg_zoom.append("g")
@@ -1540,14 +1560,26 @@ function nucleotideZoom(sequence, structs, pos, margin, zoom_width, height, svg_
     .attr("class", "x axis")
     .attr("transform", `translate(0, ${margin.top + (height - margin.top - margin.bottom) / 2 - 5})`);
 
-  zoom_xAxis.tickFormat((d) => structs[int_pos - 1 + d])
-  zoom_xSkipAxis.tickFormat((d) => (d % 5 === 0 && int_pos + d > flanking_length && int_pos + d <= flanking_length + exon_length) ? int_pos + d - flanking_length : "");
-  zoom_xNuAxis.tickFormat((d) => sequence[int_pos - 1 + d]);
+    zoom_xAxis.tickFormat((d) => structs[int_pos - 1 + d])
+    zoom_xSkipAxis.tickFormat((d) => (d % 5 === 0 && int_pos + d > flanking_length) ? int_pos + d - flanking_length : "");
+    zoom_xNuAxis.tickFormat((d) => sequence[int_pos - 1 + d]);
+  
+    zoom_gxIncl.call(zoom_xSkipAxis);
+    zoom_gxSkip.call(zoom_xAxis);
+    zoom_gxNu.call(zoom_xNuAxis);
+  
 
-  zoom_gxIncl.call(zoom_xAxis);
-  zoom_gxSkip.call(zoom_xSkipAxis);
-  zoom_gxNu.call(zoom_xNuAxis);
-
+  zoom_gxNu.selectAll("path").style("stroke-width", 0);
+  zoom_gxSkip.selectAll(".tick")
+  .each(function (d) {
+    d3.select(this)
+    .select("text")
+    .attr("font-weight", d === 0 ? "bold" : "normal")
+    .attr("fill", d === 0 ? "black" : line_color);
+     
+ });
+ zoom_gxSkip.selectAll(".tick line")
+ .style("display", "none");
   zoom_gxNu.selectAll("path").style("stroke-width", 0);
   zoom_gxNu.selectAll(".tick").each(function (d) {
     d3.select(this)
