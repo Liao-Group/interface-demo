@@ -158,7 +158,7 @@ function PSIview(data) {
     .attr('x', (width / 2))
     .attr('y', (margin.top / 2))
     .attr('text-anchor', 'middle')
-    .style('font-size', `${12 * widthRatio}px`)
+    .style('font-size', `1.2em`)
     .text('Difference-to-Prediction');
 
 
@@ -167,7 +167,6 @@ function PSIview(data) {
     .attr('y', height - margin.bottom - 20)
     .attr('text-anchor', 'middle')
     .attr('font-size', `1.2em`)
-    .attr('font-weight', 'bold')
     .attr('fill', 'black')
     .style('opacity', 0)
     .text('Δ Strength: ' + deltaForce.toFixed(2));;
@@ -177,14 +176,13 @@ function PSIview(data) {
     .attr('y', height - margin.bottom - 20)
     .attr('text-anchor', 'middle')
     .attr('font-size', `1.2em`)
-    .attr('font-weight', 'bold')
     .attr('fill', 'black')
     .style('opacity', 0)
     .text('Predicted PSI: ' + predictedPSI.toFixed(2));
 
   const psi = chartGroup.append('text')
     .attr('transform', `translate(${chartWidth + 60}, ${chartHeight / 2}) rotate(-90)`)
-    .attr("font-size",`1.2`)
+    .attr("font-size",`1.2em`)
     // .attr("x", -chartWidth / 2)
     .attr("y", -23)
     .style('text-anchor', 'middle')
@@ -322,7 +320,7 @@ function hierarchicalBarChart(parent, data) {
     .attr("x", (chartWidth / 2) - 10)
     .attr("y", -margin.top / 2)
     .attr("text-anchor", "middle")
-    .style('font-size', `${12 * widthRatio}px`)
+    .style('font-size', `1.2em`)
     .text('Class Strengths');
 
   chart.append("text")
@@ -330,7 +328,7 @@ function hierarchicalBarChart(parent, data) {
     .attr("text-anchor", "middle")
     .attr("x", chartWidth / 2)
     .attr("y", chartHeight + 15)
-    .style('font-size', `${12 * widthRatio}px`)
+    .style('font-size', `1.2em`)
     .text("Classes");
 
   chart.append("text")
@@ -446,7 +444,7 @@ function hierarchicalBarChart2(parent, data) {
     .attr("x", chartWidth / 2)
     .attr("y", -margin.top / 2)
     .attr("text-anchor", "middle")
-    .style('font-size', `${12 * widthRatio}px`)
+    .style('font-size', `1.2em`)
     .text((data.name == "incl" ? "Inclusion" : "Skipping") + ' Features');
 
   chart.append("text")
@@ -454,7 +452,7 @@ function hierarchicalBarChart2(parent, data) {
     .attr("text-anchor", "middle")
     .attr("x", chartWidth / 2)
     .attr("y", chartHeight + margin.bottom - 15)
-    .attr("font-size", `${12 * widthRatio}px`)
+    .attr("font-size", `1.2em`)
     .text("Features");
 
   chart.append("text")
@@ -678,7 +676,7 @@ function hierarchicalBarChart3(parentName, data) {
     .attr("x", charWidth / 2)
     .attr("y", -margin.top / 2)
     .attr("text-anchor", "middle")
-    .style('font-size', `${12 * widthRatio}px`)
+    .style('font-size', `1.2em`)
     .text("Strongest Positions for Given Feature");
 
   chart.append("text")
@@ -686,7 +684,7 @@ function hierarchicalBarChart3(parentName, data) {
     .attr("text-anchor", "middle")
     .attr("x", charWidth / 2)
     .attr("y", chartHeight + 15)
-    .attr("font-size", `${12 * widthRatio}px`)
+    .attr("font-size", `1.2em`)
     .text("Positions");
 
   chart.append("text")
@@ -846,7 +844,7 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
     .each(function (d, i) {
       d3.select(this)
         .select("text")
-        .attr("font-size", `${12 * widthRatio}px`)
+        .attr("font-size", `1.2em`)
         .attr("fill", (d <= flanking_length || d > flanking_length + exon_length) ? line_color : nucleotide_color)
     });
 
