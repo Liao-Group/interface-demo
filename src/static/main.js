@@ -166,7 +166,7 @@ function PSIview(data) {
     .attr('x', chartWidth / 2)
     .attr('y', height - margin.bottom - 20)
     .attr('text-anchor', 'middle')
-    .attr('font-size', `${12 * heightRatio}px`)
+    .attr('font-size', `1.2em`)
     .attr('font-weight', 'bold')
     .attr('fill', 'black')
     .style('opacity', 0)
@@ -176,7 +176,7 @@ function PSIview(data) {
     .attr('x', chartWidth / 2)
     .attr('y', height - margin.bottom - 20)
     .attr('text-anchor', 'middle')
-    .attr('font-size', `${12 * heightRatio}px`)
+    .attr('font-size', `1.2em`)
     .attr('font-weight', 'bold')
     .attr('fill', 'black')
     .style('opacity', 0)
@@ -184,7 +184,7 @@ function PSIview(data) {
 
   const psi = chartGroup.append('text')
     .attr('transform', `translate(${chartWidth + 60}, ${chartHeight / 2}) rotate(-90)`)
-    .attr("font-size", `${12 * heightRatio}px`)
+    .attr("font-size",`1.2`)
     // .attr("x", -chartWidth / 2)
     .attr("y", -23)
     .style('text-anchor', 'middle')
@@ -202,7 +202,7 @@ function PSIview(data) {
     .attr('transform', 'rotate(-90)')
     .attr('x', -chartHeight / 2)
     .attr("y", -25)
-    .attr("font-size", `${12 * heightRatio}px`)
+    .attr("font-size", `1.2em`)
     // .attr('dy', '-1.50em')
     .style('text-anchor', 'middle')
     .text('Δ Strength (a.u.)')
@@ -339,7 +339,7 @@ function hierarchicalBarChart(parent, data) {
     .attr("transform", "rotate(-90)")
     .attr("x", -chartHeight / 2)
     .attr("y", -32)
-    .attr("font-size", `${12 * heightRatio}px`)
+    .attr("font-size", `1.2em`)
     .text("Strength (a.u.)");
 
   chart.append("g")
@@ -463,7 +463,7 @@ function hierarchicalBarChart2(parent, data) {
     .attr("transform", "rotate(-90)")
     .attr("x", -chartHeight / 2)
     .attr("y", -25)
-    .attr("font-size", `${12 * heightRatio}px`)
+    .attr("font-size", `1.2em`)
     .text("Strength (a.u.)");
 
   chart.append("g")
@@ -695,7 +695,7 @@ function hierarchicalBarChart3(parentName, data) {
     .attr("transform", "rotate(-90)")
     .attr("x", -chartHeight / 2)
     .attr("y", -25)
-    .attr("font-size", `${12 * heightRatio}px`)
+    .attr("font-size", `1.2em`)
     .text("Strength (a.u.)");
 
   chart.append("g")
@@ -793,7 +793,7 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
     .attr("x", width / 2)
     .attr("y", margin.top / 2 + 5)
     .attr("text-anchor", "middle")
-    .style('font-size', `${12 * widthRatio}px`)
+    .style('font-size', `1.2em`)
     .text("Exon View");
 
   // Add X axis
@@ -822,21 +822,22 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
     .tickFormat(function (d) {
       return Array.from(sequence)[d - 1];
     });
+
   var gxIncl = svg_nucl.append("g")
     .attr("class", "x axis")
-    .attr("font-size", `${12 * heightRatio}px`)
+    .attr("font-size", `1.2em`)
     .attr("transform", "translate(0," + (margin.top + (height - margin.top - margin.bottom) / 2 - margin.middle) + ")")
     .call(xInclAxis);
   var gxSkip = svg_nucl.append("g")
     .attr("class", "x axis")
-    .attr("font-size", `${12 * heightRatio}px`)
+    .attr("font-size", `1.2em`)
     .attr("transform", "translate(0," + (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle) + ")")
     .call(xSkipAxis);
     gxSkip.selectAll(".tick line")
     .style("display", "none");
   var gxNu = svg_nucl.append("g")
     .attr("class", "x axis")
-    .attr("font-size", `${12 * heightRatio}px`)
+    .attr("font-size", `1.2em`)
     .attr("transform", "translate(0," + (margin.top + (height - margin.top - margin.bottom) / 2 - 5) + ")")
     .call(xNuAxis);
   gxNu.selectAll("path")
@@ -910,7 +911,7 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
     var gyIncl = svg_nucl.append("g")
       .attr("class", "y axis")
       .attr("transform", "translate(" + margin.left + ",0)")
-      .attr("font-size", `${12 * heightRatio}px`);
+      .attr("font-size", `1.2em`);
     gyIncl.call(d3.axisLeft(yIncl).ticks(4));
 
     var extendedData = [];
@@ -944,12 +945,12 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
     svg_nucl.append("text")
       .attr("class", "ylabel_inclusion")
       .attr("text-anchor", "middle")
-      .attr("x", -(margin.top + (height - margin.top - margin.bottom) / 4 - margin.middle / 2))
+      .attr("x", -(margin.top +140+ (height - margin.top - margin.bottom) / 4 - margin.middle / 2))
       .attr("y", margin.left)
       .attr("dy", "-2.25em")
-      .attr("font-size", `${12 * heightRatio}px`)
+      .attr("font-size", `1.2em`)
       .attr("transform", "rotate(-90)")
-      .text("Inclusion strength (a.u.)");
+      .text("Strength (a.u.)");
 
     svg_nucl.selectAll("nucleotide-incl-bar")
       .data(data.children[0].children)
@@ -975,7 +976,7 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
 
     var gySkip = svg_nucl.append("g")
       .attr("class", "y axis")
-      .attr("font-size", `${12 * heightRatio}px`)
+      .attr("font-size", `1.2em`)
       .attr("transform", "translate(" + margin.left + ",0)");
     gySkip.call(d3.axisLeft(ySkip).ticks(4));
    
@@ -1012,15 +1013,6 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
         .attr("fill", "none")
         .attr("stroke", barHighlightColor)
         .style("stroke-width", "2px");
-    svg_nucl.append("text")
-      .attr("class", "ylabel_skip")
-      .attr("text-anchor", "middle")
-      .attr("x", -(margin.top / 2 + (height - margin.top - margin.bottom) / 4 + margin.middle / 2 + height / 2 - margin.bottom / 2))
-      .attr("y", margin.left)
-      .attr("dy", "-2.25em")
-      .attr("font-size", `${12 * heightRatio}px`)
-      .attr("transform", "rotate(-90)")
-      .text("Skipping strength (a.u.)");
 
     svg_nucl.selectAll("nucleotide-skip-bar")
       .data(data.children[1].children)
@@ -1191,7 +1183,6 @@ function nucleotideFeatureView(parent, data, feature_name) {
   // Y Axis
 
   if (class_name == "incl") {
-    svg.selectAll("text.ylabel_skip").remove();
     var yIncl = d3.scaleLinear()
       .domain([0, max_strength])
       .range([margin.top + (height - margin.top - margin.bottom) / 2 - margin.middle, margin.top]);
@@ -1231,7 +1222,6 @@ function nucleotideFeatureView(parent, data, feature_name) {
       // .delay(function (d, i) { return (i * 10); });
   }
   if (class_name == "skip") {
-    svg.selectAll("text.ylabel_inclusion").remove();
     var ySkip = d3.scaleLinear()
       .domain([0, max_strength])
       .range([margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle, height - margin.bottom]);
@@ -1293,7 +1283,7 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom, colors) 
     .attr("x", width / 2)
     .attr("y", margin.top / 2 + 5)
     .attr("text-anchor", "middle")
-    .style('font-size', `${12 * widthRatio}px`)
+    .style('font-size', `1.2em`)
     .text("Nucleotide View");
 
   // Data preparation
@@ -1361,13 +1351,13 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom, colors) 
   const sortInclYLabel = svg_sort.append("text")
     .attr("class", "y label")
     .attr("text-anchor", "middle")
-    .attr("x", -(margin.top + (height - margin.top - margin.bottom) / 4 - margin.middle / 2))
+    .attr("x", -(margin.top +140+ (height - margin.top - margin.bottom) / 4 - margin.middle / 2))
     .attr("y", margin.left)
     .attr("dy", "-2.25em")
-    .attr("font-size", `${12 * heightRatio}px`)
+    .attr("font-size", `1.2em`)
     .attr("transform", "rotate(-90)")
     .style("fill", background_color)
-    .text("Inclusion strength (a.u.)");
+    .text("Strength (a.u.)");
 
   const sortSkipYLabel = svg_sort.append("text")
     .attr("class", "y label")
@@ -1375,10 +1365,9 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom, colors) 
     .attr("x", -(margin.top / 2 + (height - margin.top - margin.bottom) / 4 + margin.middle / 2 + height / 2 - margin.bottom / 2))
     .attr("y", margin.left)
     .attr("dy", "-2.25em")
-    .attr("font-size", `${12 * heightRatio}px`)
+    .attr("font-size", `1.2em`)
     .attr("transform", "rotate(-90)")
     .style("fill", background_color)
-    .text("Skipping strength (a.u.)");
 
   // X axis rendering
   sortXInclAxis.tickFormat(() => "");
@@ -1532,10 +1521,8 @@ function nucleotideZoom(sequence, structs, pos, margin, zoom_width, height, svg_
     .attr("x", zoom_width / 2)
     .attr("y", margin.top / 2 + 5)
     .attr("text-anchor", "middle")
-
     // .style("font-size", "14px")
-    .style('font-size', `${12 * widthRatio}px`)
-
+    .style('font-size', `1.2em`)
     .text("Nucleotide Features");
 
   // Add X axis
@@ -1583,24 +1570,23 @@ function nucleotideZoom(sequence, structs, pos, margin, zoom_width, height, svg_
   const zoom_incl_ylabel = svg_zoom.append("text")
     .attr("class", "y label")
     .attr("text-anchor", "middle")
-    .attr("x", -(margin.top + (height - margin.top - margin.bottom) / 4 - margin.middle / 2))
+    .attr("x", -(margin.top +140+ (height - margin.top - margin.bottom) / 4 - margin.middle / 2))
     .attr("y", margin.left)
-    .attr("dy", "-3.25em")
-    .attr("font-size", `${12 * heightRatio}px`)
+    .attr("dy", "-2.25em")
+    .attr("font-size", `1.2em`)
     .attr("transform", "rotate(-90)")
     .style("fill", background_color)
-    .text("Inclusion strength (a.u.)");
+    .text("Strength (a.u.)");
 
   const zoom_skip_ylabel = svg_zoom.append("text")
     .attr("class", "y label")
     .attr("text-anchor", "middle")
     .attr("x", -(margin.top / 2 + (height - margin.top - margin.bottom) / 4 + margin.middle / 2 + height / 2 - margin.bottom / 2))
     .attr("y", margin.left)
-    .attr("dy", "-3.25em")
-    .attr("font-size", `${12 * heightRatio}px`)
+    .attr("dy", "-2.25em")
+    .attr("font-size", `1.2em`)
     .attr("transform", "rotate(-90)")
     .style("fill", background_color)
-    .text("Skipping strength (a.u.)");
 
   zoom_incl_ylabel.style("fill", "black");
   zoom_skip_ylabel.style("fill", "black");
@@ -1701,7 +1687,7 @@ function nucleotideZoom(sequence, structs, pos, margin, zoom_width, height, svg_
     .text((d) => d.name.split(" ")[1])
     .attr("class", (d) => `annotate incl ${d.name.split(" ").join("-")}`)
     .attr("text-anchor", "middle")
-    .attr("font-size", "12px")
+    .attr("font-size", `1.2em`)
     .attr("opacity", 0)
     .attr("x", (d) => {
       if (d.length <= 6) {
@@ -1722,7 +1708,7 @@ function nucleotideZoom(sequence, structs, pos, margin, zoom_width, height, svg_
     .text((d) => d.name.split(" ")[1])
     .attr("class", (d) => `annotate skip ${d.name.split(" ").join("-")}`)
     .attr("text-anchor", "middle")
-    .attr("font-size", "12px")
+    .attr("font-size", `1.2em`)
     .attr("opacity", 0)
     .attr("x", (d) => {
       if (d.length <= 6) {
