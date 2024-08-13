@@ -158,7 +158,7 @@ function PSIview(data) {
     .attr('x', (width / 2))
     .attr('y', (margin.top / 2))
     .attr('text-anchor', 'middle')
-    .style('font-size', `${14 * widthRatio}px`)
+    .style('font-size', `${12 * widthRatio}px`)
     .text('Difference-to-Prediction');
 
 
@@ -322,7 +322,7 @@ function hierarchicalBarChart(parent, data) {
     .attr("x", (chartWidth / 2) - 10)
     .attr("y", -margin.top / 2)
     .attr("text-anchor", "middle")
-    .style('font-size', `${14 * widthRatio}px`)
+    .style('font-size', `${12 * widthRatio}px`)
     .text('Class Strengths');
 
   chart.append("text")
@@ -446,7 +446,7 @@ function hierarchicalBarChart2(parent, data) {
     .attr("x", chartWidth / 2)
     .attr("y", -margin.top / 2)
     .attr("text-anchor", "middle")
-    .style('font-size', `${14 * widthRatio}px`)
+    .style('font-size', `${12 * widthRatio}px`)
     .text((data.name == "incl" ? "Inclusion" : "Skipping") + ' Features');
 
   chart.append("text")
@@ -678,7 +678,7 @@ function hierarchicalBarChart3(parentName, data) {
     .attr("x", charWidth / 2)
     .attr("y", -margin.top / 2)
     .attr("text-anchor", "middle")
-    .style('font-size', `${14 * widthRatio}px`)
+    .style('font-size', `${12 * widthRatio}px`)
     .text("Strongest Positions for Given Feature");
 
   chart.append("text")
@@ -793,7 +793,7 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
     .attr("x", width / 2)
     .attr("y", margin.top / 2 + 5)
     .attr("text-anchor", "middle")
-    .style('font-size', `${14 * widthRatio}px`)
+    .style('font-size', `${12 * widthRatio}px`)
     .text("Exon View");
 
   // Add X axis
@@ -1293,7 +1293,7 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom, colors) 
     .attr("x", width / 2)
     .attr("y", margin.top / 2 + 5)
     .attr("text-anchor", "middle")
-    .style('font-size', `${14 * widthRatio}px`)
+    .style('font-size', `${12 * widthRatio}px`)
     .text("Nucleotide View");
 
   // Data preparation
@@ -1456,7 +1456,6 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom, colors) 
 
   inclBars.attr("y", d => sortYIncl(d.strength))
     .attr("height", d => (margin.top + (height - margin.top - margin.bottom) / 2 - margin.middle) - sortYIncl(d.strength));
-    // .delay((_, i) => i * 10);
 
   const skipBars = svg_sort.selectAll("skip-narrow-bar")
     .data(topSkipData)
@@ -1499,7 +1498,6 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom, colors) 
   skipBars
     .attr("y", margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle)
     .attr("height", d => sortYSkip(d.strength) - (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle));
-    // .delay((_, i) => i * 10);
 }
 /**
  * nucleotideZoom
@@ -1536,7 +1534,7 @@ function nucleotideZoom(sequence, structs, pos, margin, zoom_width, height, svg_
     .attr("text-anchor", "middle")
 
     // .style("font-size", "14px")
-    .style('font-size', `${14 * widthRatio}px`)
+    .style('font-size', `${12 * widthRatio}px`)
 
     .text("Nucleotide Features");
 
