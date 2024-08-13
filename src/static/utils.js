@@ -435,7 +435,6 @@ function triggerDownload(imgURI, filename) {
 
 function downloadSelectedSVGs() {
   const checkboxes = document.querySelectorAll('.svg-checkbox:checked');
-  console.log("here")
   checkboxes.forEach((checkbox, index) => {
     setTimeout(() => {
       const svgElement = document.querySelector("svg." + checkbox.value);
@@ -448,7 +447,6 @@ function downloadSelectedSVGs() {
 
 
 function resetGraph() {
-  console.log('Graph has been reset to initial state.');
   nucleotideView(Data.sequence, Data.structs, Data.nucleotide_activations);
   hierarchicalBarChart(Data, Data.feature_activations);
   featureSelection(null, Data);
@@ -465,7 +463,6 @@ function resetGraph() {
 
 async function fetchData(option, dataset) {
   try {
-    console.log(option,dataset)
     const response = await fetch(`./get-data?option=${option}&dataset=${dataset}`); 
     const data = await response.json();
     if (data.error) {
@@ -499,7 +496,6 @@ function highlightLogos(listOfLogos = []) {
     .selectAll('.background')
     .style("fill", 'none');
   listOfLogos.forEach(logo => {
-    console.log(logo);
     const fillColor = getFillColor(logo);
     // const highlightColor = getHighlightColor(logo);  // Uncomment if needed
 
