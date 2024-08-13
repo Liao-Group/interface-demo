@@ -151,7 +151,7 @@ function PSIview(data) {
     .attr('x', (width / 2))
     .attr('y', (margin.top / 2))
     .attr('text-anchor', 'middle')
-    .style('font-size', `1.2em`)
+    .style('font-size', `0.75vw`)
     .text('Difference-to-Prediction');
 
 
@@ -175,7 +175,7 @@ function PSIview(data) {
 
   const psi = chartGroup.append('text')
     .attr('transform', `translate(${chartWidth + 60}, ${chartHeight / 2}) rotate(-90)`)
-    .attr("font-size",`1.2em`)
+    .attr("font-size",`1.25vh`)
     // .attr("x", -chartWidth / 2)
     .attr("y", -23)
     .style('text-anchor', 'middle')
@@ -193,7 +193,7 @@ function PSIview(data) {
     .attr('transform', 'rotate(-90)')
     .attr('x', -chartHeight / 2)
     .attr("y", -25)
-    .attr("font-size", `1.2em`)
+    .attr("font-size", `1.25vh`)
     // .attr('dy', '-1.50em')
     .style('text-anchor', 'middle')
     .text('Δ Strength (a.u.)')
@@ -313,7 +313,7 @@ function hierarchicalBarChart(parent, data) {
     .attr("x", (chartWidth / 2) - 10)
     .attr("y", -margin.top / 2)
     .attr("text-anchor", "middle")
-    .style('font-size', `1.2em`)
+    .style('font-size', `0.75vw`)
     .text('Class Strengths');
 
   chart.append("text")
@@ -321,7 +321,7 @@ function hierarchicalBarChart(parent, data) {
     .attr("text-anchor", "middle")
     .attr("x", chartWidth / 2)
     .attr("y", chartHeight + 15)
-    .style('font-size', `1.2em`)
+    .style('font-size', `0.75vw`)
     .text("Classes");
 
   chart.append("text")
@@ -330,7 +330,7 @@ function hierarchicalBarChart(parent, data) {
     .attr("transform", "rotate(-90)")
     .attr("x", -chartHeight / 2)
     .attr("y", -32)
-    .attr("font-size", `1.2em`)
+    .attr("font-size", `1.25vh`)
     .text("Strength (a.u.)");
 
   chart.append("g")
@@ -437,7 +437,7 @@ function hierarchicalBarChart2(parent, data) {
     .attr("x", chartWidth / 2)
     .attr("y", -margin.top / 2)
     .attr("text-anchor", "middle")
-    .style('font-size', `1.2em`)
+    .style('font-size', `0.75vw`)
     .text((data.name == "incl" ? "Inclusion" : "Skipping") + ' Features');
 
   chart.append("text")
@@ -445,7 +445,7 @@ function hierarchicalBarChart2(parent, data) {
     .attr("text-anchor", "middle")
     .attr("x", chartWidth / 2)
     .attr("y", chartHeight + margin.bottom - 15)
-    .attr("font-size", `1.2em`)
+    .attr("font-size", `0.75vw`)
     .text("Features");
 
   chart.append("text")
@@ -454,7 +454,7 @@ function hierarchicalBarChart2(parent, data) {
     .attr("transform", "rotate(-90)")
     .attr("x", -chartHeight / 2)
     .attr("y", -25)
-    .attr("font-size", `1.2em`)
+    .attr("font-size", `1.25vh`)
     .text("Strength (a.u.)");
 
   chart.append("g")
@@ -668,7 +668,7 @@ function hierarchicalBarChart3(parentName, data) {
     .attr("x", charWidth / 2)
     .attr("y", -margin.top / 2)
     .attr("text-anchor", "middle")
-    .style('font-size', `1.2em`)
+    .style('font-size', `0.75vw`)
     .text("Strongest Positions for Given Feature");
 
   chart.append("text")
@@ -685,7 +685,7 @@ function hierarchicalBarChart3(parentName, data) {
     .attr("transform", "rotate(-90)")
     .attr("x", -chartHeight / 2)
     .attr("y", -25)
-    .attr("font-size", `1.2em`)
+    .attr("font-size", `1.25vh`)
     .text("Strength (a.u.)");
 
   chart.append("g")
@@ -783,7 +783,7 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
     .attr("x", width / 2)
     .attr("y", margin.top / 2 + 5)
     .attr("text-anchor", "middle")
-    .style('font-size', `1.2em`)
+    .style('font-size',`0.75vw`)
     .text("Exon View");
 
   // Add X axis
@@ -952,10 +952,10 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
     svg_nucl.append("text")
       .attr("class", "ylabel_inclusion")
       .attr("text-anchor", "middle")
-      .attr("x", -(margin.top +140+ (height - margin.top - margin.bottom) / 4 - margin.middle / 2))
+      .attr("x", -(margin.top +120+ (height - margin.top - margin.bottom) / 4 - margin.middle / 2))
       .attr("y", margin.left)
       .attr("dy", "-2.25em")
-      .attr("font-size", `1.2em`)
+      .attr("font-size", `1.25vh`)
       .attr("transform", "rotate(-90)")
       .text("Strength (a.u.)");
 
@@ -1301,7 +1301,7 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom, colors) 
     .attr("x", width / 2)
     .attr("y", margin.top / 2 + 5)
     .attr("text-anchor", "middle")
-    .style('font-size', `1.2em`)
+    .style('font-size', `0.75vw`)
     .text("Nucleotide View");
 
   // Data preparation
@@ -1369,10 +1369,10 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom, colors) 
   const sortInclYLabel = svg_sort.append("text")
     .attr("class", "y label")
     .attr("text-anchor", "middle")
-    .attr("x", -(margin.top +140+ (height - margin.top - margin.bottom) / 4 - margin.middle / 2))
+    .attr("x", -(margin.top +120+ (height - margin.top - margin.bottom) / 4 - margin.middle / 2))
     .attr("y", margin.left)
     .attr("dy", "-2.25em")
-    .attr("font-size", `1.2em`)
+    .attr("font-size", `1.25vh`)
     .attr("transform", "rotate(-90)")
     .style("fill", background_color)
     .text("Strength (a.u.)");
@@ -1540,7 +1540,7 @@ function nucleotideZoom(sequence, structs, pos, margin, zoom_width, height, svg_
     .attr("y", margin.top / 2 + 5)
     .attr("text-anchor", "middle")
     // .style("font-size", "14px")
-    .style('font-size', `1.2em`)
+    .style('font-size', `0.75vw`)
     .text("Nucleotide Features");
 
   // Add X axis
@@ -1600,10 +1600,10 @@ function nucleotideZoom(sequence, structs, pos, margin, zoom_width, height, svg_
   const zoom_incl_ylabel = svg_zoom.append("text")
     .attr("class", "y label")
     .attr("text-anchor", "middle")
-    .attr("x", -(margin.top +140+ (height - margin.top - margin.bottom) / 4 - margin.middle / 2))
+    .attr("x", -(margin.top +120+ (height - margin.top - margin.bottom) / 4 - margin.middle / 2))
     .attr("y", margin.left)
     .attr("dy", "-2.25em")
-    .attr("font-size", `1.2em`)
+    .attr("font-size", `1.25vh`)
     .attr("transform", "rotate(-90)")
     .style("fill", background_color)
     .text("Strength (a.u.)");
