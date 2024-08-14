@@ -10,7 +10,7 @@ import pandas as pd
 import json
 import requests
 # from get_viz_data import get_deciphering_rna_splicing_data
-from clip_exon import clip_exon 
+from src.clip_exon import clip_exon 
 # Declare application
 app = Flask(__name__)
 
