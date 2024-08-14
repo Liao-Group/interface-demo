@@ -883,8 +883,10 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
       .attr("opacity", 1);
 
     getFeaturesForPosition(pos,data)
-    nucleotideSort(pos, margin, sort_width, sort_height, svg_sort, svg_zoom, [skipping_color, skipping_highlight_color, inclusion_color, inclusion_highlight_color]);
-    nucleotideZoom(sequence, structs, pos, margin, zoom_width, zoom_height, svg_zoom, max_strength, [skipping_color, skipping_highlight_color, inclusion_color, inclusion_highlight_color]);
+    // nucleotideSort(position, data, margin, 230, 450, colors);
+    // nucleotideZoom(data, sequence, structs, position, margin, 230, 450, colors);
+    nucleotideSort(data,pos, margin, sort_width, sort_height, svg_sort, svg_zoom, [skipping_color, skipping_highlight_color, inclusion_color, inclusion_highlight_color]);
+    nucleotideZoom(data,sequence, structs, pos, margin, zoom_width, zoom_height, svg_zoom, max_strength, [skipping_color, skipping_highlight_color, inclusion_color, inclusion_highlight_color]);
   });
   // Add Y axis
   var max_incl = d3.max(d3.map(data.children[0].children, recursive_total_strength).keys());
@@ -1284,7 +1286,7 @@ function nucleotideFeatureView(parent, data, feature_name) {
 /**
  * nucleotideSort
  */
-function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom, colors) {
+function nucleotideSort(data,pos, margin, width, height, svg_sort, svg_zoom, colors) {
   const inclusionColor = colors[2]
   const inclusionHighlightColor = colors[3]
   const skippingColor = colors[0]
@@ -1303,16 +1305,9 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom, colors) 
     .attr("text-anchor", "middle")
     .style('font-size', `0.75vw`)
     .text("Nucleotide View");
-
-  // Data preparation
-  if (d3.selectAll(`.obj.incl.${pos}`).size() == 0) { var inclData = []; }
-  else {
-    var inclData = flatten_nested_json(d3.selectAll(`.obj.incl.${pos}`).datum());
-  }
-  if (d3.selectAll(`.obj.skip.${pos}`).size() == 0) { var skipData = []; }
-  else {
-    var skipData = flatten_nested_json(d3.selectAll(`.obj.skip.${pos}`).datum());
-  }
+  
+  var inclData = flatten_nested_json(data['children'][0]['children'].find(child => child.name === pos)) || [];
+  var skipData = flatten_nested_json(data['children'][1]['children'].find(child => child.name === pos)) || [];
 
   const maxStrength = 6;
 
@@ -1509,7 +1504,7 @@ function nucleotideSort(pos, margin, width, height, svg_sort, svg_zoom, colors) 
 /**
  * nucleotideZoom
  */
-function nucleotideZoom(sequence, structs, pos, margin, zoom_width, height, svg_zoom, max_strength, colors) {
+function nucleotideZoom(data,sequence, structs, pos, margin, zoom_width, height, svg_zoom, max_strength, colors) {
   const heightRatio = height / 622;
   const widthRatio = zoom_width / 292;
   const int_pos = parseInt(pos.slice(4));
@@ -1645,15 +1640,10 @@ function nucleotideZoom(sequence, structs, pos, margin, zoom_width, height, svg_
   left_border.raise().attr("opacity", 1);
   right_border.raise().attr("opacity", 1);
 
-  // Data
-  if (d3.selectAll(`.obj.incl.${pos}`).size() == 0) { var incl_data = []; }
-  else {
-    var incl_data = flatten_nested_json(d3.selectAll(`.obj.incl.${pos}`).datum());
-  }
-  if (d3.selectAll(`.obj.skip.${pos}`).size() == 0) { var skip_data = []; }
-  else {
-    var skip_data = flatten_nested_json(d3.selectAll(`.obj.skip.${pos}`).datum());
-  }
+  var incl_data = flatten_nested_json(data['children'][0]['children'].find(child => child.name === pos)) || [];
+  var skip_data = flatten_nested_json(data['children'][1]['children'].find(child => child.name === pos)) || [];
+
+
   const max_incl = d3.max(incl_data.map((d) => d.strength));
   const max_skip = d3.max(skip_data.map((d) => d.strength));
   max_strength = d3.max([max_incl, max_skip]);

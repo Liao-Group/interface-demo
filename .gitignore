@@ -1,3 +1,4 @@
 .vercel
 pycache
 myenv
+src/__pycache__
