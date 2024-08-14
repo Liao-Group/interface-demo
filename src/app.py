@@ -10,7 +10,7 @@ import pandas as pd
 import json
 import requests
 # from get_viz_data import get_deciphering_rna_splicing_data
-
+from clip_exon import clip_exon 
 # Declare application
 app = Flask(__name__)
 
@@ -45,7 +45,7 @@ def fetch_prediction_from_server(exon,dataset):
 def read_local_data(option):
     """Read local data file as a fallback."""
     try:
-        with open(f'src/data/{option}.json', 'r') as file:
+        with open(f'data/{option}.json', 'r') as file:
             return json.load(file)
     except FileNotFoundError:
         return {"error": "Data file not found"}
@@ -68,11 +68,15 @@ def get_data():
     print(option,dataset)
     # Main logic to decide whether to use server or local file
     if option in default_options: 
-        return read_local_data(option)
+        json_response = read_local_data(option)
+        clip_exon(json_response)
+
+        return json_response
     exon = get_default_exon(option)
     json_response = fetch_prediction_from_server(exon,dataset)
     if json_response is None:  # Server request failed
         json_response = read_local_data(option)
+    clip_exon(json_response)
     return jsonify(json_response)
 
 if __name__ == "__main__":
