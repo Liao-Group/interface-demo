@@ -883,8 +883,6 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
       .attr("opacity", 1);
 
     getFeaturesForPosition(pos,data)
-    // nucleotideSort(position, data, margin, 230, 450, colors);
-    // nucleotideZoom(data, sequence, structs, position, margin, 230, 450, colors);
     nucleotideSort(data,pos, margin, sort_width, sort_height, svg_sort, svg_zoom, [skipping_color, skipping_highlight_color, inclusion_color, inclusion_highlight_color]);
     nucleotideZoom(data,sequence, structs, pos, margin, zoom_width, zoom_height, svg_zoom, max_strength, [skipping_color, skipping_highlight_color, inclusion_color, inclusion_highlight_color]);
   });
@@ -1154,9 +1152,10 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
               d3.select(this).select("text").style("font-weight", "bold");
             }
           });
-        getFeaturesForPosition(position,data)
-        nucleotideSort(pos, margin, sort_width, sort_height, svg_sort, svg_zoom, [skipBarColor, skipBarHighlightColor, inclBarColor, inclBarHighlightColor]);
-        nucleotideZoom(sequence, structs, pos, margin, zoom_width, zoom_height, svg_zoom, max_strength, [skipBarColor, skipBarHighlightColor, inclBarColor, inclBarHighlightColor]);
+          var pos = position
+          getFeaturesForPosition(pos,data)
+          nucleotideSort(data,pos, margin, sort_width, sort_height, svg_sort, svg_zoom, [skipping_color, skipping_highlight_color, inclusion_color, inclusion_highlight_color]);
+          nucleotideZoom(data,sequence, structs, pos, margin, zoom_width, zoom_height, svg_zoom, max_strength, [skipping_color, skipping_highlight_color, inclusion_color, inclusion_highlight_color]);
       });
   }
   return svg_nucl
