@@ -21,6 +21,9 @@ def filter_nucleotide_positions(children, clip_length, sequence_length):
             try:
                 position = int(child['name'].split('_')[-1])
                 if clip_length-1 < position <= (sequence_length - clip_length*2):
+                    # Adjust the position and update the name
+                    adjusted_position = position - clip_length
+                    child['name'] = f'pos_{adjusted_position}'
                     filtered.append(child)
             except ValueError:
                 # Skip this child if position is not a valid integer
@@ -41,37 +44,40 @@ def adjusted_feature_activations(activations, sequence_length, clip_length=5):
     Adjust the position names after clipping.
     Removes children whose positions are outside the boundaries [clip_length, sequence_length - clip_length].
     """
-    
     def filter_positions(children, clip_length, sequence_length):
-            filtered = []
-            for child in children:
-                if 'children' in child:
-                    # Recursively filter the children's children
-                    child['children'] = filter_positions(child['children'], clip_length, sequence_length)
-                
-                # Process only if the name starts with 'pos_'
-                if child['name'].startswith('pos_'):
-                    try:
-                        position = int(child['name'].split('_')[-1])
-                        print(f"Processing {child['name']} with position {position}")  # Debugging line
-                        if clip_length-1 < position <= (sequence_length - clip_length*2):
-                            filtered.append(child)
-                        else:
-                            print(f"Excluding {child['name']} with position {position}")  # Debugging line
-                    except ValueError:
-                        # Skip this child if position is not a valid integer
-                        print(f"Skipping {child['name']} due to ValueError")  # Debugging line
-                        continue
-                else:
-                    # Keep the non-pos_ entries as well, or handle them as necessary
-                    filtered.append(child)
+        filtered = []
+        for child in children:
+            if 'children' in child:
+                # Recursively filter the children's children
+                child['children'] = filter_positions(child['children'], clip_length, sequence_length)
             
-            return filtered
+            # Process only if the name starts with 'pos_'
+            if child['name'].startswith('pos_'):
+                try:
+                    position = int(child['name'].split('_')[-1])
+                    print(f"Processing {child['name']} with position {position}")  # Debugging line
+                    if clip_length-1 < position <= (sequence_length - clip_length*2):
+                        # Adjust the position and update the name
+                        adjusted_position = position - clip_length
+                        child['name'] = f'pos_{adjusted_position}'
+                        filtered.append(child)
+                    else:
+                        print(f"Excluding {child['name']} with position {position}")  # Debugging line
+                except ValueError:
+                    # Skip this child if position is not a valid integer
+                    print(f"Skipping {child['name']} due to ValueError")  # Debugging line
+                    continue
+            else:
+                # Keep the non-pos_ entries as well, or handle them as necessary
+                filtered.append(child)
+        
+        return filtered
     
     # Start filtering from the root level
     activations['children'] = filter_positions(activations['children'], clip_length, sequence_length)
     
     return activations
+
 
 
 

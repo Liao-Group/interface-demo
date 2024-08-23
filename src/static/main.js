@@ -987,40 +987,73 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
       .attr("transform", "translate(" + margin.left + ",0)");
     gySkip.call(d3.axisLeft(ySkip).ticks(4));
    
-    var extendedData = [];
-    Object.entries(data.children[1].children).forEach(function(d, i, arr) {
-        var xValue = parseInt(d[1].name.slice(4));
-        var yValue = recursive_total_strength(d[1]);
-        
-        if (!isNaN(xValue) && !isNaN(yValue)) {
-            extendedData.push([xValue, yValue]);
-            
-            if (i < arr.length - 1) {
-                extendedData.push([xValue + 1, yValue]);
-            } else {
-                // Add two extra points to close the path
-                extendedData.push([xValue + 1, yValue]);
-                extendedData.push([xValue + 1, 0]);
+// Initialize extendedData array to store data points for the path
+var extendedData = [];
 
-                extendedData.push([xValue + 2, 0]); // Extend one more step at y=0
-            }
+// Iterate over each entry in data.children[1].children to build the path
+Object.entries(data.children[1].children).forEach(function(d, i, arr) {
+    // Parse xValue from the name property and calculate yValue
+    var xValue = parseInt(d[1].name.slice(4), 10);
+    var yValue = recursive_total_strength(d[1]);
+
+    // Check for valid xValue and yValue
+    if (!isNaN(xValue) && !isNaN(yValue)) {
+        // Add the current point
+        extendedData.push([xValue, yValue]);
+
+        // Add an additional point to maintain the step if it's not the last point
+        if (i < arr.length - 1) {
+            extendedData.push([xValue + 1, yValue]);
+        } else {
+            // Ensure the path closes properly at the last data point
+            extendedData.push([xValue + 1, yValue]);
+            extendedData.push([xValue + 1, 0]); // Drop to y=0 for the last xValue + 1
         }
-    });
-    
-    var line = d3.line()
-        .x(function (d) { return x(d[0]); })
-        .y(function (d) { return ySkip(d[1]); })
-        .curve(d3.curveStepAfter)
-        .defined(function (d) { return !isNaN(d[0]) && !isNaN(d[1]); });
-    
-    svg_nucl.append("path")
-        .datum(extendedData)
-        .attr("class", "line skip original")
-        .attr("d", line)
-        .attr("fill", "none")
-        .attr("stroke", barHighlightColor)
-        .style("stroke-width", "2px");
+    }
+});
 
+// Debugging output to ensure all data points are correct
+console.log("extendedData:", extendedData);
+
+var line = d3.line()
+  .x(function (d) {
+    return x(d[0]);
+  })
+  .y(function (d) {
+    return ySkip(d[1]);
+  })
+  .curve(d3.curveStepAfter)
+  .defined(function (d) {
+    const xCoord = x(d[0]);
+    const yCoord = ySkip(d[1]);
+    if (isNaN(xCoord) || xCoord === undefined || isNaN(yCoord) || yCoord === undefined) {
+      console.warn(`Invalid coordinate for point: [${d[0]}, ${d[1]}]`);
+      return false;
+    }
+    return true;
+  });
+
+// Filter out invalid data points before passing to the line generator
+var validData = extendedData.filter(function(d) {
+  const xCoord = x(d[0]);
+  const yCoord = ySkip(d[1]);
+  return !isNaN(xCoord) && xCoord !== undefined && !isNaN(yCoord) && yCoord !== undefined;
+});
+
+// Check if there are valid points in validData before drawing the path
+if (validData.length > 0) {
+  svg_nucl.append("path")
+    .datum(validData)
+    .attr("class", "line skip original")
+    .attr("d", line)
+    .attr("fill", "none")
+    .attr("stroke", barHighlightColor)
+    .style("stroke-width", "2px");
+} else {
+  console.error("No valid data points available to draw the path.");
+}
+
+    
     svg_nucl.selectAll("nucleotide-skip-bar")
       .data(data.children[1].children)
       .enter()
