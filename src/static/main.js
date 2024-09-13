@@ -1221,8 +1221,7 @@ function nucleotideFeatureView(parent, data, feature_name) {
     });
   }
 
-  /* Change y range to a fix range */
-  // var max_strength = d3.max(d3.map(data, function (d) { return d.strength / d.length; }).keys());
+
   var max_strength = 6;
 
   // X scale

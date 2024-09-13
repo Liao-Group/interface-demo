@@ -87,7 +87,5 @@ def clip_exon(data):
     data['nucleotide_activations'] = adjusted_nucleotide_activations(data['nucleotide_activations'], len(data['sequence']), clip_length=5)
     data['sequence'] = clip_sequence(data['sequence'])
     data['structs'] = clip_structure(data['structs'])
-    # # data['feature_activations'] = adjusted_activations(data['feature_activations'])
-    # data['nucleotide_activations'] = adjusted_nucleotide_activations(data['nucleotide_activations'])
     print(data['sequence'])
     return data
