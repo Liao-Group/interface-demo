@@ -175,7 +175,6 @@ function downloadSelectedSVGs() {
   document.querySelectorAll('.svg-select label input[type="checkbox"]:checked').forEach(checkbox => {
     selectedCharts.push(checkbox.value);
   });
-  console.log('Selected charts for download:', selectedCharts);
 }
 
 // document.getElementById('openExonFormButton').addEventListener('click', function () {

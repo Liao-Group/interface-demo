@@ -967,10 +967,10 @@ function nucleotideView(sequence, structs, data, classSelected = null) {
       .attr("class", function (d) { return "obj incl pos_" + d.name.slice(4); })
       .attr("x", function (d) { return x(parseInt(d.name.slice(4))); })
       .attr("y", function (d) { return yIncl(recursive_total_strength(d)); })
-      .attr("width", x.bandwidth())
+      .attr("width", x.bandwidth()*1.25)
       .attr("height", function (d) { return (margin.top + (height - margin.top - margin.bottom) / 2 - margin.middle) - yIncl(recursive_total_strength(d)); })
       .attr("fill", barColor)
-      .attr("stroke", line_color)
+      // .attr("stroke", line_color)
       .style("cursor", "pointer")
       .attr('opacity', 0.1)
 
@@ -1013,7 +1013,6 @@ Object.entries(data.children[1].children).forEach(function(d, i, arr) {
 });
 
 // Debugging output to ensure all data points are correct
-console.log("extendedData:", extendedData);
 
 var line = d3.line()
   .x(function (d) {
@@ -1062,11 +1061,10 @@ if (validData.length > 0) {
       .attr("class", function (d) { return "obj skip pos_" + d.name.slice(4); })
       .attr("x", function (d) { return x(parseInt(d.name.slice(4))); })
       .attr("y", (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle))
-      .attr("width", x.bandwidth())
+      .attr("width", x.bandwidth()*1.25)
       .attr("height",  function (d) { return ySkip(recursive_total_strength(d)) - (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle); })
       .attr("fill", barColor)
       .attr('opacity', 0.1)
-      .attr("stroke", line_color)
       .style("cursor", "pointer")
       .lower();
   };
