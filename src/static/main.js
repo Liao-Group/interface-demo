@@ -1202,8 +1202,8 @@ function nucleotideFeatureView(parent, data, feature_name) {
   svg = d3.select("svg.nucleotide-view")
   svg.selectAll("rect").remove();
   svg.selectAll(".y.axis").remove();
-  svg.selectAll(".line.incl.original").remove();
-  svg.selectAll(".line.skip.original").remove();
+  // svg.selectAll(".line.incl.original").remove();
+  // svg.selectAll(".line.skip.original").remove();
   d3.select("svg.nucleotide-sort").selectAll("*").remove();
   d3.select("svg.nucleotide-zoom").selectAll("*").remove();
 
@@ -1219,16 +1219,16 @@ function nucleotideFeatureView(parent, data, feature_name) {
     });
   }
 
-
   var max_strength = 6;
 
   // X scale
   var sequence = parent.sequence;
-  var positions = Array.from(new Array(sequence.length), (x, i) => i + 1);
+  var positions = Array.from(new Array(sequence.length +1), (x, i) => i + 1);
   var x = d3.scaleBand()
-    .range([margin.left, width - margin.right])
+    .range([margin.left, (width - margin.right)])
     .domain(positions)
-    .padding(0);
+    .paddingInner(0.2)
+    .paddingOuter(0.25);
   // Y Axis
 
   if (class_name == "incl") {
@@ -1246,29 +1246,13 @@ function nucleotideFeatureView(parent, data, feature_name) {
       .datum(function (d) { return d; })
       .attr("class", function (d) { return "obj bar " + d.name.slice(4); })
       .attr("x", function (d) { return x(parseInt(d.name.split(" ")[2].split("_")[1])); })
-      .attr("width", function (d) { return x.bandwidth() * d.length; })
-      .attr("y", function (d) { return yIncl(d.strength / d.length); })
-      .attr("height", function (d) { return (margin.top + (height - margin.top - margin.bottom) / 2 - margin.middle) - yIncl(d.strength / d.length); })
+      .attr("width", function (d) { return x.bandwidth()*(d.length+1) })
+      .attr("y", function (d) { return yIncl(d.strength/d.length); })
+      .attr("height", function (d) { return (margin.top + (height - margin.top - margin.bottom) / 2 - margin.middle) - yIncl(d.strength/d.length); })
       .attr("fill", inclusion_color)
       .attr("stroke", line_color)
       .attr("opacity", 0.8)
       .lower()
-      /* Hover over Exon feature view */
-      .on("mouseover", function (d) {
-        const data = d3.select(this).datum();
-        d3.select("svg.feature-view-3").selectAll(".bar." + data.name.split(' ')[2])
-          .attr("fill", inclusion_highlight_color);
-        d3.select(this).raise().attr("fill", inclusion_highlight_color);
-      })
-      .on("mouseleave", function (d) {
-        d3.select(this).attr("fill", inclusion_color);
-        d3.select(this).attr("fill", inclusion_color);
-        d3.select("svg.feature-view-3").selectAll(".bar")
-          .attr("fill", inclusion_color);
-      })
-      .attr("y", function (d) { return yIncl(d.strength / d.length); })
-      .attr("height", function (d) { return (margin.top + (height - margin.top - margin.bottom) / 2 - margin.middle) - yIncl(d.strength / d.length); });
-      // .delay(function (d, i) { return (i * 10); });
   }
   if (class_name == "skip") {
     var ySkip = d3.scaleLinear()
@@ -1287,29 +1271,14 @@ function nucleotideFeatureView(parent, data, feature_name) {
       .datum(function (d) { return d; })
       .attr("class", function (d) { return "obj bar " + d.name.slice(4); })
       .attr("x", function (d) { return x(parseInt(d.name.split(" ")[2].split("_")[1])); })
-      .attr("width", function (d) { return x.bandwidth() * d.length; })
+      .attr("width", function (d) { return x.bandwidth()*(d.length+1) })
       .attr("y", (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle))
       .attr("height", function (d) { return ySkip(d.strength / d.length) - (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle); })
       .attr("fill", skipping_color)
       .attr("stroke", line_color)
       .attr("opacity", 0.8)
       .lower()
-      /* Hover over Exon feature view */
-      .on("mouseover", function (d) {
-        const data = d3.select(this).datum();
 
-        d3.select("svg.feature-view-3").selectAll(".bar." + data.name.split(' ')[2])
-          .attr("fill", skipping_highlight_color);
-        d3.select(this).raise().attr("fill", skipping_highlight_color);
-      })
-      .on("mouseleave", function (d) {
-        d3.select(this).attr("fill", skipping_color);
-        d3.select("svg.feature-view-3").selectAll(".bar")
-          .attr("fill", skipping_color);
-      })
-      .attr("y", (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle))
-      .attr("height", function (d) { return ySkip(d.strength / d.length) - (margin.top + (height - margin.top - margin.bottom) / 2 + margin.middle); });
-      // .delay(function (d, i) { return (i * 10); });
   }
 }
 /**
