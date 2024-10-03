@@ -10,7 +10,7 @@ import pandas as pd
 import json
 import requests
 # from get_viz_data import get_deciphering_rna_splicing_data
-from src.clip_exon import clip_exon 
+from clip_exon import clip_exon 
 # Declare application
 app = Flask(__name__)
 
@@ -30,11 +30,11 @@ def get_default_exon(option):
         return default_options[option].upper().replace("T", "U")
     return option
 
-def fetch_prediction_from_server(exon,dataset):
+def fetch_prediction_from_server(exon):
     """Attempt to fetch the prediction from the server, handle errors gracefully."""
     try:
         # change the http address once the ec2 server is up. 
-        response = requests.post('http://18.217.158.0:5000/prediction', data={'exon': exon,'dataset':dataset}, timeout=10)
+        response = requests.post('http://18.217.158.0:5000/prediction', data={'exon': exon}, timeout=10)
         response.raise_for_status()  # This will raise an HTTPError for bad responses (4XX, 5XX)
         return response.json()
     except requests.exceptions.RequestException as e:
@@ -45,7 +45,7 @@ def fetch_prediction_from_server(exon,dataset):
 def read_local_data(option):
     """Read local data file as a fallback."""
     try:
-        with open(f'src/data/{option}.json', 'r') as file:
+        with open(f'data/{option}.json', 'r') as file:
             return json.load(file)
     except FileNotFoundError:
         return {"error": "Data file not found"}
@@ -64,8 +64,8 @@ def homepage():
 @app.route("/get-data", methods=["GET"])
 def get_data():
     option = request.args.get('option', 'exon_s1')
-    dataset = request.args.get('dataset', 'ES7')
-    print(option,dataset)
+    # dataset = request.args.get('dataset', 'ES7')
+    print(option)
     # Main logic to decide whether to use server or local file
     if option in default_options: 
         json_response = read_local_data(option)
@@ -73,7 +73,7 @@ def get_data():
 
         return json_response
     exon = get_default_exon(option)
-    json_response = fetch_prediction_from_server(exon,dataset)
+    json_response = fetch_prediction_from_server(exon)
     if json_response is None:  # Server request failed
         json_response = read_local_data(option)
     clip_exon(json_response)

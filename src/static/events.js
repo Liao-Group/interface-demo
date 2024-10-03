@@ -88,7 +88,7 @@ window.addEventListener('resize', function () {
 
 document.addEventListener("DOMContentLoaded", async function () {
   const selectElement = document.getElementById("option");
-  const dateset = document.getElementById('dataset').value;
+  // const dateset = document.getElementById('dataset').value;
 
   let selectedOption = localStorage.getItem("selectedOption");
 
@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   }
 
   selectElement.value = selectedOption;
-  await fetchData(selectedOption,dateset); // Fetch data immediately on load
+  await fetchData(selectedOption); // Fetch data immediately on load
 
   selectElement.addEventListener("change", async function () {
     const selectedValue = selectElement.value;
@@ -128,12 +128,11 @@ document.addEventListener("DOMContentLoaded", async function () {
   // Add submit event listener to the form
   form.addEventListener('submit', function (event) {
     // Prevent the default form submission behavior
-    var dataset = document.getElementById('dataset').value;
 
     event.preventDefault();
     // Access the value of the input
     var exonValue = document.getElementById('exon').value;
-    fetchData(exonValue,dataset)
+    fetchData(exonValue)
   });
 })
 
@@ -179,16 +178,16 @@ function downloadSelectedSVGs() {
   console.log('Selected charts for download:', selectedCharts);
 }
 
-document.getElementById('openExonFormButton').addEventListener('click', function () {
-  var form = document.getElementById('exonForm');
-  if (form.style.display === 'none' || form.style.display === '') {
-    form.style.display = 'block'; // Show the form
-    this.textContent = 'Close Exon Form'; // Change button text to close
-  } else {
-    form.style.display = 'none'; // Hide the form
-    this.textContent = 'Open Exon Form'; // Change button text to open
-  }
-});
+// document.getElementById('openExonFormButton').addEventListener('click', function () {
+//   var form = document.getElementById('exonForm');
+//   if (form.style.display === 'none' || form.style.display === '') {
+//     form.style.display = 'block'; // Show the form
+//     this.textContent = 'Close Exon Form'; // Change button text to close
+//   } else {
+//     form.style.display = 'none'; // Hide the form
+//     this.textContent = 'Open Exon Form'; // Change button text to open
+//   }
+// });
 
 document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('adjustAxisBtn').addEventListener('click', function () {

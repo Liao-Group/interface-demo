@@ -676,7 +676,7 @@ function hierarchicalBarChart3(parentName, data) {
     .attr("text-anchor", "middle")
     .attr("x", charWidth / 2)
     .attr("y", chartHeight + 15)
-    .attr("font-size", `1.2em`)
+    .attr("font-size", `0.75vw`)
     .text("Positions");
 
   chart.append("text")
