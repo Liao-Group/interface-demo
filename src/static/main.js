@@ -1262,8 +1262,6 @@ function nucleotideFeatureView(parent, data, feature_name) {
       .attr("class", "y axis")
       .attr("transform", "translate(" + margin.left + ",0)");
     gySkip.call(d3.axisLeft(ySkip).ticks(3));
-
-
     svg.selectAll("nucleotide-skip-bar")
       .data(flat_data)
       .enter()

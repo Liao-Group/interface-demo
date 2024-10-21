@@ -34,7 +34,7 @@ def fetch_prediction_from_server(exon):
     """Attempt to fetch the prediction from the server, handle errors gracefully."""
     try:
         # change the http address once the ec2 server is up. 
-        response = requests.post('http://18.217.158.0:5000/prediction', data={'exon': exon}, timeout=10)
+        response = requests.post('http://18.222.129.149:5000/prediction', data={'exon': exon}, timeout=10)
         response.raise_for_status()  # This will raise an HTTPError for bad responses (4XX, 5XX)
         return response.json()
     except requests.exceptions.RequestException as e:
