@@ -26,7 +26,7 @@
 
   <div class="header">
     <div class="forms-container">
-      <script>
+      <!-- <script>
         const validLengths = {
           "ES7": 70,
           "WT1_exon_5": 51,
@@ -38,7 +38,7 @@
 
         document.addEventListener('DOMContentLoaded', function () {
           const exonInput = document.getElementById('exon');
-          const datasetSelect = document.getElementById('dataset');
+          // const datasetSelect = document.getElementById('dataset');
 
           function updateValidationMessage() {
             const selectedDataset = datasetSelect.value;
@@ -68,7 +68,7 @@
           // Initial validation
           updateValidationMessage();
         });
-      </script>
+      </script> -->
       <form method="post" id="exonForm">
         <input type="text" name="exon" id="exon" size="80" placeholder="Enter an Exon or Choose from Samples"
           pattern="([ATUGCatugc])*" required>
@@ -108,7 +108,7 @@
         }
       </script>
 
-      <form id="datasetForm" method="post">
+      <!-- <form id="datasetForm" method="post">
         <div class="select-wrapper-dataset">
           <select name="dataset" id="dataset">
             <option value="ES7">ES7</option>
@@ -120,7 +120,7 @@
           </select>
           <div class="arrow"></div>
         </div>
-      </form>
+      </form> -->
 
     </div>
 
